@@ -1,6 +1,6 @@
 import { EyeIcon, EyeOffIcon } from "lucide-react-native";
 import React, { useState } from "react";
-import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useAuthStore } from "./store/authStore";
 import { SignInRequest } from "./types/authTypes";
 
@@ -9,11 +9,12 @@ export default function AuthScreen() {
   const { loginUser } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async () => {
+    setError(null);
     if (!loginInputValue.email || !loginInputValue.password) {
-      Alert.alert("Errore", "Per favore inserisci email e password");
+      setError("Per favore, inserisci email e password");
       return;
     }
     setLoading(true);
@@ -21,7 +22,8 @@ export default function AuthScreen() {
       await loginUser(loginInputValue.email, loginInputValue.password);
     } catch (error) {
       console.error("Login error:", error);
-      Alert.alert("Errore", "Si è verificato un errore durante il login. Riprova più tardi.");
+      const errorMessage = useAuthStore.getState().error || "Si è verificato un errore durante il login. Riprova più tardi.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -31,7 +33,7 @@ export default function AuthScreen() {
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="flex-1">
       <SafeAreaView style={styles.container}>
         <View style={styles.content}>
-          {!error && !loading && (
+          {!loading && (
             <>
               <View style={styles.logoContainer}>
                 {/*  <Image source={require("../../assets/images/logo.png")} style={styles.logo} /> */}
@@ -45,7 +47,11 @@ export default function AuthScreen() {
                     style={styles.input}
                     placeholder="Inserisci la tua email"
                     value={loginInputValue.email}
-                    onChangeText={(text) => setLoginInputValue({ ...loginInputValue, email: text })}
+                    onChangeText={(text) => {
+                      setLoginInputValue({ ...loginInputValue, email: text });
+                      // Reset errore quando l'utente inizia a digitare
+                      if (error) setError(null);
+                    }}
                     keyboardType="email-address"
                     autoCapitalize="none"
                   />
@@ -58,12 +64,14 @@ export default function AuthScreen() {
                       style={[styles.input, styles.passwordInput]}
                       placeholder="Inserisci la tua password"
                       value={loginInputValue.password}
-                      onChangeText={(text) =>
+                      onChangeText={(text) => {
                         setLoginInputValue({
                           ...loginInputValue,
                           password: text
-                        })
-                      }
+                        });
+                        // Reset errore quando l'utente inizia a digitare
+                        if (error) setError(null);
+                      }}
                       secureTextEntry={!showPassword}
                     />
                     <TouchableOpacity style={styles.eyeIcon} onPress={() => setShowPassword(!showPassword)}>
@@ -74,6 +82,13 @@ export default function AuthScreen() {
                     <Text style={styles.forgotPasswordText}>Password dimenticata?</Text>
                   </TouchableOpacity> */}
                 </View>
+
+                {/* Messaggio di errore sotto il form */}
+                {error && (
+                  <View style={styles.errorContainer}>
+                    <Text className="text-center text-red-500">{error}</Text>
+                  </View>
+                )}
 
                 <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
                   <Text style={styles.loginButtonText}>Accedi</Text>
@@ -91,20 +106,6 @@ export default function AuthScreen() {
             </>
           )}
           {loading && <ActivityIndicator size="large" color="#000" />}
-          {error && (
-            <View style={styles.errorContainer}>
-              <Text style={styles.errorTitle}>Login non riuscito</Text>
-              <TouchableOpacity
-                style={styles.retryButton}
-                onPress={() => {
-                  setError(false);
-                  setLoading(false);
-                }}
-              >
-                <Text style={styles.retryButtonText}>Riprova</Text>
-              </TouchableOpacity>
-            </View>
-          )}
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
@@ -208,7 +209,7 @@ const styles = StyleSheet.create({
   errorTitle: {
     fontSize: 20,
     fontWeight: "500",
-    color: "#334155",
+    color: "#ef4444",
     textAlign: "center",
     marginBottom: 16
   },
