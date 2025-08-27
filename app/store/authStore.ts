@@ -1,7 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { login } from "../services/authService";
+import { login, register } from "../services/authService";
+import { RegistrationType } from "../types/authTypes";
 import { useUserDataStore } from "./userDataStore";
 
 interface AuthState {
@@ -10,6 +11,7 @@ interface AuthState {
   deviceId: string | null;
   isAuthenticated: boolean;
   loginUser: (email: string, password: string) => Promise<void>;
+  registerUser: (userData: RegistrationType) => Promise<void>;
   logoutUser: () => Promise<void>;
   setAuthData: (data: Partial<AuthState>) => void;
 }
@@ -119,6 +121,69 @@ export const useAuthStore = create<AuthState>()(
         // Rimuovi i dati da AsyncStorage
         await AsyncStorage.removeItem("auth_token");
         await AsyncStorage.removeItem("device_id");
+      },
+      registerUser: async (userData: RegistrationType) => {
+        console.log("registerUser chiamato nell'authStore"); // DEBUG
+
+        set({
+          error: null
+        });
+
+        try {
+          console.log("Chiamando API register..."); // DEBUG
+          const resp = await register(userData);
+          console.log("Risposta API register:", resp); // DEBUG
+
+          // La registrazione non autentica automaticamente l'utente
+          // Deve confermare l'email prima di poter fare login
+          set({ error: null });
+
+          console.log("Registrazione completata con successo");
+        } catch (error: any) {
+          console.log("Errore nel registerUser:", error); // DEBUG
+          console.log("Status code:", error.response?.status); // DEBUG
+          console.log("Error data:", error.response?.data); // DEBUG
+
+          let errorMessage = "Si è verificato un errore durante la registrazione";
+
+          // Gestione errori specifici per la registrazione
+          if (error.response?.status === 400) {
+            if (error.response?.data?.message?.includes("already exists") || error.response?.data?.message?.includes("già registrata")) {
+              errorMessage = "Questa email è già registrata";
+            } else if (error.response?.data?.message === "Invalid email format") {
+              errorMessage = "Formato email non valido";
+            } else {
+              errorMessage = "Dati non validi";
+            }
+          } else if (error.response?.status === 422) {
+            if (error.response?.data?.errors && error.response.data.errors.length > 0) {
+              const firstError = error.response.data.errors[0].message;
+
+              if (firstError.includes("Password must contain")) {
+                errorMessage = "La password deve contenere almeno: una lettera minuscola, una maiuscola, un numero e un carattere speciale";
+              } else if (firstError.includes("Invalid email format")) {
+                errorMessage = "Formato email non valido";
+              } else if (firstError.includes("already exists") || firstError.includes("già registrata")) {
+                errorMessage = "Questa email risulta già registrata";
+              } else {
+                errorMessage = "Dati non validi";
+              }
+            } else {
+              errorMessage = "Dati di registrazione non validi";
+            }
+          } else if (error.response?.status === 429) {
+            errorMessage = "Troppi tentativi di registrazione. Riprova tra qualche minuto";
+          } else if (error.response?.status === 500) {
+            errorMessage = "Errore del server. Riprova più tardi";
+          } else if (error.message === "Network Error" || !error.response) {
+            errorMessage = "Problemi di connessione. Verifica la tua connessione internet";
+          }
+
+          console.log("Errore finale impostato:", errorMessage); // DEBUG
+          set({ error: errorMessage });
+
+          throw new Error(errorMessage);
+        }
       }
     }),
     {
