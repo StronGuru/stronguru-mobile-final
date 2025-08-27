@@ -1,4 +1,6 @@
 import { z } from "zod";
+
+// LOGIN
 export type SignInRequest = {
   email?: string;
   password?: string;
@@ -15,7 +17,7 @@ export type SignInResponse = {
   message?: string;
 };
 
-//TODO: crea signupRequest type
+// SIGNUP
 export const RegistrationSchema = z.object({
   firstName: z.string().min(2, "Il nome deve essere di almeno 2 caratteri"),
   lastName: z.string().min(2, "Il cognome deve essere di almeno 2 caratteri"),
@@ -42,3 +44,17 @@ export type SignUpResponse = {
   activationKey?: string;
   error?: Error | null;
 };
+// FORGOT PASSWORD
+export type ForgotPasswordRequest = {
+  email: string;
+};
+
+export type ForgotPasswordResponse = {
+  message: string;
+};
+
+export const ForgotPasswordSchema = z.object({
+  email: z.email("Inserisci un'email valida")
+});
+
+export type ForgotPasswordType = z.infer<typeof ForgotPasswordSchema>;

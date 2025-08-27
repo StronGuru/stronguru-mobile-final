@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { login, register } from "../services/authService";
+import { forgotPassword as forgotPasswordAPI, login, register } from "../services/authService";
 import { RegistrationType } from "../types/authTypes";
 import { useUserDataStore } from "./userDataStore";
 
@@ -12,6 +12,7 @@ interface AuthState {
   isAuthenticated: boolean;
   loginUser: (email: string, password: string) => Promise<void>;
   registerUser: (userData: RegistrationType) => Promise<void>;
+  forgotPassword: (email: string) => Promise<void>;
   logoutUser: () => Promise<void>;
   setAuthData: (data: Partial<AuthState>) => void;
 }
@@ -177,6 +178,44 @@ export const useAuthStore = create<AuthState>()(
             errorMessage = "Errore del server. Riprova più tardi";
           } else if (error.message === "Network Error" || !error.response) {
             errorMessage = "Problemi di connessione. Verifica la tua connessione internet";
+          }
+
+          console.log("Errore finale impostato:", errorMessage); // DEBUG
+          set({ error: errorMessage });
+
+          throw new Error(errorMessage);
+        }
+      },
+      forgotPassword: async (email: string) => {
+        console.log("forgotPassword chiamato nell'authStore"); // DEBUG
+
+        set({ error: null });
+
+        try {
+          console.log("Chiamando API forgot password..."); // DEBUG
+          const resp = await forgotPasswordAPI({ email });
+          console.log("Risposta API forgot password:", resp); // DEBUG
+
+          // Il backend risponde sempre 200 con "If the email exists, a reset link was sent."
+          set({ error: null });
+          console.log("Forgot password completato con successo");
+        } catch (error: any) {
+          console.log("Errore nel forgotPassword:", error); // DEBUG
+          console.log("Status code:", error.response?.status); // DEBUG
+          console.log("Error data:", error.response?.data); // DEBUG
+
+          let errorMessage = "Si è verificato un errore nella richiesta";
+
+          // Il backend può rispondere solo con 200 (successo) o 500 (errore server)
+          if (error.response?.status === 500) {
+            errorMessage = "Errore del server. Riprova più tardi";
+          } else if (error.message === "Network Error" || !error.response) {
+            errorMessage = "Problemi di connessione. Verifica la tua connessione internet";
+          } else if (error.response?.status === 429) {
+            errorMessage = "Troppi tentativi. Riprova tra qualche minuto";
+          } else {
+            // Fallback generico
+            errorMessage = "Si è verificato un errore nella richiesta. Riprova più tardi";
           }
 
           console.log("Errore finale impostato:", errorMessage); // DEBUG
