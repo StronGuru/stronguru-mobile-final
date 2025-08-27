@@ -1,15 +1,17 @@
+import { useRouter } from "expo-router";
 import { EyeIcon, EyeOffIcon } from "lucide-react-native";
 import React, { useState } from "react";
 import { ActivityIndicator, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { useAuthStore } from "./store/authStore";
-import { SignInRequest } from "./types/authTypes";
+import { useAuthStore } from "../store/authStore";
+import { SignInRequest } from "../types/authTypes";
 
-export default function AuthScreen() {
+export default function LoginScreen() {
   const [loginInputValue, setLoginInputValue] = useState<SignInRequest>({});
   const { loginUser } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleSubmit = async () => {
     setError(null);
@@ -78,9 +80,9 @@ export default function AuthScreen() {
                       {showPassword ? <EyeOffIcon size={20} color="#64748b" /> : <EyeIcon size={20} color="#64748b" />}
                     </TouchableOpacity>
                   </View>
-                  {/* <TouchableOpacity onPress={() => router.replace("/forgot-password")} style={styles.forgotPassword}>
+                  <TouchableOpacity onPress={() => router.push("/(auth)/forgot-password")} style={styles.forgotPassword}>
                     <Text style={styles.forgotPasswordText}>Password dimenticata?</Text>
-                  </TouchableOpacity> */}
+                  </TouchableOpacity>
                 </View>
 
                 {/* Messaggio di errore sotto il form */}
@@ -97,9 +99,9 @@ export default function AuthScreen() {
                 <View style={styles.registerContainer}>
                   <Text style={styles.registerText}>
                     Non hai un account?{" "}
-                    {/* <Text style={styles.registerLink} onPress={() => router.replace("/(auth)/register")}>
+                    <Text style={styles.registerLink} onPress={() => router.push("/(auth)/signup")}>
                       Registrati
-                    </Text> */}
+                    </Text>
                   </Text>
                 </View>
               </View>

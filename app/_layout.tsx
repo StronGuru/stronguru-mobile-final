@@ -11,7 +11,7 @@ function RouteGuard({ children }: { children: React.ReactNode }) {
     setTimeout(() => {
       if (!isAuthenticated) {
         console.log("Redirecting to auth..."); // DEBUG
-        router.replace("/auth");
+        router.replace("/(auth)/login");
       } else {
         console.log("User is authenticated, redirecting to tabs..."); // DEBUG
         router.replace("/(tabs)");
@@ -26,7 +26,7 @@ export default function RootLayout() {
   return (
     <RouteGuard>
       <Stack>
-        <Stack.Screen name="auth" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
     </RouteGuard>
