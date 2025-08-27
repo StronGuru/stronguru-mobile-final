@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import { EyeIcon, EyeOffIcon } from "lucide-react-native";
 import React, { useState } from "react";
-import { ActivityIndicator, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, KeyboardAvoidingView, Platform, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useAuthStore } from "../store/authStore";
 import { SignInRequest } from "../types/authTypes";
 
@@ -33,198 +33,87 @@ export default function LoginScreen() {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="flex-1">
-      <SafeAreaView style={styles.container}>
-        <View style={styles.content}>
-          {!loading && (
+      <SafeAreaView className="flex-1 bg-slate-50">
+        <View className="flex-1 justify-center items-center">
+          {!loading ? (
             <>
-              <View style={styles.logoContainer}>
-                {/*  <Image source={require("../../assets/images/logo.png")} style={styles.logo} /> */}
-                <Text style={styles.subtitle}>Accedi al tuo account</Text>
+              <View className="items-center mb-12">
+                {/* <Image source={require("../../assets/images/logo.png")} className="w-50 h-20 mb-2" /> */}
+                <Text className="text-base color-slate-500">Accedi al tuo account</Text>
               </View>
 
-              <View style={styles.formContainer}>
-                <View style={styles.inputGroup}>
-                  <Text style={styles.label}>Email</Text>
+              <View className="w-full max-w-80 px-4">
+                {/* Email Input */}
+                <View className="mb-4">
+                  <Text className="text-sm font-medium color-slate-700 mb-2">Email</Text>
                   <TextInput
-                    style={styles.input}
+                    className="bg-slate-100 rounded-lg p-3 textalign-center border border-slate-200"
                     placeholder="Inserisci la tua email"
                     value={loginInputValue.email}
                     onChangeText={(text) => {
                       setLoginInputValue({ ...loginInputValue, email: text });
-                      // Reset errore quando l'utente inizia a digitare
                       if (error) setError(null);
                     }}
                     keyboardType="email-address"
                     autoCapitalize="none"
+                    editable={!loading}
                   />
                 </View>
 
-                <View style={styles.inputGroup}>
-                  <Text style={styles.label}>Password</Text>
-                  <View style={styles.passwordContainer}>
+                {/* Password Input */}
+                <View className="mb-4">
+                  <Text className="text-sm font-medium color-slate-700 mb-2">Password</Text>
+                  <View className="relative">
                     <TextInput
-                      style={[styles.input, styles.passwordInput]}
+                      className="bg-slate-100 rounded-lg p-3 textalign-center pr-10 text-base border border-slate-200"
                       placeholder="Inserisci la tua password"
                       value={loginInputValue.password}
                       onChangeText={(text) => {
-                        setLoginInputValue({
-                          ...loginInputValue,
-                          password: text
-                        });
-                        // Reset errore quando l'utente inizia a digitare
+                        setLoginInputValue({ ...loginInputValue, password: text });
                         if (error) setError(null);
                       }}
                       secureTextEntry={!showPassword}
+                      editable={!loading}
                     />
-                    <TouchableOpacity style={styles.eyeIcon} onPress={() => setShowPassword(!showPassword)}>
+                    <TouchableOpacity className="absolute right-3 top-3" onPress={() => setShowPassword(!showPassword)}>
                       {showPassword ? <EyeOffIcon size={20} color="#64748b" /> : <EyeIcon size={20} color="#64748b" />}
                     </TouchableOpacity>
                   </View>
-                  <TouchableOpacity onPress={() => router.push("/(auth)/forgot-password")} style={styles.forgotPassword}>
-                    <Text style={styles.forgotPasswordText}>Password dimenticata?</Text>
+
+                  {/* Forgot Password Link */}
+                  <TouchableOpacity onPress={() => router.push("/(auth)/forgot-password")} className="mt-2">
+                    <Text className="color-slate-500 text-sm">Password dimenticata?</Text>
                   </TouchableOpacity>
                 </View>
 
-                {/* Messaggio di errore sotto il form */}
+                {/* Error Message */}
                 {error && (
-                  <View style={styles.errorContainer}>
-                    <Text className="text-center text-red-500">{error}</Text>
+                  <View className="mb-2">
+                    <Text className="text-center color-red-500 text-sm">{error}</Text>
                   </View>
                 )}
 
-                <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
-                  <Text style={styles.loginButtonText}>Accedi</Text>
+                {/* Login Button */}
+                <TouchableOpacity className="bg-black rounded-lg p-3 items-center mt-4" onPress={handleSubmit} disabled={loading}>
+                  <Text className="color-white text-base font-semibold">Accedi</Text>
                 </TouchableOpacity>
 
-                <View style={styles.registerContainer}>
-                  <Text style={styles.registerText}>
+                {/* Register Link */}
+                <View className="mt-6 items-center">
+                  <Text className="color-slate-500 text-sm">
                     Non hai un account?{" "}
-                    <Text style={styles.registerLink} onPress={() => router.push("/(auth)/signup")}>
+                    <Text className="color-slate-900 font-bold underline" onPress={() => router.push("/(auth)/signup")}>
                       Registrati
                     </Text>
                   </Text>
                 </View>
               </View>
             </>
+          ) : (
+            <ActivityIndicator size="large" color="#000" />
           )}
-          {loading && <ActivityIndicator size="large" color="#000" />}
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f8fafc"
-  },
-  content: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  logoContainer: {
-    alignItems: "center",
-    marginBottom: 48
-  },
-  logo: {
-    width: 200,
-    height: 80,
-    resizeMode: "contain",
-    marginBottom: 8
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#475569"
-  },
-  formContainer: {
-    width: "100%",
-    maxWidth: 320,
-    paddingHorizontal: 16
-  },
-  inputGroup: {
-    marginBottom: 16
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#334155",
-    marginBottom: 8
-  },
-  input: {
-    backgroundColor: "#f1f5f9",
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: "#e2e8f0"
-  },
-  passwordContainer: {
-    position: "relative"
-  },
-  passwordInput: {
-    paddingRight: 40
-  },
-  eyeIcon: {
-    position: "absolute",
-    right: 12,
-    top: 12
-  },
-  forgotPassword: {
-    marginTop: 8
-  },
-  forgotPasswordText: {
-    color: "#64748b",
-    fontSize: 14
-  },
-  loginButton: {
-    backgroundColor: "#000",
-    borderRadius: 8,
-    padding: 12,
-    alignItems: "center",
-    marginTop: 16
-  },
-  loginButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600"
-  },
-  registerContainer: {
-    marginTop: 24,
-    alignItems: "center"
-  },
-  registerText: {
-    color: "#64748b",
-    fontSize: 14
-  },
-  registerLink: {
-    color: "#0f172a",
-    fontWeight: "bold",
-    textDecorationLine: "underline"
-  },
-  errorContainer: {
-    alignItems: "center",
-    maxWidth: 320,
-    paddingHorizontal: 16
-  },
-  errorTitle: {
-    fontSize: 20,
-    fontWeight: "500",
-    color: "#ef4444",
-    textAlign: "center",
-    marginBottom: 16
-  },
-  retryButton: {
-    backgroundColor: "#000",
-    borderRadius: 8,
-    padding: 12,
-    alignItems: "center",
-    width: "100%"
-  },
-  retryButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600"
-  }
-});

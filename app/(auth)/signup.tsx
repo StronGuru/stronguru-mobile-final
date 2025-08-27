@@ -101,11 +101,12 @@ export default function SignupScreen() {
                     <View className="mb-4">
                       <Text className="text-sm font-medium color-slate-700 mb-2">Nome</Text>
                       <TextInput
-                        className={`bg-slate-100 rounded-lg p-3 text-base border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
+                        className={`bg-slate-100 rounded-lg p-3 textalign-center border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
                         placeholder="Inserisci il tuo nome"
                         value={field.value}
                         onChangeText={field.onChange}
                         editable={!loading}
+                        autoCapitalize="words"
                       />
                       {fieldState.error && <Text className="color-red-500 text-xs mt-1">{fieldState.error.message}</Text>}
                     </View>
@@ -120,11 +121,12 @@ export default function SignupScreen() {
                     <View className="mb-4">
                       <Text className="text-sm font-medium color-slate-700 mb-2">Cognome</Text>
                       <TextInput
-                        className={`bg-slate-100 rounded-lg p-3 text-base border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
+                        className={`bg-slate-100 rounded-lg p-3 textalign-center border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
                         placeholder="Inserisci il tuo cognome"
                         value={field.value}
                         onChangeText={field.onChange}
                         editable={!loading}
+                        autoCapitalize="words"
                       />
                       {fieldState.error && <Text className="color-red-500 text-xs mt-1">{fieldState.error.message}</Text>}
                     </View>
@@ -139,7 +141,7 @@ export default function SignupScreen() {
                     <View className="mb-4">
                       <Text className="text-sm font-medium color-slate-700 mb-2">Email</Text>
                       <TextInput
-                        className={`bg-slate-100 rounded-lg p-3 text-base border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
+                        className={`bg-slate-100 rounded-lg p-3 textalign-center border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
                         placeholder="Inserisci la tua email"
                         value={field.value}
                         onChangeText={field.onChange}
@@ -161,7 +163,7 @@ export default function SignupScreen() {
                       <Text className="text-sm font-medium color-slate-700 mb-2">Password</Text>
                       <View className="relative">
                         <TextInput
-                          className={`bg-slate-100 rounded-lg p-3 pr-10 text-base border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
+                          className={`bg-slate-100 rounded-lg p-3 pr-10 textalign-center border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
                           placeholder="Inserisci la tua password"
                           value={field.value}
                           onChangeText={field.onChange}

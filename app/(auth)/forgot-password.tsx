@@ -92,7 +92,7 @@ export default function ForgotPasswordScreen() {
                     <View className="mb-4">
                       <Text className="text-sm font-medium color-slate-700 mb-2">Email</Text>
                       <TextInput
-                        className={`bg-slate-100 rounded-lg p-3 text-base border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
+                        className={`bg-slate-100 rounded-lg p-3 textalign-center  border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
                         placeholder="Inserisci la tua email"
                         value={field.value}
                         onChangeText={field.onChange}
