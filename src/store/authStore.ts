@@ -118,11 +118,18 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logoutUser: async () => {
+        console.log("Logout user chiamato"); // DEBUG
+        //Cancellazione dati auth store
         set({ isAuthenticated: false, error: null, token: null, deviceId: null });
+
+        //Cancellazione dati user store
+        useUserDataStore.getState().clearUser();
 
         // Rimuovi i dati da AsyncStorage
         await AsyncStorage.removeItem("auth_token");
         await AsyncStorage.removeItem("device_id");
+
+        console.log("Logout completato - tutti gli store puliti");
       },
       registerUser: async (userData: RegistrationType) => {
         console.log("registerUser chiamato nell'authStore"); // DEBUG
