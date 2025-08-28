@@ -1,3 +1,4 @@
+import { ForgotPasswordSchema, ForgotPasswordType } from "@/lib/zod/authSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -5,7 +6,6 @@ import { Controller, useForm } from "react-hook-form";
 import { ActivityIndicator, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuthStore } from "../../src/store/authStore";
-import { ForgotPasswordSchema, ForgotPasswordType } from "../../src/types/authTypes";
 
 const defaultValues: ForgotPasswordType = {
   email: ""

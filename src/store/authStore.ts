@@ -2,7 +2,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { forgotPassword as forgotPasswordAPI, login, register } from "../services/authService";
-import { RegistrationType } from "../types/authTypes";
+
+import { RegistrationType } from "@/lib/zod/authSchemas";
 import { useUserDataStore } from "./userDataStore";
 
 interface AuthState {

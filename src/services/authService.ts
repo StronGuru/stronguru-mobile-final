@@ -1,5 +1,6 @@
+import { RegistrationType } from "@/lib/zod/authSchemas";
 import apiClient from "../../api/apiClient";
-import { ForgotPasswordRequest, ForgotPasswordResponse, RegistrationType, SignInRequest, SignInResponse, SignUpResponse } from "../types/authTypes";
+import { ForgotPasswordRequest, ForgotPasswordResponse, SignInRequest, SignInResponse, SignUpResponse } from "../types/authTypes";
 
 export const login = async (payload: SignInRequest): Promise<SignInResponse> => {
   const resp = await apiClient.post("/auth/login", payload);

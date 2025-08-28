@@ -5,8 +5,8 @@ import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { RegistrationSchema, RegistrationType } from "../../lib/zod/authSchemas";
 import { useAuthStore } from "../../src/store/authStore";
-import { RegistrationSchema, RegistrationType } from "../../src/types/authTypes";
 
 const defaultValues: RegistrationType = {
   firstName: "",
