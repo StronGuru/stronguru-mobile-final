@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useAuthStore } from "../store/authStore";
+import { useAuthStore } from "../../src/store/authStore";
 
 export default function Settings() {
   const logoutUser = useAuthStore((state) => state.logoutUser);

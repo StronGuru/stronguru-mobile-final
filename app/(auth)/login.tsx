@@ -2,8 +2,8 @@ import { useRouter } from "expo-router";
 import { EyeIcon, EyeOffIcon } from "lucide-react-native";
 import React, { useState } from "react";
 import { ActivityIndicator, KeyboardAvoidingView, Platform, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { useAuthStore } from "../store/authStore";
-import { SignInRequest } from "../types/authTypes";
+import { useAuthStore } from "../../src/store/authStore";
+import { SignInRequest } from "../../src/types/authTypes";
 
 export default function LoginScreen() {
   const [loginInputValue, setLoginInputValue] = useState<SignInRequest>({});

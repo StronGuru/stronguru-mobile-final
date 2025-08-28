@@ -1,7 +1,7 @@
 import { Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
+import { useAuthStore } from "../src/store/authStore";
 import "./globals.css";
-import { useAuthStore } from "./store/authStore";
 
 function RouteGuard({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
