@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -22,8 +21,8 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   async (config) => {
-    const token = await AsyncStorage.getItem("auth_token");
-    const deviceId = await AsyncStorage.getItem("device_id");
+    const { useAuthStore } = await import("../src/store/authStore");
+    const { token, deviceId } = useAuthStore.getState();
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -40,7 +39,7 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-apiClient.interceptors.response.use(
+/* apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
@@ -68,7 +67,7 @@ apiClient.interceptors.response.use(
           {
             headers: {
               "X-Device-Id": deviceId,
-              "X-Device-type": "mobile"
+              "X-Device-Type": "mobile"
             }
           }
         );
@@ -105,6 +104,6 @@ apiClient.interceptors.response.use(
     }
     return Promise.reject(error);
   }
-);
+); */
 
 export default apiClient;

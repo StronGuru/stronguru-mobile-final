@@ -11,6 +11,8 @@ interface AuthState {
   error: string | null;
   deviceId: string | null;
   isAuthenticated: boolean;
+  userId: string | null;
+
   loginUser: (email: string, password: string) => Promise<void>;
   registerUser: (userData: RegistrationType) => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
@@ -26,6 +28,7 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       error: null,
       deviceId: null,
+      userId: null,
 
       setAuthData: (data) => set((state) => ({ ...state, ...data })),
 
@@ -36,7 +39,8 @@ export const useAuthStore = create<AuthState>()(
           token: null,
           isAuthenticated: false,
           error: null,
-          deviceId: null
+          deviceId: null,
+          userId: null
         });
 
         try {
@@ -49,12 +53,8 @@ export const useAuthStore = create<AuthState>()(
               token: resp.accessToken,
               isAuthenticated: true,
               deviceId: resp.deviceId,
+              userId: resp.user?.id,
               error: null
-            });
-
-            useUserDataStore.getState().setUser({
-              id: resp.user?.id || "",
-              email: resp.user?.email || ""
             });
 
             console.log("token", resp.accessToken);

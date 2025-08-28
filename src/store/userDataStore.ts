@@ -1,16 +1,13 @@
+import { UserType } from "@/lib/zod/userSchemas";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-
-interface User {
-  id: string;
-  email: string;
-  role?: string;
-}
+import { getUserById } from "../services/userService";
 
 interface UserDataState {
-  user: User | null;
-  setUser: (data: User) => void;
+  user: UserType | null;
+  setUser: (data: UserType) => void;
+  fetchUserData: (userId: string) => Promise<void>;
   clearUser: () => void;
 }
 
@@ -19,7 +16,23 @@ export const useUserDataStore = create<UserDataState>()(
     (set) => ({
       user: null,
 
-      setUser: (data) => set({ user: data }),
+      setUser: (data) => {
+        console.log("🔵 UserDataStore - setUser:", `${data.firstName} ${data.lastName}`);
+        set({ user: data });
+      },
+
+      fetchUserData: async (userId: string) => {
+        console.log("🔄 Fetching user data per ID:", userId);
+
+        try {
+          const userData = await getUserById(userId);
+          set({ user: userData /* , loading: false, error: null  */ });
+          console.log("✅ User data caricati");
+        } catch (error: any) {
+          console.error("❌ Errore caricamento user data:", error.message);
+          throw error;
+        }
+      },
 
       clearUser: () => set({ user: null })
     }),
