@@ -88,9 +88,17 @@ apiClient.interceptors.response.use(
       } catch (refreshError) {
         isRefreshing = false;
         // Logout se il refresh fallisce - rimuovi i dati salvati
-        await AsyncStorage.removeItem("auth_token");
-        await AsyncStorage.removeItem("device_id");
-        await AsyncStorage.removeItem("user_data");
+        try {
+          const { useAuthStore } = await import("../src/store/authStore");
+          await useAuthStore.getState().logoutUser();
+          console.log("Refresh fallito - logout automatico completato");
+        } catch (logoutError) {
+          console.error("Errore durante il logout automatico:", logoutError);
+          // Fallback: pulizia manuale solo se il logout dello store fallisce
+          await AsyncStorage.removeItem("auth_token");
+          await AsyncStorage.removeItem("device_id");
+          await AsyncStorage.removeItem("user_data");
+        }
 
         return Promise.reject(refreshError);
       }
