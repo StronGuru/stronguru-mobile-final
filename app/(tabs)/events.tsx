@@ -1,12 +1,10 @@
 import React from "react";
 import { Text, View } from "react-native";
 
-const Index = () => {
+export default function Events() {
   return (
     <View>
-      <Text>Home</Text>
+      <Text>Events</Text>
     </View>
   );
-};
-
-export default Index;
+}

@@ -1,12 +1,10 @@
 import React from "react";
 import { Text, View } from "react-native";
 
-const Index = () => {
+export default function Chat() {
   return (
     <View>
-      <Text>Home</Text>
+      <Text>Chat</Text>
     </View>
   );
-};
-
-export default Index;
+}
