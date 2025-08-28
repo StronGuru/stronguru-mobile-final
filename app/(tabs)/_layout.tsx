@@ -16,6 +16,7 @@ export default function TabsLayout() {
         console.error("❌ Errore caricamento dati utente:", error);
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, userId, user]);
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: "green" }}>
