@@ -1,5 +1,6 @@
+import ThemeToggle from "@/components/ThemeToggle";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { useAuthStore } from "../../src/store/authStore";
 
 export default function Settings() {
@@ -15,32 +16,12 @@ export default function Settings() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text>Settings</Text>
-
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.logoutText}>Logout</Text>
+    <View className="flex-1 items-center justify-center p-5 bg-background">
+      <Text className="text-base text-foreground mb-4">Settings</Text>
+      <ThemeToggle />
+      <TouchableOpacity className="mt-6 px-4 py-3 rounded-md bg-destructive" onPress={handleLogout}>
+        <Text className="font-bold">Logout</Text>
       </TouchableOpacity>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20
-  },
-  logoutButton: {
-    backgroundColor: "#ff4444",
-    padding: 15,
-    borderRadius: 8,
-    marginTop: 20
-  },
-  logoutText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold"
-  }
-});
