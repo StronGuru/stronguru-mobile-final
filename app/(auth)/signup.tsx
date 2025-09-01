@@ -60,14 +60,14 @@ export default function SignupScreen() {
           {successState ? (
             // Success State
             <View className="items-center max-w-80 px-4">
-              <Text className="text-xl font-medium color-slate-700 text-center mb-4">Registrazione effettuata</Text>
-              <Text className="text-sm color-slate-500 text-center mb-6">
+              <Text className="text-2xl font-medium text-foreground text-center mb-4">Registrazione effettuata</Text>
+              <Text className="text-md text-base text-foreground text-center my-6">
                 Attiva l&#39;account attraverso la mail che ti abbiamo appena inviato. Se non la trovi, controlla nello spam oppure attendi qualche minuto.
               </Text>
-              <View className="mt-6 items-center">
-                <Text className="color-slate-500 text-sm">
+              <View className="mt-6 items-center text-md">
+                <Text className="text-foreground">
                   Account attivato?{" "}
-                  <Text className="color-slate-900 font-bold underline" onPress={() => router.replace("/(auth)/login")}>
+                  <Text className="text-primary font-bold underline" onPress={() => router.replace("/(auth)/login")}>
                     Accedi
                   </Text>
                 </Text>
@@ -75,12 +75,12 @@ export default function SignupScreen() {
             </View>
           ) : loading ? (
             // Loading State
-            <ActivityIndicator size="large" color="#000" />
+            <ActivityIndicator size="large" className="color-primary" />
           ) : error ? (
             // Error State
             <View className="items-center max-w-80 px-4">
-              <Text className="text-xl font-medium color-slate-700 text-center mb-4">{error}</Text>
-              <TouchableOpacity className="bg-black rounded-lg p-3 items-center w-full" onPress={resetError}>
+              <Text className="text-xl font-medium text-foreground text-center mb-4">{error}</Text>
+              <TouchableOpacity className="bg-primary rounded-lg p-3 items-center w-full" onPress={resetError}>
                 <Text className="color-white text-base font-semibold">Riprova</Text>
               </TouchableOpacity>
             </View>
