@@ -12,16 +12,16 @@ export default function TabsLayout() {
 
   const colors = {
     light: {
-      activeTint: "#059669", // Verde per active
-      inactiveTint: "#6b7280", // Grigio per inactive
-      background: "#fefffe", // Sfondo bianco
-      border: "#e5e5e5" // Bordo chiaro
+      activeTint: "#059669",
+      inactiveTint: "#6b7280",
+      background: "#fefffe",
+      border: "#e5e5e5"
     },
     dark: {
-      activeTint: "#34d399", // Verde più chiaro per dark mode
-      inactiveTint: "#94a3b8", // Grigio più chiaro per dark mode
-      background: "#1e293b", // Sfondo scuro
-      border: "#94a3b8" // Bordo scuro
+      activeTint: "#34d399",
+      inactiveTint: "#94a3b8",
+      background: "#1e293b",
+      border: "#94a3b8"
     }
   };
   const currentColors = colors[colorScheme ?? "light"];
@@ -56,6 +56,7 @@ export default function TabsLayout() {
       screenOptions={{
         tabBarActiveTintColor: currentColors.activeTint,
         tabBarInactiveTintColor: currentColors.inactiveTint,
+        animation: "shift",
         tabBarStyle: {
           backgroundColor: currentColors.background,
           borderTopColor: currentColors.border,
@@ -80,7 +81,7 @@ export default function TabsLayout() {
         name="team"
         options={{
           title: "Team",
-          tabBarIcon: ({ color, focused }) => <TabIcon icon={UsersRound} color={color} focused={focused} />, // Use a different icon size={24} color={color} />,
+          tabBarIcon: ({ color, focused }) => <TabIcon icon={UsersRound} color={color} focused={focused} />,
           tabBarStyle: user?.profiles?.length
             ? {
                 backgroundColor: currentColors.background,
@@ -88,8 +89,8 @@ export default function TabsLayout() {
                 paddingTop: 3,
                 paddingInline: 10
               }
-            : { display: "none" }, // Hide tab bar button
-          href: user?.profiles?.length ? undefined : null // Prevent navigation
+            : { display: "none" }, // Nasconde il tab bar button
+          href: user?.profiles?.length ? undefined : null // Previene la navigazione
         }}
       />
       <Tabs.Screen
