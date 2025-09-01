@@ -1,3 +1,108 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.625rem;
+
+    /* Core - Light Mode con tonalità più sofisticate */
+    --background: #fefffe; /* off-white invece di bianco puro */
+    --foreground: #0a0f14; /* nero più morbido */
+    --card: #f8faf9; /* carta con leggero sottotono verde */
+    --card-foreground: #0a0f14;
+    --popover: #ffffff;
+    --popover-foreground: #0a0f14;
+
+    /* Primary / accents - Verdi più vivaci e moderni */
+    --primary: #10b981; /* verde emerald più brillante */
+    --primary-foreground: #ffffff;
+    --secondary: #d1fae5; /* verde chiaro più delicato */
+    --secondary-foreground: #064e3b;
+    --accent: #059669; /* verde accent più saturo */
+    --accent-foreground: #ffffff;
+
+    /* Text / muted - Tonalità più raffinate */
+    --muted: #f0fdf4; /* verde molto chiaro per aree muted */
+    --muted-foreground: #6b7280;
+
+    /* Nuove tonalità di supporto */
+    --surface: #f9fafb; /* superficie neutra */
+    --surface-variant: #ecfdf5; /* superficie con hint di verde */
+
+    /* Actions / misc */
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #e5e7eb; /* bordi più neutri */
+    --input: #f9fafb; /* input con sfondo più pulito */
+    --ring: #10b981; /* ring matching primary */
+
+    /* Chart - Palette verde più armoniosa */
+    --chart-1: #dcfce7;
+    --chart-2: #bbf7d0;
+    --chart-3: #86efac;
+    --chart-4: #4ade80;
+    --chart-5: #22c55e;
+    --chart-6: #16a34a;
+    --chart-7: #15803d;
+    --chart-8: #166534;
+    --chart-9: #14532d;
+  }
+
+  .dark {
+    --radius: 0.625rem;
+
+    /* Core dark - Sfondo moderno slate con sottotoni caldi */
+    --background: #0f172a; /* slate-900 più moderno */
+    --foreground: #f1f5f9; /* testo chiaro e pulito */
+    --card: #1e293b; /* slate-800 per le carte */
+    --card-foreground: #f1f5f9;
+    --popover: #1e293b;
+    --popover-foreground: #f1f5f9;
+
+    /* Primary / accents - Verdi brillanti per dark mode */
+    --primary: #34d399; /* verde emerald brillante */
+    --primary-foreground: #0f172a;
+    --secondary: #064e3b; /* verde scuro per secondary */
+    --secondary-foreground: #a7f3d0;
+    --accent: #10b981; /* verde accent vivace */
+    --accent-foreground: #ffffff;
+
+    /* Text / muted - Contrasti ottimizzati */
+    --muted: #334155; /* slate-700 per aree muted */
+    --muted-foreground: #94a3b8; /* slate-400 per testo secondario */
+
+    /* Nuove tonalità di supporto per dark */
+    --surface: #1e293b; /* superficie principale */
+    --surface-variant: #0f2027; /* superficie con hint scuro */
+
+    /* Actions / misc */
+    --destructive: #f87171; /* rosso più morbido per dark */
+    --destructive-foreground: #ffffff;
+    --border: #334155; /* bordi slate per dark */
+    --input: #334155; /* input con contrasto appropriato */
+    --ring: #34d399; /* ring brillante */
+
+    /* Chart - Verdi saturi per risaltare su dark */
+    --chart-1: #6ee7b7;
+    --chart-2: #34d399;
+    --chart-3: #10b981;
+    --chart-4: #059669;
+    --chart-5: #047857;
+    --chart-6: #065f46;
+    --chart-7: #064e3b;
+    --chart-8: #022c22;
+    --chart-9: #14532d;
+  }
+
+  /* Utility classes per le nuove tonalità */
+  .bg-surface {
+    background-color: hsl(var(--surface));
+  }
+  .bg-surface-variant {
+    background-color: hsl(var(--surface-variant));
+  }
+  .text-surface-variant {
+    color: hsl(var(--surface-variant));
+  }
+}
