@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@/providers/ThemeProvider";
 import { Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { useAuthStore } from "../src/store/authStore";
@@ -24,11 +25,13 @@ function RouteGuard({ children }: { children: React.ReactNode }) {
 
 export default function RootLayout() {
   return (
-    <RouteGuard>
-      <Stack>
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      </Stack>
-    </RouteGuard>
+    <ThemeProvider>
+      <RouteGuard>
+        <Stack>
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        </Stack>
+      </RouteGuard>
+    </ThemeProvider>
   );
 }

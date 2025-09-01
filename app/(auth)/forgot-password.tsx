@@ -45,20 +45,20 @@ export default function ForgotPasswordScreen() {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="flex-1">
-      <SafeAreaView className="flex-1 bg-slate-50">
+      <SafeAreaView className="flex-1 bg-background">
         <View className="flex-1 justify-center items-center px-4">
           {successState ? (
             // Success State
             <View className="items-center max-w-80 px-4">
-              <Text className="text-2xl font-bold color-slate-900 text-center mb-4">Richiesta inviata</Text>
-              <Text className="text-base color-slate-500 text-center mb-6">
+              <Text className="text-2xl font-bold text-foreground text-center mb-4">Richiesta inviata</Text>
+              <Text className="text-base font-semibold text-foreground text-center my-6">
                 Se l&apos;email inserita è registrata nel nostro sistema, riceverai le istruzioni per recuperare la password. Controlla la tua casella email e
                 anche lo spam.
               </Text>
-              <View className="mt-6 items-center">
-                <Text className="color-slate-500 text-sm">
+              <View className="mt-6 items-center text-md">
+                <Text className="text-foreground ">
                   Password recuperata?{" "}
-                  <Text className="color-slate-900 font-bold underline" onPress={() => router.replace("/(auth)/login")}>
+                  <Text className="text-primary font-bold underline" onPress={() => router.replace("/(auth)/login")}>
                     Accedi
                   </Text>
                 </Text>
@@ -66,12 +66,12 @@ export default function ForgotPasswordScreen() {
             </View>
           ) : loading ? (
             // Loading State
-            <ActivityIndicator size="large" color="#000" />
+            <ActivityIndicator size="large" className="color-primary" />
           ) : error ? (
             // Error State
             <View className="items-center max-w-80 px-4">
-              <Text className="text-xl font-medium color-slate-700 text-center mb-4">{error}</Text>
-              <TouchableOpacity className="bg-black rounded-lg p-3 items-center w-full" onPress={resetError}>
+              <Text className="text-xl font-medium text-foreground text-center mb-4">{error}</Text>
+              <TouchableOpacity className="bg-primary rounded-lg p-3 items-center w-full" onPress={resetError}>
                 <Text className="color-white text-base font-semibold">Riprova</Text>
               </TouchableOpacity>
             </View>
@@ -80,7 +80,7 @@ export default function ForgotPasswordScreen() {
             <>
               <View className="items-center mb-12">
                 {/* <Image source={require("../../assets/images/logo.png")} className="w-50 h-20 mb-2" /> */}
-                <Text className="text-base color-slate-500">Recupera la tua password</Text>
+                <Text className="text-xl font-bold  text-foreground">Recupera la tua password</Text>
               </View>
 
               <View className="w-full max-w-80 px-4">
@@ -90,7 +90,7 @@ export default function ForgotPasswordScreen() {
                   name="email"
                   render={({ field, fieldState }) => (
                     <View className="mb-4">
-                      <Text className="text-sm font-medium color-slate-700 mb-2">Email</Text>
+                      <Text className="text-sm font-medium  text-foreground mb-2">Email</Text>
                       <TextInput
                         className={`bg-slate-100 rounded-lg p-3 textalign-center  border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
                         placeholder="Inserisci la tua email"
@@ -106,15 +106,15 @@ export default function ForgotPasswordScreen() {
                 />
 
                 {/* Submit Button */}
-                <TouchableOpacity className="bg-black rounded-lg p-3 items-center mt-4" onPress={form.handleSubmit(handleSubmit)} disabled={loading}>
+                <TouchableOpacity className="bg-primary rounded-lg p-3 items-center mt-4" onPress={form.handleSubmit(handleSubmit)} disabled={loading}>
                   <Text className="color-white text-base font-semibold">Recupera password</Text>
                 </TouchableOpacity>
 
                 {/* Back to Login Link */}
-                <View className="mt-6 items-center">
-                  <Text className="color-slate-500 text-sm">
+                <View className="mt-8 items-center">
+                  <Text className=" text-foreground text-md">
                     Ricordi la password?{" "}
-                    <Text className="color-slate-900 font-bold underline" onPress={() => router.replace("/(auth)/login")}>
+                    <Text className="text-primary font-bold underline" onPress={() => router.replace("/(auth)/login")}>
                       Accedi
                     </Text>
                   </Text>

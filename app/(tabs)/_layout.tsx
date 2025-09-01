@@ -22,9 +22,15 @@ export default function TabsLayout() {
     <Tabs screenOptions={{ tabBarActiveTintColor: "green" }}>
       <Tabs.Screen name="index" options={{ title: "Home", /*  headerShown: false, */ tabBarIcon: ({ color }) => <Home size={24} color={color} /> }} />
       <Tabs.Screen name="search" options={{ title: "CercaPro", /* headerShown: false, */ tabBarIcon: ({ color }) => <Search size={24} color={color} /> }} />
-      {user?.profiles && user.profiles.length > 0 && (
-        <Tabs.Screen name="team" options={{ title: "Team", tabBarIcon: ({ color }) => <UsersRound size={24} color={color} /> }} />
-      )}
+      <Tabs.Screen
+        name="team"
+        options={{
+          title: "Team",
+          tabBarIcon: ({ color }) => <UsersRound size={24} color={color} />,
+          tabBarStyle: user?.profiles?.length ? {} : { display: "none" }, // Hide tab bar button
+          href: user?.profiles?.length ? undefined : null // Prevent navigation
+        }}
+      />
       <Tabs.Screen name="events" options={{ title: "Eventi", tabBarIcon: ({ color }) => <CalendarSearch size={24} color={color} /> }} />
       <Tabs.Screen name="chat" options={{ title: "Chat", tabBarIcon: ({ color }) => <MessagesSquare size={24} color={color} /> }} />
       <Tabs.Screen name="settings" options={{ title: "Settings", tabBarIcon: ({ color }) => <Settings size={24} color={color} /> }} />
