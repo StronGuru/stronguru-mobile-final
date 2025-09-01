@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 import { CheckIcon, EyeIcon, EyeOffIcon } from "lucide-react-native";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Image, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RegistrationSchema, RegistrationType } from "../../lib/zod/authSchemas";
 import { useAuthStore } from "../../src/store/authStore";
@@ -88,7 +88,7 @@ export default function SignupScreen() {
             // Form State
             <>
               <View className="items-center mb-12">
-                {/* <Image source={require("../../assets/images/logo.png")} className="w-50 h-20 mb-2" /> */}
+                <Image source={require("../../assets/images/logo.png")} className="w-80 h-25" resizeMode="contain" />
                 <Text className="text-xl font-bold text-foreground ">Crea il tuo account</Text>
               </View>
 
