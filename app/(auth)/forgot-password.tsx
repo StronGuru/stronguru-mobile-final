@@ -50,15 +50,15 @@ export default function ForgotPasswordScreen() {
           {successState ? (
             // Success State
             <View className="items-center max-w-80 px-4">
-              <Text className="text-2xl font-bold color-slate-900 text-center mb-4">Richiesta inviata</Text>
-              <Text className="text-base color-slate-500 text-center mb-6">
+              <Text className="text-2xl font-bold text-foreground text-center mb-4">Richiesta inviata</Text>
+              <Text className="text-base font-semibold text-foreground text-center my-6">
                 Se l&apos;email inserita è registrata nel nostro sistema, riceverai le istruzioni per recuperare la password. Controlla la tua casella email e
                 anche lo spam.
               </Text>
-              <View className="mt-6 items-center">
-                <Text className="color-slate-500 text-sm">
+              <View className="mt-6 items-center text-md">
+                <Text className="text-foreground ">
                   Password recuperata?{" "}
-                  <Text className="color-slate-900 font-bold underline" onPress={() => router.replace("/(auth)/login")}>
+                  <Text className="text-primary font-bold underline" onPress={() => router.replace("/(auth)/login")}>
                     Accedi
                   </Text>
                 </Text>
@@ -66,12 +66,12 @@ export default function ForgotPasswordScreen() {
             </View>
           ) : loading ? (
             // Loading State
-            <ActivityIndicator size="large" color="#000" />
+            <ActivityIndicator size="large" className="color-primary" />
           ) : error ? (
             // Error State
             <View className="items-center max-w-80 px-4">
-              <Text className="text-xl font-medium color-slate-700 text-center mb-4">{error}</Text>
-              <TouchableOpacity className="bg-black rounded-lg p-3 items-center w-full" onPress={resetError}>
+              <Text className="text-xl font-medium text-foreground text-center mb-4">{error}</Text>
+              <TouchableOpacity className="bg-primary rounded-lg p-3 items-center w-full" onPress={resetError}>
                 <Text className="color-white text-base font-semibold">Riprova</Text>
               </TouchableOpacity>
             </View>
