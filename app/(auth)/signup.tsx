@@ -52,7 +52,7 @@ export default function SignupScreen() {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="flex-1">
-      <SafeAreaView className="flex-1 bg-slate-50">
+      <SafeAreaView className="flex-1 bg-background">
         <ScrollView
           contentContainerStyle={{ flexGrow: 1, justifyContent: "center", alignItems: "center", paddingVertical: 24 }}
           showsVerticalScrollIndicator={false}
@@ -89,7 +89,7 @@ export default function SignupScreen() {
             <>
               <View className="items-center mb-12">
                 {/* <Image source={require("../../assets/images/logo.png")} className="w-50 h-20 mb-2" /> */}
-                <Text className="text-base color-slate-500">Crea il tuo account</Text>
+                <Text className="text-xl font-bold text-foreground ">Crea il tuo account</Text>
               </View>
 
               <View className="w-full max-w-80 px-4">
@@ -99,7 +99,7 @@ export default function SignupScreen() {
                   name="firstName"
                   render={({ field, fieldState }) => (
                     <View className="mb-4">
-                      <Text className="text-sm font-medium color-slate-700 mb-2">Nome</Text>
+                      <Text className="text-sm font-medium  text-foreground mb-2">Nome</Text>
                       <TextInput
                         className={`bg-slate-100 rounded-lg p-3 textalign-center border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
                         placeholder="Inserisci il tuo nome"
@@ -119,7 +119,7 @@ export default function SignupScreen() {
                   name="lastName"
                   render={({ field, fieldState }) => (
                     <View className="mb-4">
-                      <Text className="text-sm font-medium color-slate-700 mb-2">Cognome</Text>
+                      <Text className="text-sm font-medium  text-foreground mb-2">Cognome</Text>
                       <TextInput
                         className={`bg-slate-100 rounded-lg p-3 textalign-center border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
                         placeholder="Inserisci il tuo cognome"
@@ -139,7 +139,7 @@ export default function SignupScreen() {
                   name="email"
                   render={({ field, fieldState }) => (
                     <View className="mb-4">
-                      <Text className="text-sm font-medium color-slate-700 mb-2">Email</Text>
+                      <Text className="text-sm font-medium  text-foreground mb-2">Email</Text>
                       <TextInput
                         className={`bg-slate-100 rounded-lg p-3 textalign-center border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
                         placeholder="Inserisci la tua email"
@@ -160,7 +160,7 @@ export default function SignupScreen() {
                   name="password"
                   render={({ field, fieldState }) => (
                     <View className="mb-4">
-                      <Text className="text-sm font-medium color-slate-700 mb-2">Password</Text>
+                      <Text className="text-sm font-medium  text-foreground mb-2">Password</Text>
                       <View className="relative">
                         <TextInput
                           className={`bg-slate-100 rounded-lg p-3 pr-10 textalign-center border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
@@ -187,11 +187,11 @@ export default function SignupScreen() {
                     <View className="mb-4">
                       <TouchableOpacity className="flex-row items-center" onPress={() => field.onChange(!field.value)}>
                         <View
-                          className={`w-5 h-5 rounded mr-2 border-2 items-center justify-center ${field.value ? "bg-black border-black" : "border-slate-500"}`}
+                          className={`w-5 h-5 rounded mr-2 border-2 items-center justify-center ${field.value ? "bg-primary border-primary" : "border-primary"}`}
                         >
                           {field.value && <CheckIcon size={16} color="#fff" />}
                         </View>
-                        <Text className="text-sm color-slate-700">Accetto i termini e condizioni</Text>
+                        <Text className="text-sm  text-foreground">Accetto i termini e condizioni</Text>
                       </TouchableOpacity>
                       {fieldState.error && <Text className="color-red-500 text-xs mt-1">{fieldState.error.message}</Text>}
                     </View>
@@ -206,11 +206,11 @@ export default function SignupScreen() {
                     <View className="mb-4">
                       <TouchableOpacity className="flex-row items-center" onPress={() => field.onChange(!field.value)}>
                         <View
-                          className={`w-5 h-5 rounded mr-2 border-2 items-center justify-center ${field.value ? "bg-black border-black" : "border-slate-500"}`}
+                          className={`w-5 h-5 rounded mr-2 border-2 items-center justify-center ${field.value ? "bg-primary border-primary" : "border-primary"}`}
                         >
-                          {field.value && <CheckIcon size={16} color="#fff" />}
+                          {field.value && <CheckIcon size={17} color="white" />}
                         </View>
-                        <Text className="text-sm color-slate-700">Accetto la privacy policy</Text>
+                        <Text className="text-sm  text-foreground">Accetto la privacy policy</Text>
                       </TouchableOpacity>
                       {fieldState.error && <Text className="color-red-500 text-xs mt-1">{fieldState.error.message}</Text>}
                     </View>
@@ -218,15 +218,15 @@ export default function SignupScreen() {
                 />
 
                 {/* Submit Button */}
-                <TouchableOpacity className="bg-black rounded-lg p-3 items-center mt-4" onPress={form.handleSubmit(handleSubmit)} disabled={loading}>
+                <TouchableOpacity className="bg-primary rounded-lg p-3 items-center mt-4" onPress={form.handleSubmit(handleSubmit)} disabled={loading}>
                   <Text className="color-white text-base font-semibold">Registrati</Text>
                 </TouchableOpacity>
 
                 {/* Login Link */}
-                <View className="mt-6 items-center">
-                  <Text className="color-slate-500 text-sm">
+                <View className="mt-8 items-center">
+                  <Text className=" text-foreground text-md">
                     Hai già un account?{" "}
-                    <Text className="color-slate-900 font-bold underline" onPress={() => router.replace("/(auth)/login")}>
+                    <Text className="text-primary font-bold underline" onPress={() => router.replace("/(auth)/login")}>
                       Accedi
                     </Text>
                   </Text>
