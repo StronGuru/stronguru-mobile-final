@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import { EyeIcon, EyeOffIcon } from "lucide-react-native";
 import React, { useState } from "react";
-import { ActivityIndicator, KeyboardAvoidingView, Platform, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Image, KeyboardAvoidingView, Platform, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useAuthStore } from "../../src/store/authStore";
 import { SignInRequest } from "../../src/types/authTypes";
 
@@ -37,8 +37,8 @@ export default function LoginScreen() {
         <View className="flex-1 justify-center items-center">
           {!loading ? (
             <>
-              <View className="items-center mb-12">
-                {/* <Image source={require("../../assets/images/logo.png")} className="w-50 h-20 mb-2" /> */}
+              <View className="items-center mb-6 ">
+                <Image source={require("../../assets/images/logo.png")} className="w-80 h-25" resizeMode="contain" />
                 <Text className="text-lg font-bold text-foreground">Accedi al tuo account</Text>
               </View>
 
@@ -110,7 +110,7 @@ export default function LoginScreen() {
               </View>
             </>
           ) : (
-            <ActivityIndicator size="large" color="#000" />
+            <ActivityIndicator size="large" className="color-primary" />
           )}
         </View>
       </SafeAreaView>

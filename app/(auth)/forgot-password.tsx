@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ActivityIndicator, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Image, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuthStore } from "../../src/store/authStore";
 
@@ -79,7 +79,7 @@ export default function ForgotPasswordScreen() {
             // Form State
             <>
               <View className="items-center mb-12">
-                {/* <Image source={require("../../assets/images/logo.png")} className="w-50 h-20 mb-2" /> */}
+                <Image source={require("../../assets/images/logo.png")} className="w-80 h-25" resizeMode="contain" />
                 <Text className="text-xl font-bold  text-foreground">Recupera la tua password</Text>
               </View>
 
