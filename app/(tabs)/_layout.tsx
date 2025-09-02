@@ -60,8 +60,7 @@ export default function TabsLayout() {
         tabBarStyle: {
           backgroundColor: currentColors.background,
           borderTopColor: currentColors.border,
-          paddingTop: 3,
-          paddingInline: 10
+          paddingTop: 3
         },
         tabBarLabelStyle: {
           fontSize: 12,
@@ -86,8 +85,7 @@ export default function TabsLayout() {
             ? {
                 backgroundColor: currentColors.background,
                 borderTopColor: currentColors.border,
-                paddingTop: 3,
-                paddingInline: 10
+                paddingTop: 3
               }
             : { display: "none" }, // Nasconde il tab bar button
           href: user?.profiles?.length ? undefined : null // Previene la navigazione
