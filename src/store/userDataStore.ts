@@ -6,6 +6,8 @@ import { getUserById } from "../services/userService";
 
 interface UserDataState {
   user: UserType | null;
+  isHydrated: boolean;
+
   setUser: (data: UserType) => void;
   fetchUserData: (userId: string) => Promise<void>;
   clearUser: () => void;
@@ -15,6 +17,7 @@ export const useUserDataStore = create<UserDataState>()(
   persist(
     (set) => ({
       user: null,
+      isHydrated: false,
 
       setUser: (data) => {
         console.log("🔵 UserDataStore - setUser:", `${data.firstName} ${data.lastName}`);
@@ -38,7 +41,12 @@ export const useUserDataStore = create<UserDataState>()(
     }),
     {
       name: "user-data-storage",
-      storage: createJSONStorage(() => AsyncStorage)
+      storage: createJSONStorage(() => AsyncStorage),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.isHydrated = true;
+        }
+      }
     }
   )
 );
