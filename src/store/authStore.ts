@@ -12,6 +12,7 @@ interface AuthState {
   deviceId: string | null;
   isAuthenticated: boolean;
   userId: string | null;
+  isHydrated: boolean;
 
   loginUser: (email: string, password: string) => Promise<void>;
   registerUser: (userData: RegistrationType) => Promise<void>;
@@ -29,6 +30,7 @@ export const useAuthStore = create<AuthState>()(
       error: null,
       deviceId: null,
       userId: null,
+      isHydrated: false,
 
       setAuthData: (data) => set((state) => ({ ...state, ...data })),
 
@@ -235,7 +237,12 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "auth-storage",
-      storage: createJSONStorage(() => AsyncStorage)
+      storage: createJSONStorage(() => AsyncStorage),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.isHydrated = true;
+        }
+      }
     }
   )
 );
