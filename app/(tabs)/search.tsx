@@ -1,3 +1,4 @@
+import apiClient from "@/api/apiClient";
 import {
   Brain,
   Dumbbell,
@@ -5,12 +6,14 @@ import {
   MapPin,
   Rocket,
   Salad,
-  Search
+  Search,
+  X
 } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
+  Modal,
   SafeAreaView,
   ScrollView,
   Text,
@@ -20,8 +23,11 @@ import {
 } from "react-native";
 
 interface Address {
+  street: string;
   city: string;
+  cap: string;
   province: string;
+  country: string;
 }
 
 type BadgeType = "salad" | "dumbbell" | "brain";
@@ -33,92 +39,99 @@ type Professional = {
   address: Address;
   profileImg: string | null;
   ambassador: boolean;
-  specializzations: string[];
+  specializations: string[];
 };
+interface FilterOption {
+  label: string;
+  value: string;
+}
 
 export default function SearchScreen() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectedFilters, setSelectedFilters] = useState<string>("");
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [openFilter, setOpenFilter] = useState<boolean>(false);
 
-  // Simulated data - replace with your actual fetch
-  const mockProfessionals: Professional[] = [
-    {
-      id: "1",
-      firstName: "Pasquale",
-      lastName: "Capuano",
-      address: {
-        city: "Bari",
-        province: "BA"
-      },
-      ambassador: true,
-      profileImg: null,
-      specializzations: ["trainer"]
-    },
-    {
-      id: "2",
-      firstName: "Giulia",
-      lastName: "Rossi",
-      address: {
-        city: "Milano",
-        province: "MI"
-      },
-      ambassador: false,
-      profileImg: null,
-      specializzations: ["nutritionist"]
-    },
-    {
-      id: "3",
-      firstName: "Luca",
-      lastName: "Bianchi",
-      address: {
-        city: "Roma",
-        province: "RM"
-      },
-      ambassador: true,
-      profileImg:
-        "https://all-images.ai/wp-content/uploads/2023/09/comprendre-les-droits-d26rsquo3Bimage26nbsp3B3A-comment-savoir-si-une-image-est-libre-de-droit26nbsp3B3F.jpg",
-      specializzations: ["trainer"]
-    },
-    {
-      id: "4",
-      firstName: "Martina",
-      lastName: "Verdi",
-      address: {
-        city: "Napoli",
-        province: "NA"
-      },
-      ambassador: false,
-      profileImg: null,
-      specializzations: ["psychologist"]
-    },
-    {
-      id: "5",
-      firstName: "Alessandro",
-      lastName: "Moretti",
-      address: {
-        city: "Torino",
-        province: "TO"
-      },
-      ambassador: true,
-      profileImg: null,
-      specializzations: ["trainer", "nutritionist", "psychologist"]
-    }
+  const filterOptions: FilterOption[] = [
+    { label: "Trainer", value: "trainer" },
+    { label: "Nutrizionisti", value: "nutritionist" }
   ];
 
+  // const mockProfessionals: Professional[] = [
+  //   {
+  //     id: "1",
+  //     firstName: "Pasquale",
+  //     lastName: "Capuano",
+  //     address: {
+  //       city: "Bari",
+  //       province: "BA"
+  //     },
+  //     ambassador: true,
+  //     profileImg: null,
+  //     specializations: ["trainer"]
+  //   },
+  //   {
+  //     id: "2",
+  //     firstName: "Giulia",
+  //     lastName: "Rossi",
+  //     address: {
+  //       city: "Milano",
+  //       province: "MI"
+  //     },
+  //     ambassador: false,
+  //     profileImg: null,
+  //     specializations: ["nutritionist"]
+  //   },
+  //   {
+  //     id: "3",
+  //     firstName: "Luca",
+  //     lastName: "Bianchi",
+  //     address: {
+  //       city: "Roma",
+  //       province: "RM"
+  //     },
+  //     ambassador: true,
+  //     profileImg:
+  //       "https://all-images.ai/wp-content/uploads/2023/09/comprendre-les-droits-d26rsquo3Bimage26nbsp3B3A-comment-savoir-si-une-image-est-libre-de-droit26nbsp3B3F.jpg",
+  //     specializations: ["trainer"]
+  //   },
+  //   {
+  //     id: "4",
+  //     firstName: "Martina",
+  //     lastName: "Verdi",
+  //     address: {
+  //       city: "Napoli",
+  //       province: "NA"
+  //     },
+  //     ambassador: false,
+  //     profileImg: null,
+  //     specializations: ["psychologist"]
+  //   },
+  //   {
+  //     id: "5",
+  //     firstName: "Alessandro",
+  //     lastName: "Moretti",
+  //     address: {
+  //       city: "Torino",
+  //       province: "TO"
+  //     },
+  //     ambassador: true,
+  //     profileImg: null,
+  //     specializations: ["trainer", "nutritionist", "psychologist"]
+  //   }
+  // ];
+
   useEffect(() => {
-    // Simulate fetch - replace with your actual API call
     const fetchProfessionals = async () => {
       try {
         setLoading(true);
-        // Replace this with your actual fetch call
-        // const response = await fetch('your-api-endpoint');
-        // const data = await response.json();
-
-        // Simulating network delay
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        setProfessionals(mockProfessionals);
+        const resp = await apiClient.get("/professionals");
+        if (!resp.data) {
+          throw new Error("Errore nel caricamento dei professionisti");
+        } else {
+          setProfessionals(resp.data);
+        }
       } catch (error) {
         console.error("Errore nel caricamento dei professionisti:", error);
       } finally {
@@ -130,17 +143,17 @@ export default function SearchScreen() {
   }, []);
 
   const getBadgesFromSpecializations = (
-    specializzations: string[]
+    specializations: string[]
   ): BadgeType[] => {
     const badges: BadgeType[] = [];
 
-    if (specializzations.includes("trainer")) {
+    if (specializations.includes("trainer")) {
       badges.push("dumbbell");
     }
-    if (specializzations.includes("psychologist")) {
+    if (specializations.includes("psychologist")) {
       badges.push("brain");
     }
-    if (specializzations.includes("nutritionist")) {
+    if (specializations.includes("nutritionist")) {
       badges.push("salad");
     }
 
@@ -168,18 +181,38 @@ export default function SearchScreen() {
     return professional.ambassador ? "#8b5cf6" : "#64748b";
   };
 
-  const filteredProfessionals = mockProfessionals
+  const handleFilterSelect = (option: FilterOption) => {
+    setSelectedFilters((prev) => {
+      if (prev.includes(option.value)) {
+        //se gia presente rimuove
+        return prev.filter((filter) => filter !== option.value);
+      } else {
+        //se non presente aggiunge
+        return [...prev, option.value];
+      }
+    });
+  };
+
+  const removeFilter = (filterValue: string) => {
+    setSelectedFilters((prev) =>
+      prev.filter((filter) => filter !== filterValue)
+    );
+  };
+
+  const filteredProfessionals = professionals
     .filter((professional) =>
-      selectedFilters === ""
+      selectedFilters.length === 0
         ? true
-        : professional.specializzations.includes(selectedFilters)
+        : selectedFilters.some((selectedFilter) =>
+            professional.specializations.includes(selectedFilter)
+          )
     )
     .filter(
       (professional) =>
         professional.firstName
           .toLowerCase()
           .includes(searchQuery.trim().toLowerCase()) ||
-        professional.address.city
+        professional.address?.city
           .toLowerCase()
           .includes(searchQuery.trim().toLowerCase())
     );
@@ -189,7 +222,10 @@ export default function SearchScreen() {
   }: {
     professional: Professional;
   }) => {
-    const badges = getBadgesFromSpecializations(professional.specializzations);
+    if (!professional || !professional.specializations) {
+      return null;
+    }
+    const badges = getBadgesFromSpecializations(professional.specializations);
 
     return (
       <View className="bg-card rounded-xl  mb-4 shadow-sm  relative">
@@ -240,7 +276,8 @@ export default function SearchScreen() {
           <View className="flex-row items-center mb-2">
             <MapPin size={14} color="#ef4444" />
             <Text className="text-card-foreground text-sm ml-1">
-              {professional.address.city}, {professional.address.province}
+              {professional.address?.city || ""},{" "}
+              {professional.address?.province || ""}
             </Text>
             <View className="w-2 h-2 bg-gray-300 rounded-full ml-2" />
           </View>
@@ -267,11 +304,43 @@ export default function SearchScreen() {
               onChangeText={setSearchQuery}
             />
           </View>
-          <TouchableOpacity className="p-2 ">
+          <TouchableOpacity
+            className="p-2 "
+            onPress={() => {
+              setOpenFilter(true);
+            }}
+          >
             <Filter size={24} color="#64748b" />
           </TouchableOpacity>
         </View>
       </View>
+      {/* Active Filters */}
+      {selectedFilters.length > 0 && (
+        <View className="px-4 py-2 bg-background">
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View className="flex-row gap-2">
+              {selectedFilters.map((filterValue, index) => {
+                const filterOption = filterOptions.find(
+                  (opt) => opt.value === filterValue
+                );
+                return (
+                  <View
+                    key={index}
+                    className="flex-row items-center bg-secondary border border-border rounded-full px-3 py-1"
+                  >
+                    <Text className="text-secondary-foreground text-sm mr-2">
+                      {filterOption?.label}
+                    </Text>
+                    <TouchableOpacity onPress={() => removeFilter(filterValue)}>
+                      <X size={16} color="#10b981" />
+                    </TouchableOpacity>
+                  </View>
+                );
+              })}
+            </View>
+          </ScrollView>
+        </View>
+      )}
 
       {/* Content */}
       {loading ? (
@@ -290,6 +359,57 @@ export default function SearchScreen() {
               </View>
             ))}
           </View>
+          {/* Filter Modal */}
+          <Modal
+            visible={openFilter}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => setOpenFilter(false)}
+          >
+            <TouchableOpacity
+              className="flex-1 bg-white/50 dark:bg-black/50 justify-center items-center"
+              activeOpacity={1}
+              onPress={() => setOpenFilter(false)}
+            >
+              <TouchableOpacity
+                className="bg-popover rounded-xl p-4 shadow-lg mx-8 w-[75vw]"
+                activeOpacity={1}
+              >
+                <View className="flex-row justify-between items-center mb-4">
+                  <Text className="text-lg font-semibold text-popover-foreground">
+                    Filtra per specializzazione
+                  </Text>
+                  <TouchableOpacity onPress={() => setOpenFilter(false)}>
+                    <X size={24} color="#64748b" />
+                  </TouchableOpacity>
+                </View>
+
+                <View className="flex flex gap-2 items-center justify-center p-6">
+                  {filterOptions.map((option, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      className={`px-4 py-2 w-[50%] rounded-lg border ${
+                        selectedFilters.includes(option.value)
+                          ? "bg-green-100 border-primary"
+                          : "bg-transparent border-border"
+                      }`}
+                      onPress={() => handleFilterSelect(option)}
+                    >
+                      <Text
+                        className={`text-lg ${
+                          selectedFilters.includes(option.value)
+                            ? "text-primary font-medium"
+                            : "text-popover-foreground"
+                        }`}
+                      >
+                        {option.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </TouchableOpacity>
+            </TouchableOpacity>
+          </Modal>
         </ScrollView>
       )}
     </SafeAreaView>
