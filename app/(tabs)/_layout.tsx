@@ -15,7 +15,7 @@ export default function TabsLayout() {
       activeTint: "#059669",
       inactiveTint: "#6b7280",
       background: "#fefffe",
-      border: "#e5e5e5"
+      border: "#e5e7eb"
     },
     dark: {
       activeTint: "#34d399",
@@ -96,7 +96,7 @@ export default function TabsLayout() {
       />
       <Tabs.Screen
         name="chat"
-        options={{ title: "Chat", tabBarIcon: ({ color, focused }) => <TabIcon icon={MessagesSquare} color={color} focused={focused} /> }}
+        options={{ title: "Chat", headerShown: false, tabBarIcon: ({ color, focused }) => <TabIcon icon={MessagesSquare} color={color} focused={focused} /> }}
       />
       <Tabs.Screen
         name="settings"
