@@ -1,6 +1,7 @@
 import { ChatMessageItemNative } from "@/components/chat/ChatMessageItem.native";
 import { useChatScrollNative } from "@/hooks/use-chat-scroll.native";
 import { useRealtimeChatNative } from "@/hooks/use-realtime-chat.native";
+import { useFocusEffect } from "@react-navigation/native";
 import { Send } from "lucide-react-native";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -28,7 +29,22 @@ export const RealtimeChatNative = ({ roomName, username, initialMessages = [], o
   }, [allMessages, onMessage]);
   useEffect(() => {
     scrollToBottom();
+    const t1 = setTimeout(scrollToBottom, 50);
+    const t2 = setTimeout(scrollToBottom, 200);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
   }, [allMessages, scrollToBottom]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      scrollToBottom();
+      const t = setTimeout(scrollToBottom, 80);
+      return () => clearTimeout(t);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [roomName, scrollToBottom])
+  );
 
   const handleSend = useCallback(async () => {
     if (!text.trim() || !isConnected) return;
@@ -46,6 +62,7 @@ export const RealtimeChatNative = ({ roomName, username, initialMessages = [], o
           renderItem={({ item }) => <ChatMessageItemNative message={item} isOwnMessage={item.user.name === username} />}
           contentContainerStyle={{ padding: 12 }}
           showsVerticalScrollIndicator={false}
+          onLayout={() => scrollToBottom()}
         />
         <View className="flex-row items-center px-4 py-3 border-t  border-border">
           <TextInput
