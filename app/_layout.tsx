@@ -7,7 +7,8 @@ import "./globals.css";
 
 export default function RootLayout() {
   const { isAuthenticated, isHydrated: authHydrated } = useAuthStore();
-  const { hasCompletedOnboarding, isHydrated: onboardingHydrated } = useOnboardingStore();
+  const { hasCompletedOnboarding, isHydrated: onboardingHydrated } =
+    useOnboardingStore();
 
   // Mantieni la splash fino a quando gli store non sono idratati
   useEffect(() => {
