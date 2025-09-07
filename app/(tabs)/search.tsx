@@ -22,6 +22,8 @@ import {
   View
 } from "react-native";
 
+import { useRouter } from "expo-router";
+
 interface Address {
   street: string;
   city: string;
@@ -33,7 +35,7 @@ interface Address {
 type BadgeType = "salad" | "dumbbell" | "brain";
 
 type Professional = {
-  id: string;
+  _id: string;
   firstName: string;
   lastName: string;
   address: Address;
@@ -52,6 +54,7 @@ export default function SearchScreen() {
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [openFilter, setOpenFilter] = useState<boolean>(false);
+  const router = useRouter();
 
   const filterOptions: FilterOption[] = [
     { label: "Trainer", value: "trainer" },
@@ -228,61 +231,70 @@ export default function SearchScreen() {
     const badges = getBadgesFromSpecializations(professional.specializations);
 
     return (
-      <View className="bg-card rounded-xl  mb-4 shadow-sm  relative">
-        <View className="bg-secondary p-4 items-center rounded-t-xl">
-          {professional.ambassador == true && (
-            <TouchableOpacity className="absolute top-4 left-4 w-8 h-8 rounded-full items-center justify-center bg-orange-400">
-              <Rocket size={16} color="white" />
-            </TouchableOpacity>
-          )}
-
-          {/* Avatar */}
-          <View
-            className="w-20 h-20 rounded-full items-center justify-center mb-4 mt-6 bg-green-200"
-            style={{ backgroundColor: getBackgroundColor(professional) }}
-          >
-            {professional.profileImg ? (
-              <Image
-                source={{ uri: professional.profileImg }}
-                className="w-20 h-20 rounded-full"
-                resizeMode="cover"
-              />
-            ) : (
-              <Text className="text-2xl font-bold text-white">
-                {getInitials(professional.firstName, professional.lastName)}
-              </Text>
+      <TouchableOpacity
+        onPress={() => {
+          router.push({
+            pathname: "/(tabs)/professionalDetails",
+            params: { professionalId: professional._id }
+          });
+        }}
+      >
+        <View className="bg-card rounded-xl  mb-4 shadow-sm  relative">
+          <View className="bg-secondary p-4 items-center rounded-t-xl">
+            {professional.ambassador == true && (
+              <TouchableOpacity className="absolute top-4 left-4 w-8 h-8 rounded-full items-center justify-center bg-orange-400">
+                <Rocket size={16} color="white" />
+              </TouchableOpacity>
             )}
-          </View>
-        </View>
-        <View className="items-center mt-4 ">
-          {/* Name */}
-          <Text className="text-lg font-semibold text-card-foreground mb-2 text-center">
-            {professional.firstName} {professional.lastName}
-          </Text>
 
-          {/* Badges */}
-          <View className="flex-row gap-2 mb-3">
-            {badges.map((badge: BadgeType, index: number) => (
-              <View
-                key={index}
-                className="w-8 h-8 bg-green-500 rounded-full items-center justify-center"
-              >
-                {renderBadgeIcon(badge)}
-              </View>
-            ))}
+            {/* Avatar */}
+            <View
+              className="w-20 h-20 rounded-full items-center justify-center mb-4 mt-6 bg-green-200"
+              style={{ backgroundColor: getBackgroundColor(professional) }}
+            >
+              {professional.profileImg ? (
+                <Image
+                  source={{ uri: professional.profileImg }}
+                  className="w-20 h-20 rounded-full"
+                  resizeMode="cover"
+                />
+              ) : (
+                <Text className="text-2xl font-bold text-white">
+                  {getInitials(professional.firstName, professional.lastName)}
+                </Text>
+              )}
+            </View>
           </View>
-
-          {/* Location */}
-          <View className="flex-row items-center mb-2">
-            <MapPin size={14} color="#ef4444" />
-            <Text className="text-card-foreground text-sm ml-1">
-              {professional.address?.city || ""},{" "}
-              {professional.address?.province || ""}
+          <View className="items-center mt-4 ">
+            {/* Name */}
+            <Text className="text-lg font-semibold text-card-foreground mb-2 text-center">
+              {professional.firstName} {professional.lastName}
             </Text>
-            <View className="w-2 h-2 bg-gray-300 rounded-full ml-2" />
+
+            {/* Badges */}
+            <View className="flex-row gap-2 mb-3">
+              {badges.map((badge: BadgeType, index: number) => (
+                <View
+                  key={`${professional._id}-${badge}-${index}`}
+                  className="w-8 h-8 bg-green-500 rounded-full items-center justify-center"
+                >
+                  {renderBadgeIcon(badge)}
+                </View>
+              ))}
+            </View>
+
+            {/* Location */}
+            <View className="flex-row items-center mb-2">
+              <MapPin size={14} color="#ef4444" />
+              <Text className="text-card-foreground text-sm ml-1">
+                {professional.address?.city || "N/A"},{" "}
+                {professional.address?.province || "N/A"}
+              </Text>
+              <View className="w-2 h-2 bg-gray-300 rounded-full ml-2" />
+            </View>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -325,7 +337,7 @@ export default function SearchScreen() {
                 );
                 return (
                   <View
-                    key={index}
+                    key={`filter-${filterValue}-${index}`}
                     className="flex-row items-center bg-secondary border border-border rounded-full px-3 py-1"
                   >
                     <Text className="text-secondary-foreground text-sm mr-2">
@@ -354,7 +366,7 @@ export default function SearchScreen() {
         <ScrollView className="flex-1 px-4 py-4 bg-background">
           <View className="flex-row flex-wrap justify-between">
             {filteredProfessionals.map((professional: Professional) => (
-              <View key={professional.id} className="w-[48%]">
+              <View key={professional._id} className="w-[48%]">
                 <ProfessionalCard professional={professional} />
               </View>
             ))}
@@ -385,9 +397,9 @@ export default function SearchScreen() {
                 </View>
 
                 <View className="flex flex gap-2 items-center justify-center p-6">
-                  {filterOptions.map((option, index) => (
+                  {filterOptions.map((option) => (
                     <TouchableOpacity
-                      key={index}
+                      key={option.value}
                       className={`px-4 py-2 w-[50%] rounded-lg border ${
                         selectedFilters.includes(option.value)
                           ? "bg-green-100 border-primary"
