@@ -1,26 +1,7 @@
 import apiClient from "@/api/apiClient";
-import {
-  Brain,
-  Dumbbell,
-  Filter,
-  MapPin,
-  Rocket,
-  Salad,
-  Search,
-  X
-} from "lucide-react-native";
+import { Brain, Dumbbell, Filter, MapPin, Rocket, Salad, Search, X } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Image,
-  Modal,
-  SafeAreaView,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View
-} from "react-native";
+import { ActivityIndicator, Image, Modal, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 import { useRouter } from "expo-router";
 
@@ -145,9 +126,7 @@ export default function SearchScreen() {
     fetchProfessionals();
   }, []);
 
-  const getBadgesFromSpecializations = (
-    specializations: string[]
-  ): BadgeType[] => {
+  const getBadgesFromSpecializations = (specializations: string[]): BadgeType[] => {
     const badges: BadgeType[] = [];
 
     if (specializations.includes("trainer")) {
@@ -197,34 +176,20 @@ export default function SearchScreen() {
   };
 
   const removeFilter = (filterValue: string) => {
-    setSelectedFilters((prev) =>
-      prev.filter((filter) => filter !== filterValue)
-    );
+    setSelectedFilters((prev) => prev.filter((filter) => filter !== filterValue));
   };
 
   const filteredProfessionals = professionals
     .filter((professional) =>
-      selectedFilters.length === 0
-        ? true
-        : selectedFilters.some((selectedFilter) =>
-            professional.specializations.includes(selectedFilter)
-          )
+      selectedFilters.length === 0 ? true : selectedFilters.some((selectedFilter) => professional.specializations.includes(selectedFilter))
     )
     .filter(
       (professional) =>
-        professional.firstName
-          .toLowerCase()
-          .includes(searchQuery.trim().toLowerCase()) ||
-        professional.address?.city
-          .toLowerCase()
-          .includes(searchQuery.trim().toLowerCase())
+        professional.firstName.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
+        professional.address?.city.toLowerCase().includes(searchQuery.trim().toLowerCase())
     );
 
-  const ProfessionalCard = ({
-    professional
-  }: {
-    professional: Professional;
-  }) => {
+  const ProfessionalCard = ({ professional }: { professional: Professional }) => {
     if (!professional || !professional.specializations) {
       return null;
     }
@@ -233,15 +198,12 @@ export default function SearchScreen() {
     return (
       <TouchableOpacity
         onPress={() => {
-          router.push({
-            pathname: "/(tabs)/professionalDetails",
-            params: { professionalId: professional._id }
-          });
+          router.push(`/search/${professional._id}` as any);
         }}
       >
         <View className="bg-card rounded-xl  mb-4 shadow-sm  relative">
           <View className="bg-secondary p-4 items-center rounded-t-xl">
-            {professional.ambassador == true && (
+            {professional.ambassador === true && (
               <TouchableOpacity className="absolute top-4 left-4 w-8 h-8 rounded-full items-center justify-center bg-orange-400">
                 <Rocket size={16} color="white" />
               </TouchableOpacity>
@@ -253,15 +215,9 @@ export default function SearchScreen() {
               style={{ backgroundColor: getBackgroundColor(professional) }}
             >
               {professional.profileImg ? (
-                <Image
-                  source={{ uri: professional.profileImg }}
-                  className="w-20 h-20 rounded-full"
-                  resizeMode="cover"
-                />
+                <Image source={{ uri: professional.profileImg }} className="w-20 h-20 rounded-full" resizeMode="cover" />
               ) : (
-                <Text className="text-2xl font-bold text-white">
-                  {getInitials(professional.firstName, professional.lastName)}
-                </Text>
+                <Text className="text-2xl font-bold text-white">{getInitials(professional.firstName, professional.lastName)}</Text>
               )}
             </View>
           </View>
@@ -274,10 +230,7 @@ export default function SearchScreen() {
             {/* Badges */}
             <View className="flex-row gap-2 mb-3">
               {badges.map((badge: BadgeType, index: number) => (
-                <View
-                  key={`${professional._id}-${badge}-${index}`}
-                  className="w-8 h-8 bg-green-500 rounded-full items-center justify-center"
-                >
+                <View key={`${professional._id}-${badge}-${index}`} className="w-8 h-8 bg-green-500 rounded-full items-center justify-center">
                   {renderBadgeIcon(badge)}
                 </View>
               ))}
@@ -287,8 +240,7 @@ export default function SearchScreen() {
             <View className="flex-row items-center mb-2">
               <MapPin size={14} color="#ef4444" />
               <Text className="text-card-foreground text-sm ml-1">
-                {professional.address?.city || "N/A"},{" "}
-                {professional.address?.province || "N/A"}
+                {professional.address?.city || "N/A"}, {professional.address?.province || "N/A"}
               </Text>
               <View className="w-2 h-2 bg-gray-300 rounded-full ml-2" />
             </View>
@@ -332,17 +284,10 @@ export default function SearchScreen() {
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View className="flex-row gap-2">
               {selectedFilters.map((filterValue, index) => {
-                const filterOption = filterOptions.find(
-                  (opt) => opt.value === filterValue
-                );
+                const filterOption = filterOptions.find((opt) => opt.value === filterValue);
                 return (
-                  <View
-                    key={`filter-${filterValue}-${index}`}
-                    className="flex-row items-center bg-secondary border border-border rounded-full px-3 py-1"
-                  >
-                    <Text className="text-secondary-foreground text-sm mr-2">
-                      {filterOption?.label}
-                    </Text>
+                  <View key={`filter-${filterValue}-${index}`} className="flex-row items-center bg-secondary border border-border rounded-full px-3 py-1">
+                    <Text className="text-secondary-foreground text-sm mr-2">{filterOption?.label}</Text>
                     <TouchableOpacity onPress={() => removeFilter(filterValue)}>
                       <X size={16} color="#10b981" />
                     </TouchableOpacity>
@@ -358,9 +303,7 @@ export default function SearchScreen() {
       {loading ? (
         <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" color="#10b981" />
-          <Text className="text-foreground mt-2">
-            Caricamento professionisti...
-          </Text>
+          <Text className="text-foreground mt-2">Caricamento professionisti...</Text>
         </View>
       ) : (
         <ScrollView className="flex-1 px-4 py-4 bg-background">
@@ -372,48 +315,30 @@ export default function SearchScreen() {
             ))}
           </View>
           {/* Filter Modal */}
-          <Modal
-            visible={openFilter}
-            transparent={true}
-            animationType="fade"
-            onRequestClose={() => setOpenFilter(false)}
-          >
+          <Modal visible={openFilter} transparent={true} animationType="fade" onRequestClose={() => setOpenFilter(false)}>
             <TouchableOpacity
               className="flex-1 bg-white/50 dark:bg-black/50 justify-center items-center"
               activeOpacity={1}
               onPress={() => setOpenFilter(false)}
             >
-              <TouchableOpacity
-                className="bg-popover rounded-xl p-4 shadow-lg mx-8 w-[75vw]"
-                activeOpacity={1}
-              >
+              <TouchableOpacity className="bg-popover rounded-xl p-4 shadow-lg mx-8 w-[75vw]" activeOpacity={1}>
                 <View className="flex-row justify-between items-center mb-4">
-                  <Text className="text-lg font-semibold text-popover-foreground">
-                    Filtra per specializzazione
-                  </Text>
+                  <Text className="text-lg font-semibold text-popover-foreground">Filtra per specializzazione</Text>
                   <TouchableOpacity onPress={() => setOpenFilter(false)}>
                     <X size={24} color="#64748b" />
                   </TouchableOpacity>
                 </View>
 
-                <View className="flex flex gap-2 items-center justify-center p-6">
+                <View className="flex gap-2 items-center justify-center p-6">
                   {filterOptions.map((option) => (
                     <TouchableOpacity
                       key={option.value}
                       className={`px-4 py-2 w-[50%] rounded-lg border ${
-                        selectedFilters.includes(option.value)
-                          ? "bg-green-100 border-primary"
-                          : "bg-transparent border-border"
+                        selectedFilters.includes(option.value) ? "bg-green-100 border-primary" : "bg-transparent border-border"
                       }`}
                       onPress={() => handleFilterSelect(option)}
                     >
-                      <Text
-                        className={`text-lg ${
-                          selectedFilters.includes(option.value)
-                            ? "text-primary font-medium"
-                            : "text-popover-foreground"
-                        }`}
-                      >
+                      <Text className={`text-lg ${selectedFilters.includes(option.value) ? "text-primary font-medium" : "text-popover-foreground"}`}>
                         {option.label}
                       </Text>
                     </TouchableOpacity>
