@@ -30,7 +30,7 @@ export const useUserDataStore = create<UserDataState>()(
         try {
           const userData = await getUserById(userId);
           set({ user: userData /* , loading: false, error: null  */ });
-          console.log("✅ User data caricati");
+          console.log("✅ User data caricati", userData);
         } catch (error: any) {
           console.error("❌ Errore caricamento user data:", error.message);
           throw error;
