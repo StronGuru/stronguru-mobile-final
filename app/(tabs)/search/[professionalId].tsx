@@ -2,7 +2,7 @@
 import apiClient from "@/api/apiClient";
 import { useUserDataStore } from "@/src/store/userDataStore";
 import { router, useLocalSearchParams } from "expo-router";
-import { Award, Book, Brain, Building2, Dumbbell, Mail, Phone, Rocket, Salad } from "lucide-react-native";
+import { Award, Book, Brain, Building2, Dumbbell, Mail, Phone, Rocket, Salad, Send } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
@@ -178,9 +178,10 @@ export default function ProfessionalDetails() {
               onPress={() => {
                 router.push(`/chat/${roomId}`);
               }}
-              className="bg-muted px-4 py-2 rounded-xl"
+              className="bg-accent px-4 py-2 rounded-xl flex-row items-center gap-2 dark:shadow-sm "
             >
               <Text className="text-white text-center">Chatta con il professionista</Text>
+              <Send size={16} color="white" />
             </TouchableOpacity>
           </View>
           {professional.ambassador === true && (
