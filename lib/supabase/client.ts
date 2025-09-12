@@ -1,3 +1,4 @@
+// polyfills necessari per RN
 import { createClient } from "@supabase/supabase-js";
 import "react-native-get-random-values";
 import "react-native-url-polyfill/auto";
