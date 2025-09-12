@@ -1,0 +1,94 @@
+import ProfessionalCard from "@/components/ProfessionalCardTeam";
+import { ProfileType } from "@/lib/zod/userSchemas";
+import { getUserProfessionalsByUserId } from "@/src/services/userService";
+import { useAuthStore } from "@/src/store/authStore";
+import { useUserDataStore } from "@/src/store/userDataStore";
+import { useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
+
+export default function Team() {
+  const { userId } = useAuthStore();
+  const [profiles, setProfiles] = useState<ProfileType[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const router = useRouter();
+  const [nutritionId, setNutritionId] = useState<string | null>(null);
+
+  const fetchProfessionals = async () => {
+    if (!userId) {
+      setProfiles([]);
+      setLoading(false);
+      return;
+    }
+    try {
+      setLoading(true);
+      const resp = await getUserProfessionalsByUserId(userId);
+      setProfiles(resp ?? []);
+      const foundNutritionId = (resp ?? []).find((p) => p?.nutrition && typeof p.nutrition._id === "string")?.nutrition?._id ?? null;
+      setNutritionId(foundNutritionId);
+    } catch (error) {
+      console.error("Error fetching profiles:", error);
+      setProfiles([]);
+      setNutritionId(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfessionals();
+    console.log("User: ", useUserDataStore.getState().user);
+    console.log("NutritionId: ", nutritionId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
+
+  if (loading) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator size="large" color="#10b981" />
+      </View>
+    );
+  }
+
+  if (profiles.length === 0) {
+    return (
+      <View className="flex-1 justify-center items-center px-6">
+        <Text className="text-foreground">Nessun professionista collegato al tuo account.</Text>
+      </View>
+    );
+  }
+
+  return (
+    <SafeAreaView className="flex-1 px-4 pt-4 bg-background ">
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View className="flex-row flex-wrap justify-between px-4">
+          <Text className="w-full text-2xl font-semibold my-4 text-foreground">Il tuo Team</Text>
+          {profiles.map((profile) => (
+            <View key={profile._id} className="w-[33.33%]">
+              <ProfessionalCard professional={profile.createdBy} />
+            </View>
+          ))}
+        </View>
+        <View className="flex-1 px-4">
+          <Text className="text-foreground text-2xl font-semibold">I tuoi Dati</Text>
+          <View>
+            <TouchableOpacity
+              onPress={() => {
+                router.push(`/team/${nutritionId}`);
+              }}
+              className="mt-2 bg-secondary rounded-lg p-4 items-center shadow-sm"
+            >
+              <Text className="text-foreground text-3xl">Nutrizione</Text>
+            </TouchableOpacity>
+            <TouchableOpacity className="mt-2 bg-secondary rounded-lg p-4 items-center shadow-sm">
+              <Text className="text-foreground text-3xl">Allenamento</Text>
+            </TouchableOpacity>
+            <TouchableOpacity className="mt-2 bg-secondary rounded-lg p-4 items-center shadow-sm">
+              <Text className="text-foreground text-3xl">Psicologia</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}

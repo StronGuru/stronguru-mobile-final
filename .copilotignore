@@ -1,0 +1,48 @@
+# Copilot Chat ignore patterns - keep workspace payload small
+# Exclude dependencies, build artifacts, native folders and large assets
+node_modules/
+android/
+ios/
+.expo/
+.expo-shared/
+.vscode/
+build/
+dist/
+web-build/
+.bundle/
+.gradle/
+.gradle/**
+.idea/
+*.log
+npm-debug.log
+yarn-error.log
+yarn.lock
+package-lock.json
+*.tmp
+*.cache
+.DS_Store
+.git/
+android/app/build/
+ios/Pods/
+
+# Images / media (often large)
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.webp
+**/*.gif
+**/*.mp4
+**/*.mov
+**/*.heic
+assets/images/**
+assets/**/onboarding/**
+
+# Database / binary
+*.db
+*.sqlite
+*.sqlite3
+
+# Coverage / generated
+coverage/
+
+# Keep source and configs available (don't ignore src, app, package.json, tsconfig.json, api/ etc.)
