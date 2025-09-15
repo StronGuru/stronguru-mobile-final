@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View } from "react-native";
 
-export default function Events() {
+export default function EventsScreen() {
   return (
     <View>
       <Text>Events</Text>
