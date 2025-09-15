@@ -49,23 +49,22 @@ const ProfessionalCardTeam = ({ professional }: { professional: ProfessionalType
   return (
     <TouchableOpacity
       onPress={() => {
-        router.push(`/search/${professional._id}` as any);
+        router.push(`/team/${professional._id}` as any);
       }}
     >
-      <View className="bg-card rounded-xl  mb-4 shadow-sm  relative">
-        <View className="bg-secondary p-4 items-center rounded-t-xl">
-          {/* Avatar */}
-          <View className="w-20 h-20 rounded-full items-center justify-center my-2 bg-green-200">
-            {professional.profileImg ? (
-              <Image source={{ uri: professional.profileImg }} className="w-20 h-20 rounded-full" resizeMode="cover" />
-            ) : (
-              <Text className="text-2xl font-bold text-white">{getInitials(professional.firstName, professional.lastName)}</Text>
-            )}
-          </View>
+      <View className=" items-center mb-4 ">
+        {/* Avatar */}
+        <View className="w-28 h-28 rounded-full items-center justify-center mt-4 mb-2 bg-green-200 border-2 border-primary overflow-hidden">
+          {professional.profileImg ? (
+            <Image source={{ uri: professional.profileImg }} className="w-28 h-28 rounded-full" resizeMode="cover" />
+          ) : (
+            <Text className="text-3xl font-bold text-white">{getInitials(professional.firstName, professional.lastName)}</Text>
+          )}
         </View>
-        <View className="items-center mt-4 ">
+
+        <View className="items-center  ">
           {/* Name */}
-          <Text className="text-lg font-semibold text-card-foreground mb-2 text-center">
+          <Text className="text-lg font-semibold text-card-foreground mb-2 text-center text-wrap">
             {professional.firstName} {professional.lastName}
           </Text>
 

@@ -74,16 +74,26 @@ export default function Team() {
           <View>
             <TouchableOpacity
               onPress={() => {
-                router.push(`/team/${nutritionId}`);
+                router.push(`/team/nutrition`);
               }}
               className="mt-2 bg-secondary rounded-lg p-4 items-center shadow-sm"
             >
               <Text className="text-foreground text-3xl">Nutrizione</Text>
             </TouchableOpacity>
-            <TouchableOpacity className="mt-2 bg-secondary rounded-lg p-4 items-center shadow-sm">
+            <TouchableOpacity
+              onPress={() => {
+                router.push(`/team/training`);
+              }}
+              className="mt-2 bg-secondary rounded-lg p-4 items-center shadow-sm"
+            >
               <Text className="text-foreground text-3xl">Allenamento</Text>
             </TouchableOpacity>
-            <TouchableOpacity className="mt-2 bg-secondary rounded-lg p-4 items-center shadow-sm">
+            <TouchableOpacity
+              onPress={() => {
+                router.push(`/team/psychology`);
+              }}
+              className="mt-2 bg-secondary rounded-lg p-4 items-center shadow-sm"
+            >
               <Text className="text-foreground text-3xl">Psicologia</Text>
             </TouchableOpacity>
           </View>
