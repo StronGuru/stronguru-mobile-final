@@ -68,10 +68,10 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: "Home",
-          /*  headerShown: false, */ tabBarIcon: ({ color, focused }) => <TabIcon icon={Home} color={color} focused={focused} />
+          headerShown: false, tabBarIcon: ({ color, focused }) => <TabIcon icon={Home} color={color} focused={focused} />
         }}
       />
       <Tabs.Screen
@@ -82,17 +82,6 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, focused }) => <TabIcon icon={Search} color={color} focused={focused} />
         }}
       />
-      {/*    <Tabs.Screen
-        name="professionalDetails"
-        options={{
-          title: "Dettagli professionista",
-          tabBarIcon: ({ color, focused }) => (
-            <TabIcon icon={UsersRound} color={color} focused={focused} />
-          ),
-
-          href: user?.profiles?.length ? undefined : null // Previene la navigazione
-        }}
-      /> */}
       <Tabs.Screen
         name="team"
         options={{
