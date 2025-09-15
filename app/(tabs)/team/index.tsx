@@ -1,4 +1,4 @@
-import ProfessionalCard from "@/components/ProfessionalCardTeam";
+import ProfessionalCard from "@/components/Team/ProfessionalCardTeam";
 import { ProfileType } from "@/lib/zod/userSchemas";
 import { useAuthStore } from "@/src/store/authStore";
 import { useUserDataStore } from "@/src/store/userDataStore";
@@ -72,6 +72,7 @@ export default function Team() {
         </View>
         <View className="flex-1 px-4">
           <Text className="text-foreground text-2xl font-semibold">I tuoi Dati</Text>
+          {/* AGGIUNGI CONDITIONAL RENDER DEI BOTTONI IN BASE ALLA PRESENZA DEGLI ID NUTRITION,TRAINING E PSYCHOLOGY NEL PROFILES ARRAY DELLO USER */}
           <View>
             <TouchableOpacity
               onPress={() => {

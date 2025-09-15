@@ -1,16 +1,19 @@
-import { useUserDataStore } from "@/src/store/userDataStore";
+import LatestMeasuresCard from "@/components/Team/LatestMeasuresCard";
 import React from "react";
-import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import { SafeAreaView, ScrollView, View } from "react-native";
 
 const Nutrition = () => {
-  const { user } = useUserDataStore();
-  console.log("user profiles:", JSON.stringify(user?.profiles ?? "no profiles", null, 2));
+  // console.log debug if needed:
+  // console.log("latestMeasurement:", JSON.stringify(latestMeasurement ?? "none", null, 2));
+  // console.log("latestBia:", JSON.stringify(latestBia ?? "none", null, 2));
   return (
-    <SafeAreaView className="flex-1 bg-background px-4">
+    <SafeAreaView className="flex-1 bg-background ">
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View className="bg-card p-4 rounded-lg mt-4 ">
-          <Text className="text-2xl font-bold text-foreground">Nutrition </Text>
+        <View className="flex-1 px-4  ">
+          <LatestMeasuresCard />
         </View>
+
+        {/* card per diete /charts */}
       </ScrollView>
     </SafeAreaView>
   );
