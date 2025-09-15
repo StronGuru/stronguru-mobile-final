@@ -13,7 +13,7 @@ export default function Team() {
   const router = useRouter();
   const { fetchUserData } = useUserDataStore();
 
-  const fetchProfessionals = async () => {
+  const fetchUpdatedProfiles = async () => {
     if (!userId) {
       setProfiles([]);
       setLoading(false);
@@ -25,6 +25,7 @@ export default function Team() {
       await fetchUserData(userId);
       const latestUser = useUserDataStore.getState().user;
       const profilesFromStore = latestUser?.profiles ?? [];
+      /* console.log("Fetched profiles:", JSON.stringify(profilesFromStore, null, 2)); */
       setProfiles(profilesFromStore);
       /* const foundNutritionId = profilesFromStore.find((p) => p?.nutrition && typeof p.nutrition._id === "string")?.nutrition?._id ?? null;
       setNutritionId(foundNutritionId); */
@@ -38,7 +39,7 @@ export default function Team() {
   };
 
   useEffect(() => {
-    fetchProfessionals();
+    fetchUpdatedProfiles();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
