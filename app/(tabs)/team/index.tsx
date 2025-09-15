@@ -1,6 +1,5 @@
 import ProfessionalCard from "@/components/ProfessionalCardTeam";
 import { ProfileType } from "@/lib/zod/userSchemas";
-import { getUserProfessionalsByUserId } from "@/src/services/userService";
 import { useAuthStore } from "@/src/store/authStore";
 import { useUserDataStore } from "@/src/store/userDataStore";
 import { useRouter } from "expo-router";
@@ -12,7 +11,7 @@ export default function Team() {
   const [profiles, setProfiles] = useState<ProfileType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
-  const [nutritionId, setNutritionId] = useState<string | null>(null);
+  const { fetchUserData } = useUserDataStore();
 
   const fetchProfessionals = async () => {
     if (!userId) {
@@ -22,14 +21,17 @@ export default function Team() {
     }
     try {
       setLoading(true);
-      const resp = await getUserProfessionalsByUserId(userId);
-      setProfiles(resp ?? []);
-      const foundNutritionId = (resp ?? []).find((p) => p?.nutrition && typeof p.nutrition._id === "string")?.nutrition?._id ?? null;
-      setNutritionId(foundNutritionId);
+      // Aggiorna lo user nello store per ottenere eventuali nuovi profiles
+      await fetchUserData(userId);
+      const latestUser = useUserDataStore.getState().user;
+      const profilesFromStore = latestUser?.profiles ?? [];
+      setProfiles(profilesFromStore);
+      /* const foundNutritionId = profilesFromStore.find((p) => p?.nutrition && typeof p.nutrition._id === "string")?.nutrition?._id ?? null;
+      setNutritionId(foundNutritionId); */
     } catch (error) {
-      console.error("Error fetching profiles:", error);
+      console.error("Error fetching profiles (from store):", error);
       setProfiles([]);
-      setNutritionId(null);
+      /* setNutritionId(null); */
     } finally {
       setLoading(false);
     }
@@ -37,14 +39,12 @@ export default function Team() {
 
   useEffect(() => {
     fetchProfessionals();
-    console.log("User: ", useUserDataStore.getState().user);
-    console.log("NutritionId: ", nutritionId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId]);
+  }, []);
 
   if (loading) {
     return (
-      <View className="flex-1 justify-center items-center">
+      <View className="flex-1  bg-background justify-center items-center">
         <ActivityIndicator size="large" color="#10b981" />
       </View>
     );
@@ -52,7 +52,7 @@ export default function Team() {
 
   if (profiles.length === 0) {
     return (
-      <View className="flex-1 justify-center items-center px-6">
+      <View className="flex-1 bg-background justify-center items-center px-6">
         <Text className="text-foreground">Nessun professionista collegato al tuo account.</Text>
       </View>
     );
