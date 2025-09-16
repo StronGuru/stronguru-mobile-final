@@ -62,9 +62,8 @@ export default function LatestMeasuresCard({ profileId }: LatestMeasuresCardProp
   const latestBia = getLatest<BiaEntryType, "examDate">(nutrition.bia, "examDate");
 
   return (
-    <View className="bg-card p-4 rounded-lg my-6 shadow-sm border border-secondary">
+    <View className="bg-card p-4 rounded-lg mt-6 shadow-sm border border-secondary">
       <Text className="text-2xl font-semibold text-primary">Ultime misurazioni</Text>
-      <Text className="text-lg text-foreground mt-1">Qui trovi i valori principali delle ultime misurazioni rilevate dal tuo nutrizionista.</Text>
 
       <View className="mt-3 mb-3">
         <Text className="text-sm text-muted-foreground italic">
