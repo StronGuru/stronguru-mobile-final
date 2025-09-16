@@ -1,4 +1,4 @@
-import LatestMeasuresCard from "@/components/Team/LatestMeasuresCard";
+import LatestMeasuresCard from "@/components/Team/Nutrition/LatestMeasuresCard";
 import { useUserDataStore } from "@/src/store/userDataStore";
 import { useLocalSearchParams } from "expo-router";
 import { useMemo } from "react";
@@ -32,6 +32,8 @@ export default function Nutrition() {
     <ScrollView className="flex-1 bg-background px-4">
       <LatestMeasuresCard profileId={selectedProfile._id} />
       {/* Altre cards passeranno anche il profileId */}
+      {/* CARD GRAFICI */}
+      {/* CARD TABELLA DIETE */}
     </ScrollView>
   );
 }

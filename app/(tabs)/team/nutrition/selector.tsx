@@ -13,8 +13,9 @@ export default function NutritionSelector() {
   };
 
   return (
-    <View className="flex-1 bg-background p-4">
-      <Text className="text-foreground text-xl mb-8 mt-4">Hai più nutrizionisti. Di quale vuoi vedere i dati?</Text>
+    <View className="flex-1 bg-background p-4 ">
+      <Text className="text-primary font-semibold text-2xl text-center mb-1 mt-4">Hai più nutrizionisti nel tuo team.</Text>
+      <Text className="text-foreground text-xl text-center mb-8">I dati di quale nutrizionista vuoi vedere?</Text>
 
       <FlatList
         data={nutritionProfiles}
