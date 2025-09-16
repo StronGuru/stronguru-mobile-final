@@ -53,10 +53,8 @@ export default function NutritionChartsCard({ profileId }: NutritionChartsCardPr
 
   return (
     <View className="bg-card p-4 rounded-lg my-6 shadow-sm border border-secondary">
-      {/* <Text className="text-xl font-semibold text-foreground mb-4">Grafici Nutrizione</Text> */}
-
       {/* Custom Segmented Control */}
-      <View className="flex-row bg-muted rounded-lg p-1 mb-6">
+      <View className="flex-row bg-secondary dark:bg-input rounded-lg p-1 mb-6">
         {chartOptions.map((option) => (
           <TouchableOpacity
             key={option.key}

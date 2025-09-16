@@ -1,6 +1,6 @@
 import { NutritionType } from "@/lib/zod/userSchemas";
 import React, { useMemo } from "react";
-import { Dimensions, ScrollView, Text, View } from "react-native";
+import { Dimensions, ScrollView, Text, useColorScheme, View } from "react-native";
 import { BarChart } from "react-native-gifted-charts";
 
 interface LatestComparisonChartProps {
@@ -9,6 +9,7 @@ interface LatestComparisonChartProps {
 
 export default function LatestComparisonChart({ nutrition }: LatestComparisonChartProps) {
   const screenWidth = Dimensions.get("window").width;
+  const colorScheme = useColorScheme();
 
   const comparisonData = useMemo(() => {
     const measurements = nutrition.measurements || [];
@@ -54,14 +55,14 @@ export default function LatestComparisonChart({ nutrition }: LatestComparisonCha
         label: metric.label,
         spacing: 2,
         labelWidth: 60,
-        labelTextStyle: { color: "#6b7280", fontSize: 9, textAlign: "center" as const },
+        labelTextStyle: { color: colorScheme === "dark" ? "white" : "#10b981", fontSize: 13, textAlign: "center" as const },
         frontColor: "#94a3b8",
-        topLabelComponent: () => <Text style={{ color: "#6b7280", fontSize: 8, marginBottom: 2 }}>{metric.previous}</Text>
+        topLabelComponent: () => <Text style={{ color: "#6b7280", fontSize: 13, fontWeight: "bold", marginBottom: 2 }}>{metric.previous}</Text>
       },
       {
         value: metric.latest,
         frontColor: "#10b981",
-        topLabelComponent: () => <Text style={{ color: "#10b981", fontSize: 8, marginBottom: 2 }}>{metric.latest}</Text>
+        topLabelComponent: () => <Text style={{ color: "#10b981", fontSize: 13, fontWeight: "bold", marginBottom: 2 }}>{metric.latest}</Text>
       }
     ]);
 
@@ -74,7 +75,7 @@ export default function LatestComparisonChart({ nutrition }: LatestComparisonCha
       worsenings,
       unchanged
     };
-  }, [nutrition]);
+  }, [nutrition, colorScheme]);
 
   if (!comparisonData) {
     return (
@@ -86,62 +87,61 @@ export default function LatestComparisonChart({ nutrition }: LatestComparisonCha
 
   return (
     <View>
-      <Text className="text-lg font-semibold text-foreground mb-2 text-center">Confronto Misurazioni</Text>
-      <Text className="text-sm text-foreground/70 mb-4 text-center">
+      <Text className="text-xl font-semibold text-foreground mb-0 text-center">Confronto Misurazioni</Text>
+      <Text className="text-sm italics text-foreground mb-4 text-center">
         {comparisonData.previousDate} vs {comparisonData.latestDate}
       </Text>
 
-      {/* Statistiche riassuntive */}
-      <View className="flex-row justify-around mb-6 bg-muted/50 p-3 rounded-lg">
-        <View className="items-center">
-          <Text className="text-green-600 font-bold text-lg">{comparisonData.improvements}</Text>
-          <Text className="text-xs text-foreground/70">Miglioramenti</Text>
-        </View>
-        <View className="items-center">
-          <Text className="text-gray-500 font-bold text-lg">{comparisonData.unchanged}</Text>
-          <Text className="text-xs text-foreground/70">Stabili</Text>
-        </View>
-        <View className="items-center">
-          <Text className="text-red-600 font-bold text-lg">{comparisonData.worsenings}</Text>
-          <Text className="text-xs text-foreground/70">Peggioramenti</Text>
-        </View>
-      </View>
-
       {/* Legenda */}
-      <View className="flex-row justify-center mb-4 space-x-6">
+      <View className="flex-row justify-center space-x-6 gap-3">
         <View className="flex-row items-center">
           <View className="w-4 h-4 bg-gray-400 rounded mr-2" />
-          <Text className="text-sm text-foreground/70">Precedente</Text>
+          <Text className="text-sm text-foreground">Precedente</Text>
         </View>
         <View className="flex-row items-center">
           <View className="w-4 h-4 bg-primary rounded mr-2" />
-          <Text className="text-sm text-foreground/70">Ultima</Text>
+          <Text className="text-sm text-foreground">Ultima</Text>
         </View>
       </View>
 
       {/* BarChart orizzontale scrollabile */}
-      <View className="bg-white/50 dark:bg-gray-800/50 p-4 rounded-lg">
+      <View className="p-4 rounded-lg">
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <BarChart
             data={comparisonData.barData}
             width={Math.max(screenWidth - 80, comparisonData.metrics.length * 80)}
             height={220}
-            barWidth={25}
+            barWidth={30}
             spacing={15}
             roundedTop
-            roundedBottom
             isAnimated
             animationDuration={1000}
             yAxisThickness={1}
             xAxisThickness={1}
             yAxisColor="#e5e7eb"
             xAxisColor="#e5e7eb"
-            yAxisTextStyle={{ color: "#6b7280", fontSize: 10 }}
+            yAxisTextStyle={{ color: colorScheme === "dark" ? "white" : "#6b7280", fontSize: 13 }}
             backgroundColor="transparent"
             showYAxisIndices
             yAxisIndicesColor="#e5e7eb"
           />
         </ScrollView>
+      </View>
+
+      {/* Statistiche riassuntive */}
+      <View className="flex-row justify-around mb-2 dark:bg-muted  p-1 rounded-lg">
+        <View className="items-center">
+          <Text className="text-primary font-bold text-2xl">{comparisonData.improvements}</Text>
+          <Text className="text-md text-foreground">Miglioramenti</Text>
+        </View>
+        <View className="items-center">
+          <Text className="text-muted-foreground font-bold text-2xl">{comparisonData.unchanged}</Text>
+          <Text className="text-md text-foreground">Stabili</Text>
+        </View>
+        <View className="items-center">
+          <Text className="text-destructive font-bold text-2xl">{comparisonData.worsenings}</Text>
+          <Text className="text-md text-foreground">Peggioramenti</Text>
+        </View>
       </View>
 
       {/* Dettaglio variazioni più significative */}

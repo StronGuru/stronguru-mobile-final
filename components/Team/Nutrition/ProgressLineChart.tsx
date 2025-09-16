@@ -1,6 +1,6 @@
 import { NutritionType } from "@/lib/zod/userSchemas";
 import React, { useMemo } from "react";
-import { Dimensions, Text, View } from "react-native";
+import { Dimensions, Text, useColorScheme, View } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 
 interface ProgressLineChartProps {
@@ -9,6 +9,7 @@ interface ProgressLineChartProps {
 
 export default function ProgressLineChart({ nutrition }: ProgressLineChartProps) {
   const screenWidth = Dimensions.get("window").width;
+  const colorScheme = useColorScheme();
 
   const chartData = useMemo(() => {
     const measurements = nutrition.measurements || [];
@@ -39,17 +40,17 @@ export default function ProgressLineChart({ nutrition }: ProgressLineChartProps)
   return (
     <View>
       <Text className="text-lg font-semibold text-foreground mb-3">Andamento Peso nel Tempo</Text>
-      <View className="bg-white/50 dark:bg-gray-800/50 p-2 rounded-lg">
+      <View className="p-2 rounded-lg">
         <LineChart
           data={chartData}
-          width={screenWidth - 100}
+          width={screenWidth - 130}
           height={200}
           color="#10b981"
-          thickness={3}
+          thickness={2}
           dataPointsColor="#10b981"
-          dataPointsRadius={6}
-          textColor="#374151"
-          textFontSize={12}
+          dataPointsRadius={3}
+          textColor={colorScheme === "dark" ? "white" : "#6b7280"}
+          textFontSize={13}
           showValuesAsDataPointsText
           curved
           isAnimated
@@ -65,8 +66,8 @@ export default function ProgressLineChart({ nutrition }: ProgressLineChartProps)
           xAxisThickness={1}
           yAxisColor="#e5e7eb"
           xAxisColor="#e5e7eb"
-          yAxisTextStyle={{ color: "#6b7280", fontSize: 10 }}
-          xAxisLabelTextStyle={{ color: "#6b7280", fontSize: 10 }}
+          yAxisTextStyle={{ color: colorScheme === "dark" ? "white" : "#6b7280", fontSize: 13 }}
+          xAxisLabelTextStyle={{ color: colorScheme === "dark" ? "white" : "#6b7280", fontSize: 13 }}
         />
       </View>
     </View>
