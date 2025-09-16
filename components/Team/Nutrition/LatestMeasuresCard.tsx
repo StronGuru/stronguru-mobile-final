@@ -1,7 +1,7 @@
 import { BiaEntryType, MeasurementEntryType } from "@/lib/zod/userSchemas";
 import { useUserDataStore } from "@/src/store/userDataStore";
 import { useMemo } from "react";
-import { Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
 const formatDate = (d?: string) => {
   if (!d) return "—";
@@ -20,11 +20,11 @@ const getLatest = <T, K extends keyof T>(arr?: T[], dateKey?: K) => {
   );
 };
 
-function StatItem({ label, value }: { label: string; value: string | number }) {
+function HorizontalCard({ label, value }: { label: string; value: string | number }) {
   return (
-    <View className="w-[48%] mb-3">
-      <Text className="text-md text-primary font-semibold">{label}</Text>
-      <Text className="text-foreground text-lg font-semibold mt-1">{value ?? "—"}</Text>
+    <View className="bg-secondary dark:bg-primary rounded-2xl p-1 mr-2 min-w-[90px] items-center">
+      <Text className="text-lg font-bold text-primary dark:text-card text-center">{value ?? "—"}</Text>
+      <Text className="text-sm text-muted-foreground dark:text-card font-semibold text-center">{label}</Text>
     </View>
   );
 }
@@ -33,17 +33,14 @@ interface LatestMeasuresCardProps {
   profileId?: string;
 }
 
-export default function LatestMeasuresCard({ profileId }: LatestMeasuresCardProps) {
+export default function HorizontalCardsLayout({ profileId }: LatestMeasuresCardProps) {
   const { user } = useUserDataStore();
 
   const profileWithNutrition = useMemo(() => {
     if (!user?.profiles) return null;
-
     if (profileId) {
-      // Usa il profileId specifico
       return user.profiles.find((p) => p._id === profileId && p.nutrition) || null;
     } else {
-      // Fallback: primo con nutrition
       return user.profiles.find((p) => p.nutrition) || null;
     }
   }, [user?.profiles, profileId]);
@@ -63,22 +60,22 @@ export default function LatestMeasuresCard({ profileId }: LatestMeasuresCardProp
 
   return (
     <View className="bg-card p-4 rounded-lg mt-6 shadow-sm border border-secondary">
-      <Text className="text-2xl font-semibold text-primary">Ultime misurazioni</Text>
+      <Text className="text-xl font-semibold text-primary">Ultime misurazioni</Text>
 
-      <View className="mt-3 mb-3">
-        <Text className="text-sm text-muted-foreground italic">
+      <View className=" mb-3">
+        <Text className="text-sm text-muted-foreground dark:text-foreground italic">
           Ultima misurazione: {formatDate(latestMeasurement?.date)} • Ultima BIA: {formatDate(latestBia?.examDate)}
         </Text>
       </View>
 
-      <View className="flex-row flex-wrap justify-between">
-        <StatItem label="Peso" value={latestMeasurement?.weightKg ? `${latestMeasurement.weightKg} kg` : "—"} />
-        <StatItem label="BMI" value={latestMeasurement?.bmi ?? "—"} />
-        <StatItem label="Vita" value={latestMeasurement?.waistCm ? `${latestMeasurement.waistCm} cm` : "—"} />
-        <StatItem label="Massa grassa" value={latestBia?.fatMassKg ? `${latestBia.fatMassKg} kg` : "—"} />
-        <StatItem label="Massa magra" value={latestBia?.leanMassKg ? `${latestBia.leanMassKg} kg` : "—"} />
-        <StatItem label="Metabolismo basale" value={latestBia?.basalMetabolismKg ? `${latestBia.basalMetabolismKg} kcal` : "—"} />
-      </View>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row ">
+        <HorizontalCard label="Peso" value={latestMeasurement?.weightKg ? `${latestMeasurement.weightKg} kg` : "—"} />
+        <HorizontalCard label="BMI" value={latestMeasurement?.bmi ?? "—"} />
+        <HorizontalCard label="Vita" value={latestMeasurement?.waistCm ? `${latestMeasurement.waistCm} cm` : "—"} />
+        <HorizontalCard label="M. grassa" value={latestBia?.fatMassKg ? `${latestBia.fatMassKg} kg` : "—"} />
+        <HorizontalCard label="M. magra" value={latestBia?.leanMassKg ? `${latestBia.leanMassKg} kg` : "—"} />
+        <HorizontalCard label="Metabolismo" value={latestBia?.basalMetabolismKg ? `${latestBia.basalMetabolismKg} kcal` : "—"} />
+      </ScrollView>
     </View>
   );
 }
