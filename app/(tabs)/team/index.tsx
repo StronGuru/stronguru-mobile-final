@@ -62,8 +62,8 @@ export default function Team() {
   return (
     <SafeAreaView className="flex-1 px-4 pt-4 bg-background ">
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View className="flex-row flex-wrap justify-between px-4">
-          <Text className="w-full text-2xl font-semibold my-4 text-foreground">Il tuo Team</Text>
+        <View className="flex-row flex-wrap px-4">
+          <Text className="w-full text-2xl font-semibold my-4 pb-2 text-foreground border-b border-secondary">Il tuo Team</Text>
           {profiles.map((profile) => (
             <View key={profile._id} className="w-[33.33%]">
               <ProfessionalCard professional={profile.createdBy} />
@@ -71,7 +71,7 @@ export default function Team() {
           ))}
         </View>
         <View className="flex-1 px-4">
-          <Text className="text-foreground text-2xl font-semibold">I tuoi Dati</Text>
+          <Text className="w-full text-foreground text-2xl font-semibold mb-4 pb-2 border-b border-secondary">I tuoi Dati</Text>
           {/* AGGIUNGI CONDITIONAL RENDER DEI BOTTONI IN BASE ALLA PRESENZA DEGLI ID NUTRITION,TRAINING E PSYCHOLOGY NEL PROFILES ARRAY DELLO USER */}
           <View>
             <TouchableOpacity
