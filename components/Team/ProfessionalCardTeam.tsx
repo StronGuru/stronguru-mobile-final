@@ -52,9 +52,9 @@ const ProfessionalCardTeam = ({ professional }: { professional: ProfessionalType
         router.push(`/team/${professional._id}` as any);
       }}
     >
-      <View className=" items-center mb-4 ">
+      <View className=" items-center shadow-sm mb-4 ">
         {/* Avatar */}
-        <View className="w-28 h-28 rounded-full items-center justify-center mt-4 mb-2 bg-green-200 border-2 border-primary overflow-hidden">
+        <View className="w-28 h-28 rounded-full items-center justify-center mt-4 mb-2 bg-green-200 overflow-hidden">
           {professional.profileImg ? (
             <Image source={{ uri: professional.profileImg }} className="w-28 h-28 rounded-full" resizeMode="cover" />
           ) : (
@@ -64,7 +64,7 @@ const ProfessionalCardTeam = ({ professional }: { professional: ProfessionalType
 
         <View className="items-center  ">
           {/* Name */}
-          <Text className="text-lg font-semibold text-card-foreground mb-2 text-center text-wrap">
+          <Text className="text-lg text-card-foreground mb-2 text-center text-wrap">
             {professional.firstName} {professional.lastName}
           </Text>
 

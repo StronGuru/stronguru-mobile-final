@@ -2,7 +2,7 @@ import ProfessionalCard from "@/components/Team/ProfessionalCardTeam";
 import { ProfileType } from "@/lib/zod/userSchemas";
 import { useAuthStore } from "@/src/store/authStore";
 import { useUserDataStore } from "@/src/store/userDataStore";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
@@ -10,7 +10,6 @@ export default function Team() {
   const { userId } = useAuthStore();
   const [profiles, setProfiles] = useState<ProfileType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const router = useRouter();
   const { fetchUserData } = useUserDataStore();
 
   const fetchUpdatedProfiles = async () => {
@@ -43,6 +42,22 @@ export default function Team() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleNutritionPress = () => {
+    const { user } = useUserDataStore.getState();
+    const nutritionProfiles = user?.profiles?.filter((p) => p.nutrition) || [];
+
+    if (nutritionProfiles.length === 0) {
+      // Nessun nutrizionista
+      return;
+    } else if (nutritionProfiles.length === 1) {
+      // Un solo nutrizionista, vai diretto
+      router.push(`/team/nutrition?profileId=${nutritionProfiles[0]._id}`);
+    } else {
+      // Più nutrizionisti, vai alla selezione
+      router.push("/team/nutrition/selector");
+    }
+  };
+
   if (loading) {
     return (
       <View className="flex-1  bg-background justify-center items-center">
@@ -70,33 +85,28 @@ export default function Team() {
             </View>
           ))}
         </View>
-        <View className="flex-1 px-4">
+        <View className="flex-1 px-4  ">
           <Text className="w-full text-foreground text-2xl font-semibold mb-4 pb-2 border-b border-secondary">I tuoi Dati</Text>
           {/* AGGIUNGI CONDITIONAL RENDER DEI BOTTONI IN BASE ALLA PRESENZA DEGLI ID NUTRITION,TRAINING E PSYCHOLOGY NEL PROFILES ARRAY DELLO USER */}
           <View>
-            <TouchableOpacity
-              onPress={() => {
-                router.push(`/team/nutrition`);
-              }}
-              className="mt-2 bg-secondary rounded-lg p-4 items-center shadow-sm"
-            >
-              <Text className="text-foreground text-3xl">Nutrizione</Text>
+            <TouchableOpacity onPress={handleNutritionPress} className="mt-2  bg-muted dark:bg-primary rounded-2xl p-4 items-center border border-secondary ">
+              <Text className="text-primary dark:text-card text-2xl">Nutrizione</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 router.push(`/team/training`);
               }}
-              className="mt-2 bg-secondary rounded-lg p-4 items-center shadow-sm"
+              className="mt-2  bg-muted dark:bg-primary rounded-2xl p-4 items-center border border-secondary "
             >
-              <Text className="text-foreground text-3xl">Allenamento</Text>
+              <Text className="text-primary dark:text-card text-2xl">Allenamento</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 router.push(`/team/psychology`);
               }}
-              className="mt-2 bg-secondary rounded-lg p-4 items-center shadow-sm"
+              className="mt-2  bg-muted dark:bg-primary rounded-2xl p-4 items-center border border-secondary "
             >
-              <Text className="text-foreground text-3xl">Psicologia</Text>
+              <Text className="text-primary dark:text-card text-2xl">Psicologia</Text>
             </TouchableOpacity>
           </View>
         </View>
