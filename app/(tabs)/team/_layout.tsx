@@ -2,7 +2,7 @@ import { Stack } from "expo-router";
 import React from "react";
 import { useColorScheme } from "react-native";
 
-export default function SearchLayout() {
+export default function TeamLayout() {
   const colorScheme = useColorScheme();
 
   const colors = {
@@ -25,11 +25,13 @@ export default function SearchLayout() {
         headerTitleStyle: { fontWeight: "bold", fontSize: 20 }
       }}
     >
-      <Stack.Screen name="index" options={{ title: "Cerca PRO" }} />
-      <Stack.Screen
-        name="[professionalId]"
-        options={{ title: "Dettagli professionista" }}
-      />
+      <Stack.Screen name="index" options={{ title: "Team" }} />
+      <Stack.Screen name="nutrition/index" options={{ title: "Dati Nutrizione" }} />
+      <Stack.Screen name="nutrition/selector" options={{ title: "" }} />
+      <Stack.Screen name="nutrition/diet/[dietId]" options={{ title: "Dettagli Dieta" }} />
+      <Stack.Screen name="psychology" options={{ title: "Psicologia" }} />
+      <Stack.Screen name="training" options={{ title: "Allenamento" }} />
+      <Stack.Screen name="[professionalId]" options={{ title: "Dettagli Professionista" }} />
     </Stack>
   );
 }
