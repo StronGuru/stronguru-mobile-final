@@ -24,10 +24,6 @@ interface FilterOption {
   label: string;
   value: string;
 }
-interface PriceRange {
-  min: number;
-  max: number;
-}
 
 export default function EventsScreen() {
   const [loading, setLoading] = useState(false);
@@ -228,14 +224,7 @@ export default function EventsScreen() {
           </TouchableOpacity>
         </View>
       </View>
-      <View className="w-[75%] ">
-        <Text className="text-lg font-semibold text-foreground">Eventi</Text>
-        {events && (
-          <Text className="text-foreground">
-            Numero eventi: {events.length}
-          </Text>
-        )}
-      </View>
+
       {/* Filter Modal */}
       <Modal
         visible={openFilter}
