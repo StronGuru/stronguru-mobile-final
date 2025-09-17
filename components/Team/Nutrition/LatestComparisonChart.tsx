@@ -79,8 +79,8 @@ export default function LatestComparisonChart({ nutrition }: LatestComparisonCha
 
   if (!comparisonData) {
     return (
-      <View className="bg-muted/50 p-4 rounded-lg">
-        <Text className="text-foreground/70 text-center">Servono almeno 2 misurazioni complete per il confronto</Text>
+      <View className="bg-muted p-4 rounded-lg">
+        <Text className="text-foreground text-center">Servono almeno 2 misurazioni complete per il grafico di confronto</Text>
       </View>
     );
   }

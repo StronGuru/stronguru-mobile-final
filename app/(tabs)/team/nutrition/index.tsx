@@ -32,8 +32,6 @@ export default function Nutrition() {
   return (
     <ScrollView className="flex-1 bg-background px-4">
       <LatestMeasuresCard profileId={selectedProfile._id} />
-      {/* Altre cards passeranno anche il profileId */}
-      {/* CARD GRAFICI */}
       <NutritionChartsCard profileId={selectedProfile._id} />
       {/* CARD TABELLA DIETE */}
     </ScrollView>

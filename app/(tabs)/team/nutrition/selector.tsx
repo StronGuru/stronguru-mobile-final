@@ -13,26 +13,29 @@ export default function NutritionSelector() {
   };
 
   return (
-    <View className="flex-1 bg-background p-4 ">
-      <Text className="text-primary font-semibold text-2xl text-center mb-1 mt-4">Hai più nutrizionisti nel tuo team.</Text>
-      <Text className="text-foreground text-xl text-center mb-8">I dati di quale nutrizionista vuoi vedere?</Text>
+    <View className="flex-1 bg-background p-4 justify-center items-center">
+      <View className="w-full max-w-sm">
+        <Text className="text-primary font-semibold text-2xl text-center mb-1 ">Hai più nutrizionisti nel tuo team.</Text>
+        <Text className="text-foreground text-xl text-center mb-8">I dati di quale nutrizionista vuoi vedere?</Text>
 
-      <FlatList
-        data={nutritionProfiles}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => handleProfileSelect(item._id)}
-            className="flex items-center bg-muted dark:bg-primary p-4 rounded-2xl mb-3 border border-secondary "
-          >
-            <Text className="text-lg font-semibold text-primary dark:text-card">
-              {item.createdBy?.firstName} {item.createdBy?.lastName}
-            </Text>
+        <FlatList
+          data={nutritionProfiles}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => handleProfileSelect(item._id)}
+              className="flex items-center bg-muted dark:bg-primary p-4 rounded-2xl mb-3 border border-secondary "
+            >
+              <Text className="text-lg font-semibold text-primary dark:text-card">
+                {item.createdBy?.firstName} {item.createdBy?.lastName}
+              </Text>
 
-            {/* {item.createdBy?.specializations && <Text className="text-sm text-foreground mt-1">{item.createdBy.specializations.join(", ")}</Text>} */}
-          </TouchableOpacity>
-        )}
-      />
+              {/* {item.createdBy?.specializations && <Text className="text-sm text-foreground mt-1">{item.createdBy.specializations.join(", ")}</Text>} */}
+            </TouchableOpacity>
+          )}
+          className="w-full "
+        />
+      </View>
     </View>
   );
 }

@@ -32,7 +32,7 @@ export default function ProgressLineChart({ nutrition }: ProgressLineChartProps)
   if (chartData.length === 0) {
     return (
       <View className="bg-muted p-4 rounded-lg">
-        <Text className="text-foreground/70 text-center">Dati insufficienti per il grafico di progresso</Text>
+        <Text className="text-foreground text-center">Dati insufficienti per il grafico di progresso peso</Text>
       </View>
     );
   }
