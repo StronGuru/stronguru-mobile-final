@@ -57,66 +57,66 @@ const MeasurementEntrySchema = z.object({
   _id: z.string().optional()
 });
 
-// food / substitute item
 const FoodItemSchema = z.object({
   name: z.string(),
-  quantity: z.union([z.number(), z.string()]).optional(),
-  unit: z.string().optional(),
-  _id: z.string().optional()
+  quantity: z.number(), // Nei tuoi dati è sempre number, non union
+  unit: z.string(),
+  _id: z.string()
 });
 
-// supplement item
+// supplement item (stesso del food)
 const SupplementItemSchema = z.object({
   name: z.string(),
-  quantity: z.union([z.number(), z.string()]).optional(),
-  unit: z.string().optional(),
-  _id: z.string().optional()
+  quantity: z.number(), // Nei tuoi dati è sempre number
+  unit: z.string(),
+  _id: z.string()
 });
 
-// meal structure (breakfast, lunch, ecc.)
+// meal structure - i campi sono sempre presenti nei tuoi dati
 const MealSchema = z.object({
-  foods: z.array(FoodItemSchema).optional(),
-  substitutes: z.array(FoodItemSchema).optional(),
-  _id: z.string().optional()
+  foods: z.array(FoodItemSchema),
+  substitutes: z.array(FoodItemSchema),
+  _id: z.string()
 });
 
-// supplementation
-const SupplementationSchema = z
-  .object({
-    supplements: z.array(SupplementItemSchema).optional(),
-    substitutes: z.array(SupplementItemSchema).optional()
-  })
-  .optional();
+// supplementation - sempre presente nella struttura
+const SupplementationSchema = z.object({
+  supplements: z.array(SupplementItemSchema),
+  substitutes: z.array(SupplementItemSchema)
+});
 
-// daily plan wrapper
+// daily plan schema - corretto per matchare la struttura reale
 const DailyPlanSchema = z.object({
-  day: z.string(),
-  plan: z.object({
-    supplementation: SupplementationSchema.optional(),
-    breakfast: MealSchema.optional(),
-    morningSnack: MealSchema.optional(),
-    lunch: MealSchema.optional(),
-    afternoonSnack: MealSchema.optional(),
-    dinner: MealSchema.optional(),
-    _id: z.string().optional()
-  }),
-  _id: z.string().optional()
+  supplementation: SupplementationSchema,
+  breakfast: MealSchema,
+  morningSnack: MealSchema,
+  lunch: MealSchema,
+  afternoonSnack: MealSchema,
+  dinner: MealSchema,
+  _id: z.string()
 });
 
-// dieta / plan settimanale
+// weekly plan item - il "day" ha valori specifici
+const WeeklyPlanItemSchema = z.object({
+  day: z.enum(["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]),
+  plan: DailyPlanSchema,
+  _id: z.string()
+});
+
+// dieta schema - corretto per i campi obbligatori nei tuoi dati
 const DietSchema = z.object({
-  name: z.string().optional(),
-  goal: z.string().optional(),
-  notes: z.string().optional(),
-  duration: z.number().optional(),
-  startDate: z.string().optional(),
-  endDate: z.string().optional(),
-  status: z.boolean().optional(),
-  type: z.string().optional(),
-  weeklyPlan: z.array(DailyPlanSchema).optional(),
-  _id: z.string().optional(),
-  createdAt: z.string().optional(),
-  updatedAt: z.string().optional()
+  _id: z.string(),
+  name: z.string(),
+  goal: z.string(),
+  notes: z.string(),
+  duration: z.number(),
+  startDate: z.string(),
+  endDate: z.string(),
+  status: z.boolean(),
+  type: z.string(),
+  weeklyPlan: z.array(WeeklyPlanItemSchema),
+  createdAt: z.string(),
+  updatedAt: z.string()
 });
 
 // ------------------ Nutrition, Training, Psychology schemi ------------------
@@ -204,3 +204,9 @@ export type NutritionType = z.infer<typeof NutritionSchema>;
 export type DietType = z.infer<typeof DietSchema>;
 export type BiaEntryType = z.infer<typeof BiaEntrySchema>;
 export type MeasurementEntryType = z.infer<typeof MeasurementEntrySchema>;
+export type FoodItemType = z.infer<typeof FoodItemSchema>;
+export type SupplementItemType = z.infer<typeof SupplementItemSchema>;
+export type MealType = z.infer<typeof MealSchema>;
+export type SupplementationType = z.infer<typeof SupplementationSchema>;
+export type DailyPlanType = z.infer<typeof DailyPlanSchema>;
+export type WeeklyPlanItemType = z.infer<typeof WeeklyPlanItemSchema>;

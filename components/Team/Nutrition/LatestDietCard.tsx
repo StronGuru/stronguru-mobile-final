@@ -1,0 +1,17 @@
+import { DietType } from "@/lib/zod/userSchemas";
+import { Text, View } from "react-native";
+import DietElementCard from "./DietElementCard";
+
+interface LatestDietCardProps {
+  diet: DietType;
+  profileId: string;
+}
+
+export default function LatestDietCard({ diet, profileId }: LatestDietCardProps) {
+  return (
+    <View className="bg-card shadow-sm p-4 rounded-lg my-2 border border-secondary">
+      <Text className="text-xl font-semibold text-foreground mb-2">La più recente</Text>
+      <DietElementCard diet={diet} profileId={profileId} variant="latest" />
+    </View>
+  );
+}
