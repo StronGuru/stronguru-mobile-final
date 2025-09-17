@@ -110,7 +110,7 @@ export default function Nutrition() {
               onPress={() => setSelectedTab(option.key)}
               className={`flex-1 flex-row items-center justify-center py-3 px-3 rounded-md ${selectedTab === option.key ? "bg-primary" : "bg-transparent"}`}
             >
-              <Text className={`text-sm font-medium ms-3 ${selectedTab === option.key ? "text-primary-foreground" : "text-foreground"}`}>{option.label}</Text>
+              <Text className={`text-md font-medium ms-3 ${selectedTab === option.key ? "text-primary-foreground" : "text-foreground"}`}>{option.label}</Text>
             </TouchableOpacity>
           ))}
         </View>

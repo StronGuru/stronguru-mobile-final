@@ -65,7 +65,7 @@ export default function DietElementCard({ diet, profileId, variant = "list" }: D
   const isLatest = variant === "latest";
 
   return (
-    <View className={`bg-muted p-4 rounded-lg border border-accent `}>
+    <View className={`bg-muted p-4 shadow-sm rounded-lg border border-secondary `}>
       {/* Header con titolo e status */}
       <View className="flex-row items-center justify-between mb-1">
         <View className="flex-1 mr-3">
@@ -82,14 +82,12 @@ export default function DietElementCard({ diet, profileId, variant = "list" }: D
       </View>
 
       {/* Info secondarie */}
-      <View className="space-y-2">
-        <Text className="text-sm text-foreground text-wrap">{formatDateRange(diet.startDate, diet.endDate)}</Text>
-        <View className="flex-col items-start justify-between">
-          <Text className="text-sm text-foreground">
-            {diet.goal} • {diet.type}
-          </Text>
-          <Text className="text-sm text-primary font-medium">{diet.duration} settimane</Text>
-        </View>
+      <View className="mt-2 gap-1">
+        <Text className="text-sm text-foreground text-wrap italic">{formatDateRange(diet.startDate, diet.endDate)}</Text>
+        <Text className="text-sm font-semibold text-foreground">
+          {diet.goal} • {diet.type}
+        </Text>
+        <Text className="text-sm text-primary font-semibold">{diet.duration} settimane</Text>
       </View>
     </View>
   );
