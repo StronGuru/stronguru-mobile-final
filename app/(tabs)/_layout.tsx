@@ -108,9 +108,8 @@ export default function TabsLayout() {
         name="team"
         options={{
           title: "Team",
-          tabBarIcon: ({ color, focused }) => (
-            <TabIcon icon={UsersRound} color={color} focused={focused} />
-          ),
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => <TabIcon icon={UsersRound} color={color} focused={focused} />,
           tabBarStyle: user?.profiles?.length
             ? {
                 backgroundColor: currentColors.background,
