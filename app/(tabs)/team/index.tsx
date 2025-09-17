@@ -51,6 +51,7 @@ export default function Team() {
       training: { available: hasTraining, stats: trainingStats },
       psychology: { available: hasPsychology }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profiles]); // Ricalcola quando cambiano i profiles
 
   const fetchUpdatedProfiles = async () => {
