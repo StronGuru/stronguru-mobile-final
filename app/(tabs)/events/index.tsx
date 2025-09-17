@@ -1,4 +1,5 @@
 import apiClient from "@/api/apiClient";
+import { useRouter } from "expo-router";
 import { Filter, MapPin, Search, X } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import {
@@ -40,6 +41,7 @@ export default function EventsScreen() {
   const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [minPrice, setMinPrice] = useState<string>("");
   const [maxPrice, setMaxPrice] = useState<string>("");
+  const router = useRouter();
 
   const filteredEvents = events
     .filter((event) => {
@@ -137,6 +139,7 @@ export default function EventsScreen() {
     } catch (error) {
       console.error("Errore nel caricamento degli eventi:", error);
     } finally {
+      console.log("Finished loading");
       setLoading(false);
     }
   };
@@ -147,7 +150,11 @@ export default function EventsScreen() {
 
   const EventCard = ({ event }: { event: EventsType }) => {
     return (
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          router.push(`/events/${event._id}` as any);
+        }}
+      >
         <View className="bg-card rounded-xl mb-4 shadow-sm border border-border">
           {/* Header con titolo e logo */}
           <View className="flex-row items-center p-4 border-b border-border">

@@ -1,139 +1,78 @@
-// app/ProfessionalDetails.tsx
 import apiClient from "@/api/apiClient";
-import { useUserDataStore } from "@/src/store/userDataStore";
-import { router, useLocalSearchParams } from "expo-router";
-import {
-  Award,
-  Book,
-  Brain,
-  Building2,
-  Dumbbell,
-  Mail,
-  Phone,
-  Rocket,
-  Salad
-} from "lucide-react-native";
+import { useLocalSearchParams } from "expo-router";
+import { Calendar, Clock, MapPin, Tag, User, Users } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Image,
+  ImageBackground,
   SafeAreaView,
   ScrollView,
   Text,
-  TouchableOpacity,
   View
 } from "react-native";
 
-interface Address {
-  street: string;
-  city: string;
-  cap: string;
-  province: string;
-  country: string;
-}
-
-type BadgeType = "salad" | "dumbbell" | "brain";
-
-type Professional = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  address: Address;
-  profileImg: string | null;
-  ambassador: boolean;
-  specializations: string[];
-  gender: string;
-  email: string;
-  phone: string;
-  dateOfBirth: string;
-  certifications: Certification[];
-  qualifications: Qualification[];
+type Event = {
+  _id: string;
+  titolo: string;
+  descrizione: string;
+  data_inizio: string;
+  data_fine: string;
+  luogo: string;
+  organizzatore: string;
+  immagine: string;
+  categoria: string;
+  prezzo: number;
+  posti_disponibili: number;
+  tags: string[];
 };
 
-interface Certification {
-  certificationName: string;
-  issuingOrganization: string;
-  level: string;
-  certificationId: string;
-  certificationUrl: string;
-  issueDate: string;
-  expirationDate: string;
-}
-interface Qualification {
-  degreeTitle: string;
-  institution: string;
-  fieldOfStudy: string;
-  startDate: string;
-  completionDate: string;
-}
-
-export default function ProfessionalDetails() {
-  const [professional, setProfessional] = useState<Professional | null>(null);
+export default function EventDetails() {
+  const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const { user } = useUserDataStore();
 
   // Ottieni l'ID dai parametri di ricerca con Expo Router
-  const { professionalId } = useLocalSearchParams<{ professionalId: string }>();
+  const { eventsId } = useLocalSearchParams<{ eventsId: string }>();
 
   useEffect(() => {
-    const fetchProfessionals = async () => {
-      //   console.log("Fetching professional with ID:", professionalId);
+    const fetchEvent = async () => {
+      console.log("Fetching event with ID:", eventsId);
+
       try {
         setLoading(true);
-        const resp = await apiClient.get(`/professionals/${professionalId}`);
+        const resp = await apiClient.get(`/events/${eventsId}`);
+
         if (!resp.data) {
-          throw new Error("Errore nel caricamento del professionista");
-        } else {
-          setProfessional(resp.data);
+          throw new Error("Errore nel caricamento dell'evento");
         }
+
+        setEvent(resp.data);
       } catch (error) {
-        console.error("Errore nel caricamento del professionista:", error);
+        console.error("Errore nel caricamento dell'evento:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProfessionals();
-  }, [professionalId]);
-
-  const getBadgesFromSpecializations = (
-    specializations: string[]
-  ): BadgeType[] => {
-    const badges: BadgeType[] = [];
-
-    if (specializations.includes("trainer")) {
-      badges.push("dumbbell");
+    if (eventsId) {
+      fetchEvent();
     }
-    if (specializations.includes("psychologist")) {
-      badges.push("brain");
-    }
-    if (specializations.includes("nutritionist")) {
-      badges.push("salad");
-    }
+  }, [eventsId]);
 
-    return badges;
-  };
-
-  const renderBadgeIcon = (badge: BadgeType) => {
-    switch (badge) {
-      case "dumbbell":
-        return <Dumbbell size={20} color="white" />;
-      case "brain":
-        return <Brain size={20} color="white" />;
-      case "salad":
-        return <Salad size={20} color="white" />;
-      default:
-        return null;
-    }
-  };
-
-  const getInitials = (firstName: string, lastName: string): string => {
-    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
-  };
-
-  const formatDate = (dateString: string): string => {
+  const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("it-IT");
+    return date.toLocaleDateString("it-IT", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+  };
+
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString("it-IT", {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
   };
 
   if (loading) {
@@ -147,314 +86,166 @@ export default function ProfessionalDetails() {
     );
   }
 
-  if (!professional) {
+  if (!event) {
     return (
       <SafeAreaView className="flex-1 bg-background">
         <View className="flex-1 justify-center items-center">
-          <Text className="text-foreground">Professionista non trovato</Text>
+          <Text className="text-foreground">Evento non trovato</Text>
         </View>
       </SafeAreaView>
     );
   }
 
-  const badges = getBadgesFromSpecializations(professional.specializations);
-
-  function getPrivateRoomName(id1: string, id2: string) {
-    return [id1, id2].sort().join("_");
-  }
-
-  const roomId = getPrivateRoomName(professionalId, user?._id as string);
-  console.log("user:", user);
-
   return (
-    <SafeAreaView className="flex-1 bg-background ">
-      <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
-        {/* Header verde con immagine e nome */}
-        <View className="bg-primary rounded-2xl p-6 mb-6 items-center">
-          {/* Avatar */}
-          <View className="w-24 h-24 rounded-full items-center justify-center mb-4 bg-muted-foreground overflow-hidden">
-            {professional.profileImg ? (
-              <Image
-                source={{ uri: professional.profileImg }}
-                className="w-24 h-24 rounded-full"
-                resizeMode="cover"
-              />
-            ) : (
-              <Text className="text-3xl font-bold text-primary-foreground">
-                {getInitials(professional.firstName, professional.lastName)}
-              </Text>
-            )}
-          </View>
+    <SafeAreaView className="flex-1 bg-background">
+      <ScrollView className="flex-1">
+        {/* Header con immagine di background */}
+        <View className="relative h-64">
+          <ImageBackground
+            source={{ uri: event.immagine }}
+            className="flex-1"
+            resizeMode="cover"
+          >
+            {/* Overlay */}
+            <View className="absolute inset-0 bg-black/40" />
 
-          {/* Nome e Cognome */}
-          <Text className="text-2xl font-bold text-primary-foreground text-center mb-4">
-            {professional.firstName} {professional.lastName}
-          </Text>
-
-          {/* Badges Specializzazioni */}
-          <View className="flex-row gap-3">
-            {badges.map((badge: BadgeType, index: number) => (
-              <View
-                key={badge}
-                className="w-12 h-12 bg-accent rounded-full items-center justify-center"
-              >
-                {renderBadgeIcon(badge)}
+            {/* Tags in alto */}
+            <View className="absolute top-4 left-4 right-4">
+              <View className="flex-row flex-wrap gap-2">
+                {event.tags.map((tag, index) => (
+                  <View
+                    key={index}
+                    className="bg-primary px-3 py-1 rounded-full"
+                  >
+                    <Text className="text-foreground text-sm font-medium">
+                      {tag}
+                    </Text>
+                  </View>
+                ))}
               </View>
-            ))}
-          </View>
-          <View className="mt-4">
-            <TouchableOpacity
-              onPress={() => {
-                router.push(`/chat/${roomId}`);
-              }}
-              className="bg-muted px-4 py-2 rounded-xl"
-            >
-              <Text className="text-white text-center">
-                Chatta con il professionista
-              </Text>
-            </TouchableOpacity>
-          </View>
-          {professional.ambassador === true && (
-            <View className="absolute top-4 left-4 w-10 h-10 rounded-full items-center justify-center bg-orange-400">
-              <Rocket size={20} color="white" />
             </View>
-          )}
+
+            {/* Titolo sovrapposto */}
+            <View className="absolute bottom-4 left-4 right-4">
+              <Text className="text-white text-2xl font-bold mb-2">
+                {event.titolo}
+              </Text>
+            </View>
+          </ImageBackground>
         </View>
 
-        {/* Informazioni personali */}
-        <View className="bg-card rounded-2xl p-6 mb-4 shadow-sm">
-          <Text className="text-xl font-semibold text-accent mb-4">
-            Informazioni
-          </Text>
-
-          <View className="space-y-3">
-            <View className="flex-row justify-between items-center py-2">
-              <Text className="text-muted-foreground">Data di nascita</Text>
-              <Text className="text-card-foreground font-medium">
-                {formatDate(professional.dateOfBirth)}
-              </Text>
-            </View>
-
-            <View className="h-px bg-border" />
-
-            <View className="flex-row justify-between items-center py-2">
-              <Text className="text-muted-foreground">Genere</Text>
-              <Text className="text-card-foreground font-medium">
-                {professional.gender === "male"
-                  ? "Uomo"
-                  : professional.gender === "female"
-                    ? "Donna"
-                    : "Non specificato"}
-              </Text>
-            </View>
-
-            <View className="h-px bg-border " />
-
-            <View className="flex-row justify-between items-center py-2 ">
-              <Text className="text-muted-foreground">Posizione</Text>
-              <Text className="text-card-foreground font-medium">
-                {professional.address?.city || "N/A"},{" "}
-                {professional.address?.province || "N/A"}
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Contatti */}
-        <View className="bg-card rounded-2xl p-6 shadow-sm">
-          <Text className="text-xl font-semibold text-accent mb-4">
-            Contatti
-          </Text>
-
-          <View className="space-y-4">
-            {/* Email */}
-            <View className="flex-row items-center mb-3">
-              <View className="w-10 h-10 bg-secondary rounded-full items-center justify-center mr-3">
-                <Mail size={20} color="#10b981" />
+        {/* Corpo */}
+        <View className="p-4">
+          <View className="bg-card rounded-2xl p-6 mb-4 shadow-sm">
+            <View className="flex-row justify-between items-start mb-4">
+              {/* Organizzatore */}
+              <View className="flex-1 mr-4">
+                <View className="flex-row items-center mb-2">
+                  <User size={20} color="#10b981" />
+                  <Text className="text-muted-foreground ml-2">
+                    Organizzatore
+                  </Text>
+                </View>
+                <Text className="text-card-foreground font-semibold text-lg">
+                  {event.organizzatore}
+                </Text>
               </View>
-              <View className="flex-1">
-                <Text className="text-muted-foreground text-sm">Email</Text>
+
+              {/* Prezzo */}
+              <View className="bg-primary/10 px-4 py-2 rounded-lg">
+                <Text className="text-primary font-bold text-lg">
+                  {event.prezzo === 0 ? "Gratuito" : `€${event.prezzo}`}
+                </Text>
+              </View>
+            </View>
+
+            <View className="h-px bg-border mb-4" />
+
+            {/* Luogo */}
+            <View className="flex-row items-center mb-4">
+              <MapPin size={20} color="#10b981" />
+              <Text className="text-card-foreground font-semibold ml-2 flex-1">
+                {event.luogo}
+              </Text>
+            </View>
+
+            <View className="h-px bg-border mb-4" />
+
+            {/* Date */}
+            <View className="flex-row justify-between">
+              {/* Data inizio */}
+              <View className="flex-1 mr-2">
+                <View className="flex-row items-center mb-2">
+                  <Calendar size={16} color="#64748b" />
+                  <Text className="text-muted-foreground ml-2 text-sm">
+                    Data inizio
+                  </Text>
+                </View>
                 <Text className="text-card-foreground font-medium">
-                  {professional.email}
+                  {formatDate(event.data_inizio)}
+                </Text>
+                <Text className="text-muted-foreground text-sm">
+                  {formatTime(event.data_inizio)}
                 </Text>
               </View>
-            </View>
 
-            <View className="h-px bg-border ml-13 " />
-
-            {/* Telefono */}
-            <View className="flex-row items-center mt-3">
-              <View className="w-10 h-10 bg-secondary rounded-full items-center justify-center mr-3">
-                <Phone size={20} color="#10b981" />
-              </View>
-              <View className="flex-1">
-                <Text className="text-muted-foreground text-sm">Cellulare</Text>
+              {/* Data fine */}
+              <View className="flex-1 ml-2">
+                <View className="flex-row items-center mb-2">
+                  <Clock size={16} color="#64748b" />
+                  <Text className="text-muted-foreground ml-2 text-sm">
+                    Data fine
+                  </Text>
+                </View>
                 <Text className="text-card-foreground font-medium">
-                  {professional.phone}
+                  {formatDate(event.data_fine)}
+                </Text>
+                <Text className="text-muted-foreground text-sm">
+                  {formatTime(event.data_fine)}
                 </Text>
               </View>
             </View>
           </View>
+
+          {/* Dettagli aggiuntivi */}
+          <View className="bg-card rounded-2xl p-6 mb-4 shadow-sm">
+            {/* Posti disponibili */}
+            <View className="flex-row justify-between items-center mb-4">
+              <View className="flex-row items-center">
+                <Users size={20} color="#10b981" />
+                <Text className="text-muted-foreground ml-2">
+                  Posti disponibili
+                </Text>
+              </View>
+              <Text className="text-card-foreground font-semibold">
+                {event.posti_disponibili}
+              </Text>
+            </View>
+
+            <View className="h-px bg-border mb-4" />
+
+            {/* Categoria */}
+            <View className="flex-row justify-between items-center">
+              <View className="flex-row items-center">
+                <Tag size={20} color="#10b981" />
+                <Text className="text-muted-foreground ml-2">Categoria</Text>
+              </View>
+              <Text className="text-card-foreground font-semibold">
+                {event.categoria}
+              </Text>
+            </View>
+          </View>
+
+          {/* Descrizione */}
+          <View className="bg-card rounded-2xl p-6 shadow-sm">
+            <Text className="text-xl font-semibold text-accent mb-4">
+              Descrizione
+            </Text>
+            <Text className="text-card-foreground leading-6">
+              {event.descrizione}
+            </Text>
+          </View>
         </View>
-        {/* Certificazioni */}
-        {professional.certifications &&
-          professional.certifications.length > 0 && (
-            <View className="bg-card rounded-2xl p-6 shadow-sm mt-4">
-              <View className="flex-row items-center mb-4">
-                <Award size={24} color="#10b981" />
-                <Text className="text-xl font-semibold text-card-foreground ml-2">
-                  Certificazioni
-                </Text>
-              </View>
-
-              <View className="space-y-4">
-                {professional.certifications.map(
-                  (cert: Certification, index: number) => (
-                    <View
-                      key={`${cert.certificationId}-${index}`}
-                      className="border border-border my-3 rounded-xl p-4"
-                    >
-                      {/* Nome certificazione */}
-                      <Text className="text-lg font-semibold text-card-foreground mb-2">
-                        {cert.certificationName}
-                      </Text>
-
-                      {/* Organizzazione */}
-                      <View className="flex-row items-center mb-3">
-                        <Building2 size={16} color="#64748b" />
-                        <Text className="text-muted-foreground ml-2">
-                          {cert.issuingOrganization}
-                        </Text>
-                      </View>
-
-                      <View className="space-y-2">
-                        {/* Livello */}
-                        <View className="flex-row justify-between items-center py-1">
-                          <Text className="text-muted-foreground">Livello</Text>
-                          <Text className="text-card-foreground font-medium">
-                            {cert.level}
-                          </Text>
-                        </View>
-
-                        <View className="h-px bg-border" />
-
-                        {/* Data rilascio */}
-                        <View className="flex-row justify-between items-center py-1">
-                          <Text className="text-muted-foreground">
-                            Data rilascio
-                          </Text>
-                          <Text className="text-card-foreground font-medium">
-                            {formatDate(cert.issueDate)}
-                          </Text>
-                        </View>
-
-                        <View className="h-px bg-border" />
-
-                        {/* Data scadenza */}
-                        <View className="flex-row justify-between items-center py-1">
-                          <Text className="text-muted-foreground">
-                            Data scadenza
-                          </Text>
-                          <Text className="text-card-foreground font-medium">
-                            {formatDate(cert.expirationDate)}
-                          </Text>
-                        </View>
-
-                        <View className="h-px bg-border" />
-
-                        {/* ID Certificazione */}
-                        <View className="flex-row justify-between items-center py-1">
-                          <Text className="text-muted-foreground">
-                            ID Certificazione
-                          </Text>
-                          <Text className="text-card-foreground font-medium">
-                            {cert.certificationId}
-                          </Text>
-                        </View>
-
-                        {/* URL se presente */}
-                        {cert.certificationUrl && (
-                          <>
-                            <View className="h-px bg-border" />
-                            <View className="flex-row justify-between items-center py-1">
-                              <Text className="text-muted-foreground">URL</Text>
-                              <Text
-                                className=" font-medium text-accent underline"
-                                numberOfLines={1}
-                              >
-                                {cert.certificationUrl}
-                              </Text>
-                            </View>
-                          </>
-                        )}
-                      </View>
-                    </View>
-                  )
-                )}
-              </View>
-            </View>
-          )}
-
-        {/* Qualifications */}
-        {professional.qualifications &&
-          professional.qualifications.length > 0 && (
-            <View className="bg-card rounded-2xl p-6 shadow-sm mt-4">
-              <View className="flex-row items-center mb-4">
-                <Book size={24} color="#10b981" />
-                <Text className="text-xl font-semibold text-card-foreground ml-2">
-                  Titoli di studio
-                </Text>
-              </View>
-
-              <View className="space-y-4">
-                {professional.qualifications.map(
-                  (qual: Qualification, index: number) => (
-                    <View
-                      key={`qualifica-${index}`}
-                      className="border border-border my-3 rounded-xl p-4"
-                    >
-                      {/* titolo di studio e campo  */}
-                      <Text className="text-lg font-semibold text-card-foreground mb-2">
-                        {qual.degreeTitle} in {qual.fieldOfStudy}
-                      </Text>
-
-                      {/* istituzione  */}
-                      <View className="flex-row items-center mb-3">
-                        <Building2 size={16} color="#64748b" />
-                        <Text className="text-muted-foreground ml-2">
-                          {qual.institution}
-                        </Text>
-                      </View>
-
-                      <View className="space-y-2">
-                        {/* Data rilascio */}
-                        <View className="flex-row justify-between items-center py-1">
-                          <Text className="text-muted-foreground">
-                            Data inizio
-                          </Text>
-                          <Text className="text-card-foreground font-medium">
-                            {formatDate(qual.startDate)}
-                          </Text>
-                        </View>
-
-                        <View className="h-px bg-border" />
-
-                        {/* Data scadenza */}
-                        <View className="flex-row justify-between items-center py-1">
-                          <Text className="text-muted-foreground">
-                            Data fine
-                          </Text>
-                          <Text className="text-card-foreground font-medium">
-                            {formatDate(qual.completionDate)}
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
-                  )
-                )}
-              </View>
-            </View>
-          )}
       </ScrollView>
     </SafeAreaView>
   );
