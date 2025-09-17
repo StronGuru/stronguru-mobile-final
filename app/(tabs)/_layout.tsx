@@ -1,7 +1,14 @@
 import { useAuthStore } from "@/src/store/authStore";
 import { useUserDataStore } from "@/src/store/userDataStore";
 import { Tabs } from "expo-router";
-import { CalendarSearch, Home, MessagesSquare, Search, Settings, UsersRound } from "lucide-react-native";
+import {
+  CalendarSearch,
+  Home,
+  MessagesSquare,
+  Search,
+  Settings,
+  UsersRound
+} from "lucide-react-native";
 import { useEffect } from "react";
 import { useColorScheme, View } from "react-native";
 
@@ -26,7 +33,15 @@ export default function TabsLayout() {
   };
   const currentColors = colors[colorScheme ?? "light"];
 
-  const TabIcon = ({ icon: IconComponent, color, focused }: { icon: any; color: string; focused: boolean }) => (
+  const TabIcon = ({
+    icon: IconComponent,
+    color,
+    focused
+  }: {
+    icon: any;
+    color: string;
+    focused: boolean;
+  }) => (
     <View
       style={{
         alignItems: "center",
@@ -34,10 +49,15 @@ export default function TabsLayout() {
         width: 60,
         height: 30,
         borderRadius: 15,
-        backgroundColor: focused ? currentColors.activeTint + "20" : "transparent" // 20 = opacità 12.5%
+        backgroundColor: focused
+          ? currentColors.activeTint + "20"
+          : "transparent" // 20 = opacità 12.5%
       }}
     >
-      <IconComponent size={24} color={focused ? currentColors.activeTint : color} />
+      <IconComponent
+        size={24}
+        color={focused ? currentColors.activeTint : color}
+      />
     </View>
   );
 
@@ -71,7 +91,9 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: "Home",
-          /*  headerShown: false, */ tabBarIcon: ({ color, focused }) => <TabIcon icon={Home} color={color} focused={focused} />
+          /*  headerShown: false, */ tabBarIcon: ({ color, focused }) => (
+            <TabIcon icon={Home} color={color} focused={focused} />
+          )
         }}
       />
       <Tabs.Screen
@@ -79,7 +101,9 @@ export default function TabsLayout() {
         options={{
           title: "CercaPro",
           headerShown: false,
-          tabBarIcon: ({ color, focused }) => <TabIcon icon={Search} color={color} focused={focused} />
+          tabBarIcon: ({ color, focused }) => (
+            <TabIcon icon={Search} color={color} focused={focused} />
+          )
         }}
       />
       {/*    <Tabs.Screen
@@ -97,7 +121,9 @@ export default function TabsLayout() {
         name="team"
         options={{
           title: "Team",
-          tabBarIcon: ({ color, focused }) => <TabIcon icon={UsersRound} color={color} focused={focused} />,
+          tabBarIcon: ({ color, focused }) => (
+            <TabIcon icon={UsersRound} color={color} focused={focused} />
+          ),
           tabBarStyle: user?.profiles?.length
             ? {
                 backgroundColor: currentColors.background,
@@ -112,19 +138,30 @@ export default function TabsLayout() {
         name="events"
         options={{
           title: "Eventi",
-          tabBarIcon: ({ color, focused }) => <TabIcon icon={CalendarSearch} color={color} focused={focused} />
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <TabIcon icon={CalendarSearch} color={color} focused={focused} />
+          )
         }}
       />
       <Tabs.Screen
         name="chat"
-        options={{ title: "Chat", headerShown: false, tabBarIcon: ({ color, focused }) => <TabIcon icon={MessagesSquare} color={color} focused={focused} /> }}
+        options={{
+          title: "Chat",
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <TabIcon icon={MessagesSquare} color={color} focused={focused} />
+          )
+        }}
       />
       <Tabs.Screen
         name="settings"
         options={{
           title: "Settings",
           headerShown: false,
-          tabBarIcon: ({ color, focused }) => <TabIcon icon={Settings} color={color} focused={focused} />
+          tabBarIcon: ({ color, focused }) => (
+            <TabIcon icon={Settings} color={color} focused={focused} />
+          )
         }}
       />
     </Tabs>
