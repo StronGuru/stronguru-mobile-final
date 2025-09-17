@@ -2,7 +2,7 @@ import { Stack } from "expo-router";
 import React from "react";
 import { useColorScheme } from "react-native";
 
-export default function SearchLayout() {
+export default function EventsLayout() {
   const colorScheme = useColorScheme();
 
   const colors = {
@@ -25,11 +25,8 @@ export default function SearchLayout() {
         headerTitleStyle: { fontWeight: "bold", fontSize: 20 }
       }}
     >
-      <Stack.Screen name="index" options={{ title: "Cerca PRO" }} />
-      <Stack.Screen
-        name="[professionalId]"
-        options={{ title: "Dettagli professionista" }}
-      />
+      <Stack.Screen name="index" options={{ title: "Eventi" }} />
+      <Stack.Screen name="[eventsId]" options={{ title: "Dettagli evento" }} />
     </Stack>
   );
 }

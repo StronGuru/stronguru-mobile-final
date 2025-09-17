@@ -4,13 +4,12 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { View } from "react-native";
 /* import { useUserDataStore } from "@/src/store/userDataStore"; */
-import { ChatSidebarNative } from "@/components/chat/ChatSidebar.native";
+import ChatSidebarNative from "@/components/chat/ChatSidebar.native";
 import { useFocusEffect } from "@react-navigation/native";
 
 export default function ChatIndex() {
   const router = useRouter();
-  const { userId } = useAuthStore();
-  /*   const { user } = useUserDataStore(); */
+  const userId = useAuthStore((s: any) => s.user?._id ?? s.user?.id ?? s.userId ?? s.authData?.user?.id ?? "");
   const [rooms, setRooms] = useState<any[]>([]);
 
   useFocusEffect(
@@ -33,16 +32,9 @@ export default function ChatIndex() {
     }, [userId])
   );
 
-  const handleSelect = (room: any) => {
-    const encodedRoom = encodeURIComponent(room.room);
-    const encodedName = encodeURIComponent(room.otherUserName ?? "");
-    // usa pathname + query per evitare problemi di typing/params
-    router.push(`/chat/${encodedRoom}?name=${encodedName}` as any);
-  };
-
   return (
     <View style={{ flex: 1, backgroundColor: "transparent" }}>
-      <ChatSidebarNative rooms={rooms} selectedRoom={null} onRoomSelect={handleSelect} />
+      <ChatSidebarNative rooms={rooms} />
     </View>
   );
 }

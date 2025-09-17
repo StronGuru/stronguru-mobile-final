@@ -1,32 +1,77 @@
-import { ChatMessageItemNative } from "@/components/chat/ChatMessageItem.native";
-import { useChatScrollNative } from "@/hooks/use-chat-scroll.native";
-import { useRealtimeChatNative } from "@/hooks/use-realtime-chat.native";
 import { useFocusEffect } from "@react-navigation/native";
 import { Send } from "lucide-react-native";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView, TextInput, TouchableOpacity, View } from "react-native";
+
+import ChatMessageItemNative from "@/components/chat/ChatMessageItem.native";
+import { useChatScrollNative } from "@/hooks/use-chat-scroll.native";
+import useRealtimeChatNative from "@/hooks/use-realtime-chat.native";
+import { useAuthStore } from "@/src/store/authStore";
+import type { ChatMessage, MessageRow } from "@/src/types/chatTypes";
+import { mapMessageRowToChatMessage } from "@/src/types/chatTypes";
 
 interface Props {
-  roomName: string;
-  username: string;
+  roomName?: string; // legacy
+  roomId?: number | string | null; // prefer numeric id
+  username?: string;
   initialMessages?: any[];
-  onMessage?: (m: any[]) => void;
+  onMessage?: (m: ChatMessage[]) => void;
 }
 
-export const RealtimeChatNative = ({ roomName, username, initialMessages = [], onMessage }: Props) => {
-  const { listRef, scrollToBottom } = useChatScrollNative<any>();
-  const { messages: realtimeMessages, sendMessage, isConnected } = useRealtimeChatNative({ roomName, username });
+export const RealtimeChatNative = ({ roomName, roomId: roomIdProp, username, initialMessages = [], onMessage }: Props) => {
+  const { listRef, scrollToBottom } = useChatScrollNative<ChatMessage>();
+  // prefer explicit roomId, else try to parse roomName
+  const roomId = roomIdProp ? Number(roomIdProp) : roomName ? Number(roomName) : null;
+
+  const currentUserId = useAuthStore((s: any) => s.userId ?? s.user?._id ?? s.user?.id ?? s.authData?.user?.id ?? null);
+
+  const { messages: realtimeMessages, sendMessage, loading } = useRealtimeChatNative(roomId);
   const [text, setText] = useState("");
 
+  // normalize any incoming message shape to ChatMessage
+  const normalize = useCallback(
+    (m: any): ChatMessage => {
+      if (!m) {
+        return {
+          id: -Math.floor(Math.random() * 1000000),
+          createdAt: new Date().toISOString(),
+          roomId: roomId ?? -1,
+          senderId: "",
+          content: ""
+        };
+      }
+      // Already ChatMessage
+      if (m.roomId !== undefined || m.senderId !== undefined || m.createdAt !== undefined) {
+        return m as ChatMessage;
+      }
+      // Row shape from supabase: MessageRow
+      if (m.created_at !== undefined || m.sender_id !== undefined) {
+        return mapMessageRowToChatMessage(m as MessageRow);
+      }
+      // legacy UI shape (has user.name and text/content)
+      return {
+        id: Number(m.id ?? m._id ?? Math.random()),
+        createdAt: String(m.createdAt ?? m.created_at ?? new Date().toISOString()),
+        roomId: Number(m.roomId ?? roomId ?? -1),
+        senderId: String(m.sender_id ?? m.senderId ?? m.user?.id ?? ""),
+        content: String(m.content ?? m.text ?? "")
+      };
+    },
+    [roomId]
+  );
+
   const allMessages = useMemo(() => {
-    const merged = [...initialMessages, ...realtimeMessages];
+    const normInitial = (initialMessages || []).map(normalize);
+    const normRealtime = (realtimeMessages || []).map(normalize);
+    const merged = [...normInitial, ...normRealtime];
     const unique = merged.filter((m, i, arr) => i === arr.findIndex((x) => x.id === m.id));
-    return unique.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
-  }, [initialMessages, realtimeMessages]);
+    return unique.sort((a, b) => new Date(a.createdAt ?? "").getTime() - new Date(b.createdAt ?? "").getTime());
+  }, [initialMessages, realtimeMessages, normalize]);
 
   useEffect(() => {
     onMessage?.(allMessages);
   }, [allMessages, onMessage]);
+
   useEffect(() => {
     scrollToBottom();
     const t1 = setTimeout(scrollToBottom, 50);
@@ -43,14 +88,28 @@ export const RealtimeChatNative = ({ roomName, username, initialMessages = [], o
       const t = setTimeout(scrollToBottom, 80);
       return () => clearTimeout(t);
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [roomName, scrollToBottom])
+    }, [roomId, scrollToBottom])
   );
+
+  const isConnected = !!roomId && !loading;
 
   const handleSend = useCallback(async () => {
     if (!text.trim() || !isConnected) return;
-    await sendMessage(text.trim());
+    if (!currentUserId) {
+      console.error("Missing currentUserId");
+      return;
+    }
+    try {
+      if (typeof sendMessage === "function") {
+        await sendMessage(text.trim(), String(currentUserId));
+      } else {
+        console.error("sendMessage not available from realtime hook");
+      }
+    } catch (err) {
+      console.error("Error sending message", err);
+    }
     setText("");
-  }, [text, isConnected, sendMessage]);
+  }, [text, isConnected, currentUserId, sendMessage, scrollToBottom]);
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? 98 : 0} className="flex-1">
@@ -58,13 +117,13 @@ export const RealtimeChatNative = ({ roomName, username, initialMessages = [], o
         <FlatList
           ref={listRef}
           data={allMessages}
-          keyExtractor={(i) => i.id}
-          renderItem={({ item }) => <ChatMessageItemNative message={item} isOwnMessage={item.user.name === username} />}
-          contentContainerStyle={{ padding: 12 }}
+          keyExtractor={(i) => String(i.id)}
+          renderItem={({ item }) => <ChatMessageItemNative message={item} currentUserId={String(currentUserId ?? "")} />}
+          className="flex-1 p-3"
           showsVerticalScrollIndicator={false}
           onLayout={() => scrollToBottom()}
         />
-        <View className="flex-row items-center px-4 py-3 border-t  border-border">
+        <View className="flex-row items-center px-4 py-3 border-t border-border bg-background">
           <TextInput
             className="flex-1 border border-accent text-foreground rounded-lg px-3 py-3"
             value={text}
@@ -72,11 +131,10 @@ export const RealtimeChatNative = ({ roomName, username, initialMessages = [], o
             placeholder="Scrivi un messaggio..."
             editable={isConnected}
             onSubmitEditing={handleSend}
+            returnKeyType="send"
           />
           <TouchableOpacity onPress={handleSend} disabled={!isConnected || !text.trim()} className="ml-2 flex-row items-center justify-center">
-            <Text className={`${!isConnected || !text.trim() ? "hidden" : "bg-primary rounded-3xl px-4 py-2 "}`}>
-              <Send size={24} color={isConnected && text.trim() ? "#fff" : "#999"} />
-            </Text>
+            <Send size={24} color={isConnected && text.trim() ? "#fff" : "#999"} />
           </TouchableOpacity>
         </View>
       </SafeAreaView>
