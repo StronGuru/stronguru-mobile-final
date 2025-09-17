@@ -29,6 +29,26 @@ export default function ProgressLineChart({ nutrition }: ProgressLineChartProps)
     }));
   }, [nutrition]);
 
+  const weightChange = useMemo(() => {
+    if (chartData.length < 2) return null;
+
+    const firstWeight = chartData[0].value;
+    const lastWeight = chartData[chartData.length - 1].value;
+
+    if (firstWeight === 0) return null;
+
+    const change = lastWeight - firstWeight;
+    const percentageChange = (change / firstWeight) * 100;
+
+    return {
+      change: change,
+      percentage: Math.abs(percentageChange),
+      isIncrease: change > 0,
+      isDecrease: change < 0,
+      isStable: change === 0
+    };
+  }, [chartData]);
+
   if (chartData.length === 0) {
     return (
       <View className="bg-muted p-4 rounded-lg">
@@ -37,9 +57,32 @@ export default function ProgressLineChart({ nutrition }: ProgressLineChartProps)
     );
   }
 
+  const renderWeightChangeText = () => {
+    if (!weightChange || chartData.length < 2) return null;
+
+    if (weightChange.isStable) {
+      return <Text className="text-center text-sm text-foreground mt-3">Peso stabile</Text>;
+    }
+
+    const changeText = weightChange.isDecrease ? "in diminuzione" : "in aumento";
+    const changeColor = weightChange.isDecrease ? "text-accent" : "text-destructive";
+
+    return (
+      <View className="mt-3 items-center">
+        <Text className="text-center text-sm text-foreground">
+          Peso {changeText} del <Text className={`font-semibold ${changeColor}`}>{weightChange.percentage.toFixed(1)}%</Text>
+        </Text>
+        <Text className="text-center text-xs text-foreground mt-1">
+          {weightChange.isDecrease ? "-" : "+"}
+          {Math.abs(weightChange.change).toFixed(1)} kg rispetto alla prima misurazione
+        </Text>
+      </View>
+    );
+  };
+
   return (
     <View>
-      <Text className="text-lg font-semibold text-foreground mb-3">Andamento Peso nel Tempo</Text>
+      <Text className="text-xl text-center font-semibold text-primary mb-3">Andamento Peso nel Tempo</Text>
       <View className="p-2 rounded-lg">
         <LineChart
           data={chartData}
@@ -64,12 +107,16 @@ export default function ProgressLineChart({ nutrition }: ProgressLineChartProps)
           backgroundColor="transparent"
           yAxisThickness={1}
           xAxisThickness={1}
+          yAxisLabelSuffix=" kg"
           yAxisColor="#e5e7eb"
           xAxisColor="#e5e7eb"
           yAxisTextStyle={{ color: colorScheme === "dark" ? "white" : "#6b7280", fontSize: 13 }}
           xAxisLabelTextStyle={{ color: colorScheme === "dark" ? "white" : "#6b7280", fontSize: 13 }}
         />
       </View>
+
+      {/* Testo variazione peso */}
+      {renderWeightChangeText()}
     </View>
   );
 }

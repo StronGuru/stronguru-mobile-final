@@ -45,28 +45,28 @@ export default function DayPlanView({ dayPlan }: DayPlanViewProps) {
 
     if (!hasContent) {
       return (
-        <View key={mealKey} className="bg-muted/30 p-4 rounded-lg mb-3 border border-secondary opacity-50">
+        <View key={mealKey} className="bg-muted p-4 rounded-lg mb-3 border border-secondary opacity-50">
           <View className="flex-row items-center">
-            <mealInfo.Icon size={24} color="#9ca3af" className="mr-3" />
-            <View className="flex-1">
-              <Text className="text-lg font-semibold text-foreground/70">{mealInfo.label}</Text>
-              <Text className="text-sm text-foreground/50">{mealInfo.time}</Text>
+            <mealInfo.Icon size={24} color="#9ca3af" />
+            <View className="flex-1 ms-3">
+              <Text className="text-lg font-semibold text-foreground">{mealInfo.label}</Text>
+              <Text className="text-sm text-foreground">{mealInfo.time}</Text>
             </View>
-            <Text className="text-foreground/50 text-sm">Non definito</Text>
+            <Text className="text-foreground text-sm">Non definito</Text>
           </View>
         </View>
       );
     }
 
     return (
-      <View key={mealKey} className="bg-card p-4 rounded-lg mb-3 border border-secondary">
+      <View key={mealKey} className="bg-card p-4 shadow-sm rounded-lg mb-3 border border-secondary">
         <TouchableOpacity onPress={() => toggleSection(mealKey)} className="flex-row items-center">
-          <mealInfo.Icon size={24} color="#10b981" className="mr-3" />
-          <View className="flex-1">
+          <mealInfo.Icon size={24} color="#10b981" />
+          <View className="flex-1 ms-3">
             <Text className="text-lg font-semibold text-foreground">{mealInfo.label}</Text>
-            <Text className="text-sm text-foreground/70">{mealInfo.time}</Text>
+            <Text className="text-sm text-foreground">{mealInfo.time}</Text>
           </View>
-          {isExpanded ? <ChevronUp size={20} color="#6b7280" /> : <ChevronDown size={20} color="#6b7280" />}
+          {isExpanded ? <ChevronUp size={20} color="#6b7280" /> : <ChevronDown size={20} color="#10b981" />}
         </TouchableOpacity>
 
         {isExpanded && (

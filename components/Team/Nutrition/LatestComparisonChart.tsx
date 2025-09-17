@@ -56,8 +56,8 @@ export default function LatestComparisonChart({ nutrition }: LatestComparisonCha
         spacing: 2,
         labelWidth: 60,
         labelTextStyle: { color: colorScheme === "dark" ? "white" : "#10b981", fontSize: 13, textAlign: "center" as const },
-        frontColor: "#94a3b8",
-        topLabelComponent: () => <Text style={{ color: "#6b7280", fontSize: 13, fontWeight: "bold", marginBottom: 2 }}>{metric.previous}</Text>
+        frontColor: "#bbf7d0",
+        topLabelComponent: () => <Text style={{ color: "#94a3b8", fontSize: 13, fontWeight: "bold", marginBottom: 2 }}>{metric.previous}</Text>
       },
       {
         value: metric.latest,
@@ -87,7 +87,7 @@ export default function LatestComparisonChart({ nutrition }: LatestComparisonCha
 
   return (
     <View>
-      <Text className="text-xl font-semibold text-foreground mb-0 text-center">Confronto Misurazioni</Text>
+      <Text className="text-xl font-semibold text-primary mb-0 text-center">Confronto Misurazioni</Text>
       <Text className="text-sm italics text-foreground mb-4 text-center">
         {comparisonData.previousDate} vs {comparisonData.latestDate}
       </Text>
@@ -95,7 +95,7 @@ export default function LatestComparisonChart({ nutrition }: LatestComparisonCha
       {/* Legenda */}
       <View className="flex-row justify-center space-x-6 gap-3">
         <View className="flex-row items-center">
-          <View className="w-4 h-4 bg-gray-400 rounded mr-2" />
+          <View className="w-4 h-4 bg-[#bbf7d0] rounded mr-2" />
           <Text className="text-sm text-foreground">Precedente</Text>
         </View>
         <View className="flex-row items-center">
@@ -129,7 +129,7 @@ export default function LatestComparisonChart({ nutrition }: LatestComparisonCha
       </View>
 
       {/* Statistiche riassuntive */}
-      <View className="flex-row justify-around mb-2 dark:bg-muted  p-1 rounded-lg">
+      <View className="flex-row justify-around mb-2 dark:bg-muted p-1 pb-2 rounded-lg">
         <View className="items-center">
           <Text className="text-primary font-bold text-2xl">{comparisonData.improvements}</Text>
           <Text className="text-md text-foreground">Miglioramenti</Text>

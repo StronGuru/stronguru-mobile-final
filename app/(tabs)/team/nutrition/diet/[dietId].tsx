@@ -41,14 +41,6 @@ export default function DietDetailPage() {
 
   return (
     <View className="flex-1 bg-background">
-      {/* Header con back button */}
-      <View className="flex-row items-center p-4 border-b border-secondary bg-card">
-        <View className="flex-1">
-          <Text className="text-xl font-semibold text-foreground">{diet.name}</Text>
-          <Text className="text-sm text-foreground/70">{diet.goal}</Text>
-        </View>
-      </View>
-
       {/* Componente dettaglio */}
       <DietDetail diet={diet} />
     </View>

@@ -71,7 +71,7 @@ export default function Nutrition() {
         if (!dietsData.hasDiets) {
           // Nessuna dieta disponibile
           return (
-            <View className="bg-card p-6 rounded-lg my-6 border border-secondary">
+            <View className="bg-card p-6 shadow-sm rounded-lg my-6 border border-secondary">
               <View className="items-center">
                 <UtensilsCrossed size={64} color="#10b981" />
                 <Text className="text-xl font-semibold text-foreground text-center mt-4 mb-2">Le tue diete appariranno qui</Text>
@@ -103,7 +103,7 @@ export default function Nutrition() {
     <View className="flex-1 bg-background">
       {/* Tab Selector */}
       <View className="px-4 pt-4">
-        <View className="flex-row bg-muted rounded-lg p-1 mb-4">
+        <View className="flex-row bg-secondary dark:bg-input rounded-lg p-1 ">
           {tabOptions.map((option) => (
             <TouchableOpacity
               key={option.key}
@@ -117,7 +117,9 @@ export default function Nutrition() {
       </View>
 
       {/* Tab Content */}
-      <ScrollView className="flex-1 px-4">{renderTabContent()}</ScrollView>
+      <ScrollView className="flex-1 px-4" showsVerticalScrollIndicator={false}>
+        {renderTabContent()}
+      </ScrollView>
     </View>
   );
 }

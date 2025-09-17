@@ -59,7 +59,7 @@ export default function HorizontalCardsLayout({ profileId }: LatestMeasuresCardP
   const latestBia = getLatest<BiaEntryType, "examDate">(nutrition.bia, "examDate");
 
   return (
-    <View className="bg-card p-4 rounded-lg mt-6 shadow-sm border border-secondary">
+    <View className="bg-card p-4 rounded-lg mt-5 shadow-sm border border-secondary">
       <Text className="text-xl font-semibold text-primary">Ultime misurazioni</Text>
 
       <View className=" mb-3">
