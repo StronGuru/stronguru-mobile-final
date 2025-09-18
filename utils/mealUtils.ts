@@ -114,51 +114,12 @@ export function findNextAvailableMeal(weeklyPlan: any, startDay?: string, startM
         const meal = dayPlan.plan[mealKey];
 
         if (hasMealContent(meal)) {
-          console.log(`Found next available meal: ${mealKey} on ${dayKey}`);
           return { day: dayKey, meal: mealKey };
         }
       }
     }
 
     dayIndex = (dayIndex + 1) % days.length;
-  }
-
-  console.log("No available meals found in weekly plan");
-  return null;
-}
-
-/**
- * Determina il pasto da selezionare automaticamente considerando fallback
- * @param weeklyPlan Il piano settimanale completo
- * @param currentDayPlan Il piano del giorno corrente
- * @returns Oggetto con il pasto da selezionare o null
- */
-export function getAutoSelectedMeal(weeklyPlan: any, currentDayPlan: any): { meal: string; reason: string } | null {
-  const currentMeal = getCurrentMealTime();
-  const currentDay = getCurrentDayKey();
-
-  // Caso 1: Siamo in una fascia oraria specifica
-  if (currentMeal) {
-    const meal = currentDayPlan.plan[currentMeal];
-
-    if (hasMealContent(meal)) {
-      return { meal: currentMeal, reason: "current-time-slot" };
-    }
-
-    // Cerca dal pasto successivo dello stesso giorno
-    const nextMeal = findNextAvailableMeal(weeklyPlan, currentDay, currentMeal);
-    if (nextMeal && nextMeal.day === currentDay) {
-      return { meal: nextMeal.meal, reason: "next-meal-same-day" };
-    }
-  }
-
-  // Caso 2: Dopo le 22:00 o nessun pasto nella fascia corrente
-  // Cerca il primo pasto disponibile del giorno successivo
-  const nextDay = getNextDayKey(currentDay);
-  const nextAvailable = findNextAvailableMeal(weeklyPlan, nextDay);
-
-  if (nextAvailable) {
-    return { meal: nextAvailable.meal, reason: "next-day-fallback" };
   }
 
   return null;
@@ -173,7 +134,7 @@ export function getAutoSelectedDay(weeklyPlan: any): string {
   const currentDay = getCurrentDayKey();
   const currentMeal = getCurrentMealTime();
 
-  // Se siamo in una fascia oraria specifica, controlla se il giorno corrente ha contenuto
+  // Se siamo in una fascia oraria specifica (06:00-22:00)
   if (currentMeal) {
     const todayPlan = weeklyPlan[currentDay];
     if (todayPlan && todayPlan.plan) {
@@ -193,12 +154,61 @@ export function getAutoSelectedDay(weeklyPlan: any): string {
     }
   }
 
-  // Fallback: cerca il prossimo giorno con contenuto
-  const nextAvailable = findNextAvailableMeal(weeklyPlan, currentDay);
+  // Se currentMeal è null (dopo le 22:00 o prima delle 06:00)
+  // oppure nessun pasto trovato nel giorno corrente,
+  // cerca il prossimo giorno con contenuto
+
+  // IMPORTANTE: Se siamo dopo le 22:00, inizia la ricerca dal giorno SUCCESSIVO
+  const searchStartDay = currentMeal === null ? getNextDayKey(currentDay) : currentDay;
+  const nextAvailable = findNextAvailableMeal(weeklyPlan, searchStartDay);
+
   if (nextAvailable) {
+    console.log(`Found next available: ${nextAvailable.day} - ${nextAvailable.meal}`);
     return nextAvailable.day;
   }
 
-  // Default: giorno corrente
+  console.log(`No meals found, defaulting to current day: ${currentDay}`);
   return currentDay;
+}
+
+/**
+ * Determina il pasto da selezionare automaticamente considerando fallback
+ * @param weeklyPlan Il piano settimanale completo
+ * @param currentDayPlan Il piano del giorno selezionato (non necessariamente quello corrente)
+ * @returns Oggetto con il pasto da selezionare o null
+ */
+export function getAutoSelectedMeal(weeklyPlan: any, currentDayPlan: any): { meal: string; reason: string } | null {
+  const currentMeal = getCurrentMealTime();
+  const currentDay = getCurrentDayKey();
+  const selectedDay = Object.keys(weeklyPlan).find((day) => weeklyPlan[day] === currentDayPlan);
+
+  console.log(`getAutoSelectedMeal: currentMeal=${currentMeal}, currentDay=${currentDay}, selectedDay=${selectedDay}`);
+
+  // Se siamo in una fascia oraria specifica (06:00-22:00)
+  if (currentMeal && selectedDay === currentDay) {
+    // Solo se stiamo guardando il giorno corrente
+    const meal = currentDayPlan.plan[currentMeal];
+
+    if (hasMealContent(meal)) {
+      return { meal: currentMeal, reason: "current-time-slot" };
+    }
+
+    // Cerca dal pasto successivo dello stesso giorno
+    const nextMeal = findNextAvailableMeal(weeklyPlan, currentDay, currentMeal);
+    if (nextMeal && nextMeal.day === currentDay) {
+      return { meal: nextMeal.meal, reason: "next-meal-same-day" };
+    }
+  }
+
+  // Per tutti gli altri casi (dopo le 22:00, giorno diverso, etc.)
+  // cerca il primo pasto disponibile del giorno selezionato
+  console.log(`Searching first available meal in selected day`);
+  const mealKeys = ["breakfast", "morningSnack", "lunch", "afternoonSnack", "dinner"];
+  for (const mealKey of mealKeys) {
+    const meal = currentDayPlan.plan[mealKey];
+    if (hasMealContent(meal)) {
+      return { meal: mealKey, reason: selectedDay === currentDay ? "first-available-today" : "first-available-selected-day" };
+    }
+  }
+  return null;
 }

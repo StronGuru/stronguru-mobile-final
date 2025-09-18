@@ -98,12 +98,11 @@ export default function DayPlanView({ dayPlan, weeklyPlan, scrollViewRef }: DayP
 
     if (!hasContent) {
       return (
-        <View key={mealKey} ref={setMealRef(mealKey)} className="bg-muted p-4 rounded-lg mb-3 border border-secondary opacity-50">
+        <View key={mealKey} ref={setMealRef(mealKey)} className="bg-muted p-4 rounded-lg mb-3 border border-card dark:border-secondary opacity-50">
           <View className="flex-row items-center">
             <mealInfo.Icon size={24} color="#9ca3af" />
             <View className="flex-1 ms-3">
               <Text className="text-lg font-semibold text-foreground">{mealInfo.label}</Text>
-              <Text className="text-sm text-foreground">{mealInfo.time}</Text>
             </View>
             <Text className="text-foreground text-sm">Non definito</Text>
           </View>
@@ -112,12 +111,11 @@ export default function DayPlanView({ dayPlan, weeklyPlan, scrollViewRef }: DayP
     }
 
     return (
-      <View key={mealKey} ref={setMealRef(mealKey)} className="bg-card p-4 shadow-sm rounded-lg mb-3 border border-secondary">
+      <View key={mealKey} ref={setMealRef(mealKey)} className="bg-card p-4 shadow-sm rounded-lg mb-3 border border-card dark:border-secondary">
         <TouchableOpacity onPress={() => toggleSection(mealKey)} className="flex-row items-center">
           <mealInfo.Icon size={24} color="#10b981" />
           <View className="flex-1 ms-3">
             <Text className="text-lg font-semibold text-foreground">{mealInfo.label}</Text>
-            <Text className="text-sm text-foreground">{mealInfo.time}</Text>
           </View>
           {isExpanded ? <ChevronUp size={20} color="#6b7280" /> : <ChevronDown size={20} color="#10b981" />}
         </TouchableOpacity>
