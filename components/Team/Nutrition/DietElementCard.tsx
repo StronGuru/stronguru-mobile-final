@@ -64,7 +64,7 @@ export default function DietElementCard({ diet, profileId, variant = "list" }: D
   const statusInfo = getDietStatus(diet.endDate, diet.status);
 
   return (
-    <View className={`bg-muted p-4 shadow-sm rounded-lg border border-secondary `}>
+    <View className={`bg-muted p-4 shadow-sm rounded-lg border border-card dark:border-secondary`}>
       {/* Header con titolo e status */}
       <View className="flex-row items-center justify-between mb-1">
         <View className="flex-1 mr-3">

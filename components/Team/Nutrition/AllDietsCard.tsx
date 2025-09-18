@@ -27,14 +27,14 @@ export default function AllDietsCard({ diets, profileId }: AllDietsCardProps) {
   }, [diets]);
 
   const renderDietItem = ({ item }: { item: DietType }) => (
-    <View className="mb-3">
+    <View className="mb-3 mx-1 mt-1">
       <DietElementCard diet={item} profileId={profileId} variant="list" />
     </View>
   );
 
   return (
-    <View className="bg-card shadow-sm p-4 rounded-lg my-4 border border-secondary">
-      <Text className="text-xl font-semibold text-primary mb-2">Tutte le Diete • {sortedDiets.length}</Text>
+    <View className="bg-card shadow-sm p-4 rounded-lg my-4 border border-card dark:border-secondary">
+      <Text className="text-xl font-semibold text-primary mb-2">Altre Diete • {sortedDiets.length}</Text>
       <FlatList data={sortedDiets} renderItem={renderDietItem} keyExtractor={(item) => item._id} scrollEnabled={false} showsVerticalScrollIndicator={false} />
     </View>
   );

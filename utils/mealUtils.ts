@@ -114,7 +114,6 @@ export function findNextAvailableMeal(weeklyPlan: any, startDay?: string, startM
         const meal = dayPlan.plan[mealKey];
 
         if (hasMealContent(meal)) {
-          console.log(`Found next available meal: ${mealKey} on ${dayKey}`);
           return { day: dayKey, meal: mealKey };
         }
       }
@@ -123,7 +122,6 @@ export function findNextAvailableMeal(weeklyPlan: any, startDay?: string, startM
     dayIndex = (dayIndex + 1) % days.length;
   }
 
-  console.log("No available meals found in weekly plan");
   return null;
 }
 

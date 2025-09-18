@@ -112,6 +112,7 @@ export default function ProgressLineChart({ nutrition }: ProgressLineChartProps)
           xAxisColor="#e5e7eb"
           yAxisTextStyle={{ color: colorScheme === "dark" ? "white" : "#6b7280", fontSize: 13 }}
           xAxisLabelTextStyle={{ color: colorScheme === "dark" ? "white" : "#6b7280", fontSize: 13 }}
+          scrollToEnd
         />
       </View>
 
