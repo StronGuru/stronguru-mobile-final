@@ -33,7 +33,7 @@ export default function AllDietsCard({ diets, profileId }: AllDietsCardProps) {
   );
 
   return (
-    <View className="bg-card shadow-sm p-4 rounded-lg my-4 border border-secondary">
+    <View className="bg-card shadow-sm p-4 rounded-lg my-4 border border-card dark:border-secondary">
       <Text className="text-xl font-semibold text-primary mb-2">Tutte le Diete • {sortedDiets.length}</Text>
       <FlatList data={sortedDiets} renderItem={renderDietItem} keyExtractor={(item) => item._id} scrollEnabled={false} showsVerticalScrollIndicator={false} />
     </View>
