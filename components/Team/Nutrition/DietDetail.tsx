@@ -21,7 +21,8 @@ const dayLabels = {
 export default function DietDetail({ diet }: DietDetailProps) {
   const [selectedDay, setSelectedDay] = useState<string>("monday");
   const [hasAutoSelected, setHasAutoSelected] = useState(false);
-  const scrollViewRef = useRef<ScrollView>(null); // Ref per il ScrollView principale
+  const scrollViewRef = useRef<ScrollView>(null);
+  const horizontalScrollRef = useRef<ScrollView>(null);
 
   const sortedWeeklyPlan = useMemo(() => {
     const dayOrder = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
@@ -31,7 +32,6 @@ export default function DietDetail({ diet }: DietDetailProps) {
   // Auto-selezione del giorno all'apertura
   useEffect(() => {
     if (!hasAutoSelected && diet.weeklyPlan.length > 0) {
-      // Crea un oggetto weeklyPlan per la utility
       const weeklyPlanMap = diet.weeklyPlan.reduce((acc, dayPlan) => {
         acc[dayPlan.day] = dayPlan;
         return acc;
@@ -40,8 +40,32 @@ export default function DietDetail({ diet }: DietDetailProps) {
       const autoSelectedDay = getAutoSelectedDay(weeklyPlanMap);
       setSelectedDay(autoSelectedDay);
       setHasAutoSelected(true);
+
+      // Scroll orizzontale basato sull'indice del giorno
+      setTimeout(() => scrollToSelectedDay(autoSelectedDay), 300);
     }
   }, [diet.weeklyPlan, hasAutoSelected]);
+
+  const scrollToSelectedDay = (dayKey: string) => {
+    if (!horizontalScrollRef.current) return;
+
+    const dayOrder = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+    const dayIndex = dayOrder.indexOf(dayKey);
+
+    if (dayIndex === -1) return;
+
+    // Da venerdì in poi, scrolla alla fine. Lun-Gio non servono scroll
+    if (dayIndex >= 4) {
+      horizontalScrollRef.current.scrollToEnd({ animated: true });
+    }
+    // Lun-Gio: niente scroll, sono già visibili
+  };
+
+  const handleDayPress = (dayKey: string) => {
+    setSelectedDay(dayKey);
+    setHasAutoSelected(true);
+    scrollToSelectedDay(dayKey);
+  };
 
   const selectedDayPlan = useMemo(() => sortedWeeklyPlan.find((day) => day.day === selectedDay), [sortedWeeklyPlan, selectedDay]);
 
@@ -114,15 +138,12 @@ export default function DietDetail({ diet }: DietDetailProps) {
 
       {/* Days Tabs */}
       <View className="px-4 mb-4">
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-2 mt-2">
+        <ScrollView ref={horizontalScrollRef} horizontal showsHorizontalScrollIndicator={false} className="mb-2 mt-2">
           <View className="flex-row p-1">
             {sortedWeeklyPlan.map((dayPlan) => (
               <TouchableOpacity
                 key={dayPlan.day}
-                onPress={() => {
-                  setSelectedDay(dayPlan.day);
-                  setHasAutoSelected(true);
-                }}
+                onPress={() => handleDayPress(dayPlan.day)}
                 className={`px-3 py-2 mr-2 shadow-sm rounded-xl border ${selectedDay === dayPlan.day ? "bg-primary border-primary" : "bg-card border-card"}`}
               >
                 <Text className={`font-medium text-lg ${selectedDay === dayPlan.day ? "text-primary-foreground" : "text-foreground"}`}>
@@ -134,7 +155,7 @@ export default function DietDetail({ diet }: DietDetailProps) {
         </ScrollView>
       </View>
 
-      {/* Selected Day Plan - Passa il ref del ScrollView parent */}
+      {/* Selected Day Plan */}
       {selectedDayPlan && <DayPlanView dayPlan={selectedDayPlan} weeklyPlan={weeklyPlanMap} scrollViewRef={scrollViewRef} />}
     </ScrollView>
   );
