@@ -8,14 +8,19 @@ type UseRealtimeChatResult = {
   loading: boolean;
   sendMessage: (content: string, senderId: string) => Promise<void>;
   clear: () => void;
+  typingUsers: string[];
+  sendTyping: (userId: string, isTyping: boolean) => void;
 };
 
 export const EVENT_MESSAGE_TYPE = "message";
+export const EVENT_TYPING_TYPE = "typing";
 
 export default function useRealtimeChat(roomId: number | null): UseRealtimeChatResult {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [typingUsers, setTypingUsers] = useState<string[]>([]);
   const channelRef = useRef<any>(null);
+  const typingTimeoutRef = useRef<{ [userId: string]: number }>({});
 
   // fetch initial messages
   useEffect(() => {
@@ -82,6 +87,40 @@ export default function useRealtimeChat(roomId: number | null): UseRealtimeChatR
       }
     });
 
+    // typing events handler
+    channel.on("broadcast", { event: EVENT_TYPING_TYPE }, (payload: any) => {
+      try {
+        const { userId, isTyping } = payload.payload || payload;
+        if (!userId) return;
+
+        if (isTyping) {
+          setTypingUsers((prev) => {
+            if (prev.includes(userId)) return prev;
+            return [...prev, userId];
+          });
+
+          // Clear existing timeout for this user
+          if (typingTimeoutRef.current[userId]) {
+            clearTimeout(typingTimeoutRef.current[userId]);
+          }
+
+          // Auto-remove typing indicator after 5 seconds
+          typingTimeoutRef.current[userId] = setTimeout(() => {
+            setTypingUsers((prev) => prev.filter(id => id !== userId));
+            delete typingTimeoutRef.current[userId];
+          }, 5000);
+        } else {
+          setTypingUsers((prev) => prev.filter(id => id !== userId));
+          if (typingTimeoutRef.current[userId]) {
+            clearTimeout(typingTimeoutRef.current[userId]);
+            delete typingTimeoutRef.current[userId];
+          }
+        }
+      } catch (err) {
+        console.error("Error handling typing event", err);
+      }
+    });
+
     // postgres_changes handler: catches INSERTs directly on messages table (robust vs different clients)
     channel.on(
       "postgres_changes",
@@ -116,8 +155,12 @@ export default function useRealtimeChat(roomId: number | null): UseRealtimeChatR
 
     return () => {
       try {
+        // Clear all typing timeouts
+        Object.values(typingTimeoutRef.current).forEach(clearTimeout);
+        typingTimeoutRef.current = {};
+        setTypingUsers([]);
         channel.unsubscribe();
-      } catch (e) {
+      } catch {
         // ignore
       }
       channelRef.current = null;
@@ -177,14 +220,35 @@ export default function useRealtimeChat(roomId: number | null): UseRealtimeChatR
     [roomId]
   );
 
+  const sendTyping = useMemo(
+    () => (userId: string, isTyping: boolean) => {
+      const channel = channelRef.current;
+      if (!channel || !userId) return;
+
+      try {
+        channel.send({
+          type: "broadcast",
+          event: EVENT_TYPING_TYPE,
+          payload: { userId, isTyping }
+        });
+      } catch (err) {
+        console.error("Error sending typing event", err);
+      }
+    },
+    []
+  );
+
   const clear = () => {
     setMessages([]);
+    setTypingUsers([]);
   };
 
   return {
     messages,
     loading,
     sendMessage,
+    sendTyping,
+    typingUsers,
     clear
   };
 }
