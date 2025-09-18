@@ -22,18 +22,21 @@ export default function NutritionSelector() {
           data={nutritionProfiles}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => handleProfileSelect(item._id)}
-              className="flex items-center bg-muted dark:bg-primary p-4 rounded-2xl mb-3 border border-secondary "
-            >
-              <Text className="text-lg font-semibold text-primary dark:text-card">
-                {item.createdBy?.firstName} {item.createdBy?.lastName}
-              </Text>
+            <View className="shadow-sm px-1">
+              <TouchableOpacity
+                onPress={() => handleProfileSelect(item._id)}
+                className="flex items-center bg-muted dark:bg-primary p-4 rounded-2xl mb-3 border border-secondary "
+              >
+                <Text className="text-lg font-semibold text-primary dark:text-card">
+                  {item.createdBy?.firstName} {item.createdBy?.lastName}
+                </Text>
 
-              {/* {item.createdBy?.specializations && <Text className="text-sm text-foreground mt-1">{item.createdBy.specializations.join(", ")}</Text>} */}
-            </TouchableOpacity>
+                {/* {item.createdBy?.specializations && <Text className="text-sm text-foreground mt-1">{item.createdBy.specializations.join(", ")}</Text>} */}
+              </TouchableOpacity>
+            </View>
           )}
-          className="w-full "
+          className="w-full"
+          scrollEnabled={false}
         />
       </View>
     </View>
