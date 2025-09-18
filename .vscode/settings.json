@@ -4,13 +4,10 @@
     "source.organizeImports": "explicit",
     "source.sortMembers": "explicit"
   },
-  // Copilot Chat: limita il contesto solo a ciò che serve
   "github.copilot.chat.context.includeProblems": false,
   "github.copilot.chat.context.includeSymbols": false,
   "github.copilot.chat.context.includeRecentFiles": false,
   "github.copilot.chat.context.includeEditor": true, // solo file aperto
-
-  // Escludi cartelle pesanti dalla ricerca
   "search.exclude": {
     "**/node_modules": true,
     "**/dist": true,
@@ -19,11 +16,7 @@
     "**/android/build": true,
     "**/ios/Pods": true
   },
-
-  // Aumenta la memoria del TS server (React Native genera molti file d.ts)
   "typescript.tsserver.maxTsServerMemory": 4096,
-
-  // Inline suggestions attive
   "editor.inlineSuggest.enabled": true,
   "github.copilot.inlineSuggest.enable": true,
   "github.copilot.editor.enableAutoCompletions": true
