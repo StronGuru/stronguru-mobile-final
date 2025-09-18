@@ -52,26 +52,26 @@ const ProfessionalCardTeam = ({ professional }: { professional: ProfessionalType
         router.push(`/team/${professional._id}` as any);
       }}
     >
-      <View className=" items-center shadow-sm mb-4 ">
+      <View className=" items-center mb-4 ">
         {/* Avatar */}
-        <View className="w-28 h-28 rounded-full items-center justify-center mt-4 mb-2 bg-green-200 overflow-hidden">
+        <View className="w-28 h-28 rounded-full items-center justify-center mt-4 mb-2 bg-secondary overflow-hidden">
           {professional.profileImg ? (
             <Image source={{ uri: professional.profileImg }} className="w-28 h-28 rounded-full" resizeMode="cover" />
           ) : (
-            <Text className="text-3xl font-bold text-white">{getInitials(professional.firstName, professional.lastName)}</Text>
+            <Text className="text-3xl font-bold text-primary dark:text-white ">{getInitials(professional.firstName, professional.lastName)}</Text>
           )}
         </View>
 
         <View className="items-center  ">
           {/* Name */}
-          <Text className="text-lg text-card-foreground mb-2 text-center text-wrap">
+          <Text className="text-lg font-medium text-foreground mb-2 text-center text-wrap">
             {professional.firstName} {professional.lastName}
           </Text>
 
           {/* Badges */}
           <View className="flex-row gap-2 mb-3">
             {badges.map((badge: BadgeType, index: number) => (
-              <View key={`${professional._id}-${badge}-${index}`} className="w-8 h-8 bg-green-500 rounded-full items-center justify-center">
+              <View key={`${professional._id}-${badge}-${index}`} className="w-8 h-8 bg-accent rounded-full items-center justify-center">
                 {renderBadgeIcon(badge)}
               </View>
             ))}
