@@ -88,30 +88,30 @@ export default function LatestComparisonChart({ nutrition }: LatestComparisonCha
   return (
     <View>
       <Text className="text-xl font-semibold text-primary mb-0 text-center">Confronto Misurazioni</Text>
-      <Text className="text-sm italics text-foreground mb-4 text-center">
+      <Text className="text-sm font-medium text-foreground mb-4 text-center">
         {comparisonData.previousDate} vs {comparisonData.latestDate}
       </Text>
 
       {/* Legenda */}
-      <View className="flex-row justify-center space-x-6 gap-3">
+      <View className="flex-row justify-center gap-3 ">
         <View className="flex-row items-center">
           <View className="w-4 h-4 bg-[#bbf7d0] rounded mr-2" />
-          <Text className="text-sm text-foreground">Precedente</Text>
+          <Text className="text-md font-medium text-foreground">Precedente</Text>
         </View>
         <View className="flex-row items-center">
           <View className="w-4 h-4 bg-primary rounded mr-2" />
-          <Text className="text-sm text-foreground">Ultima</Text>
+          <Text className="text-md font-medium text-foreground">Ultima</Text>
         </View>
       </View>
 
       {/* BarChart orizzontale scrollabile */}
-      <View className="p-4 rounded-lg">
+      <View className="my-7 mr-4 rounded-lg">
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <BarChart
             data={comparisonData.barData}
             width={Math.max(screenWidth - 80, comparisonData.metrics.length * 80)}
-            height={220}
-            barWidth={30}
+            height={200}
+            barWidth={25}
             spacing={15}
             roundedTop
             isAnimated
@@ -121,6 +121,7 @@ export default function LatestComparisonChart({ nutrition }: LatestComparisonCha
             yAxisColor="#e5e7eb"
             xAxisColor="#e5e7eb"
             yAxisTextStyle={{ color: colorScheme === "dark" ? "white" : "#6b7280", fontSize: 13 }}
+            noOfSections={4}
             backgroundColor="transparent"
             showYAxisIndices
             yAxisIndicesColor="#e5e7eb"
@@ -132,15 +133,15 @@ export default function LatestComparisonChart({ nutrition }: LatestComparisonCha
       <View className="flex-row justify-around mb-2 dark:bg-muted p-1 pb-2 rounded-lg">
         <View className="items-center">
           <Text className="text-primary font-bold text-2xl">{comparisonData.improvements}</Text>
-          <Text className="text-md text-foreground">Miglioramenti</Text>
+          <Text className="text-md font-medium text-foreground">Miglioramenti</Text>
         </View>
         <View className="items-center">
           <Text className="text-muted-foreground font-bold text-2xl">{comparisonData.unchanged}</Text>
-          <Text className="text-md text-foreground">Stabili</Text>
+          <Text className="text-md font-medium text-foreground">Stabili</Text>
         </View>
         <View className="items-center">
           <Text className="text-destructive font-bold text-2xl">{comparisonData.worsenings}</Text>
-          <Text className="text-md text-foreground">Peggioramenti</Text>
+          <Text className="text-md font-medium text-foreground">Peggioramenti</Text>
         </View>
       </View>
 

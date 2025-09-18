@@ -22,7 +22,7 @@ const getLatest = <T, K extends keyof T>(arr?: T[], dateKey?: K) => {
 
 function HorizontalCard({ label, value }: { label: string; value: string | number }) {
   return (
-    <View className="bg-secondary dark:bg-primary rounded-2xl p-1 mr-2 min-w-[90px] items-center">
+    <View className="bg-secondary dark:bg-primary shadow-sm rounded-2xl p-1 my-1 mr-1 ml-1 min-w-[90px] items-center">
       <Text className="text-lg font-bold text-primary dark:text-card text-center">{value ?? "—"}</Text>
       <Text className="text-sm text-muted-foreground dark:text-card font-semibold text-center">{label}</Text>
     </View>
@@ -63,7 +63,7 @@ export default function HorizontalCardsLayout({ profileId }: LatestMeasuresCardP
       <Text className="text-xl font-semibold text-primary">Ultime misurazioni</Text>
 
       <View className=" mb-3">
-        <Text className="text-sm text-muted-foreground dark:text-foreground italic">
+        <Text className="text-sm font-medium text-muted-foreground dark:text-foreground ">
           Ultima misurazione: {formatDate(latestMeasurement?.date)} • Ultima BIA: {formatDate(latestBia?.examDate)}
         </Text>
       </View>
