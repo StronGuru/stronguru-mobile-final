@@ -2,8 +2,8 @@ import ProfessionalCard from "@/components/Team/ProfessionalCardTeam";
 import { ProfileType } from "@/lib/zod/userSchemas";
 import { useAuthStore } from "@/src/store/authStore";
 import { useUserDataStore } from "@/src/store/userDataStore";
-import { router } from "expo-router";
-import React, { useEffect, useMemo, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import React, { useCallback, useMemo, useState } from "react";
 import { ActivityIndicator, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function Team() {
@@ -75,10 +75,12 @@ export default function Team() {
     }
   };
 
-  useEffect(() => {
-    fetchUpdatedProfiles();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchUpdatedProfiles();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+  );
 
   const handleNutritionPress = () => {
     const { user } = useUserDataStore.getState();
@@ -147,34 +149,34 @@ export default function Team() {
   const hasAnyService = availableServices.nutrition.available || availableServices.training.available || availableServices.psychology.available;
 
   return (
-    <SafeAreaView className="flex-1 px-4 pt-4 bg-background">
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View className="flex-row flex-wrap px-4">
-          <Text className="w-full text-2xl font-semibold my-4 pb-2 text-foreground border-b border-secondary">Il tuo Team</Text>
+    <SafeAreaView className="flex-1   bg-background">
+      <ScrollView showsVerticalScrollIndicator={false} className="px-4 pt-4">
+        <View className="flex-row flex-wrap px-4 bg-card rounded-xl border border-border dark:border-secondary shadow-sm mb-6 mt-2">
+          <Text className="w-full text-2xl font-semibold mt-4 dark:text-primary">Il tuo Team</Text>
           {profiles.map((profile) => (
-            <View key={profile._id} className="w-[33.33%]">
+            <View key={profile._id} className="w-[33.33%] ">
               <ProfessionalCard professional={profile.createdBy} />
             </View>
           ))}
         </View>
 
-        <View className="flex-1 px-4">
-          <Text className="w-full text-foreground text-2xl font-semibold mb-4 pb-2 border-b border-secondary">I tuoi Dati</Text>
+        <View className="flex-1 p-4 bg-card rounded-xl border border-border dark:border-secondary shadow-sm">
+          <Text className="w-full text-foreground text-2xl font-semibold mb-2  dark:text-primary">I tuoi Dati</Text>
 
           {hasAnyService ? (
-            <View>
+            <View className="shadow-sm">
               {/* Nutrition Button - mostra solo se disponibile */}
               {availableServices.nutrition.available && (
                 <TouchableOpacity onPress={handleNutritionPress} className="mt-2 bg-muted dark:bg-primary rounded-2xl p-4 items-center border border-secondary">
-                  <Text className="text-primary dark:text-card text-2xl">Nutrizione</Text>
+                  <Text className="text-primary dark:text-card text-2xl font-bold">Nutrizione</Text>
                   {availableServices.nutrition.stats && <Text className="text-primary dark:text-card text-sm mt-1">{availableServices.nutrition.stats}</Text>}
                 </TouchableOpacity>
               )}
 
               {/* Training Button - mostra solo se disponibile */}
               {availableServices.training.available && (
-                <TouchableOpacity onPress={handleTrainingPress} className="mt-2 bg-muted dark:bg-primary rounded-2xl p-4 items-center border border-secondary">
-                  <Text className="text-primary dark:text-card text-2xl">Allenamento</Text>
+                <TouchableOpacity onPress={handleTrainingPress} className="mt-2 bg-muted dark:bg-primary rounded-xl p-4 items-center border border-secondary">
+                  <Text className="text-primary dark:text-card text-2xl font-bold">Allenamento</Text>
                   {availableServices.training.stats && <Text className="text-primary dark:text-card text-sm mt-1">{availableServices.training.stats}</Text>}
                 </TouchableOpacity>
               )}
@@ -185,7 +187,7 @@ export default function Team() {
                   onPress={handlePsychologyPress}
                   className="mt-2 bg-muted dark:bg-primary rounded-2xl p-4 items-center border border-secondary"
                 >
-                  <Text className="text-primary dark:text-card text-2xl">Psicologia</Text>
+                  <Text className="text-primary dark:text-card text-2xl font-bold">Psicologia</Text>
                 </TouchableOpacity>
               )}
             </View>
