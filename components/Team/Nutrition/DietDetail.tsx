@@ -1,5 +1,6 @@
 import { DietType } from "@/lib/zod/userSchemas";
-import { useMemo, useState } from "react";
+import { getAutoSelectedDay } from "@/utils/mealUtils";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import DayPlanView from "./DayPlanView";
 
@@ -19,11 +20,28 @@ const dayLabels = {
 
 export default function DietDetail({ diet }: DietDetailProps) {
   const [selectedDay, setSelectedDay] = useState<string>("monday");
+  const [hasAutoSelected, setHasAutoSelected] = useState(false);
+  const scrollViewRef = useRef<ScrollView>(null); // Ref per il ScrollView principale
 
   const sortedWeeklyPlan = useMemo(() => {
     const dayOrder = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
     return [...diet.weeklyPlan].sort((a, b) => dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day));
   }, [diet.weeklyPlan]);
+
+  // Auto-selezione del giorno all'apertura
+  useEffect(() => {
+    if (!hasAutoSelected && diet.weeklyPlan.length > 0) {
+      // Crea un oggetto weeklyPlan per la utility
+      const weeklyPlanMap = diet.weeklyPlan.reduce((acc, dayPlan) => {
+        acc[dayPlan.day] = dayPlan;
+        return acc;
+      }, {} as any);
+
+      const autoSelectedDay = getAutoSelectedDay(weeklyPlanMap);
+      setSelectedDay(autoSelectedDay);
+      setHasAutoSelected(true);
+    }
+  }, [diet.weeklyPlan, hasAutoSelected]);
 
   const selectedDayPlan = useMemo(() => sortedWeeklyPlan.find((day) => day.day === selectedDay), [sortedWeeklyPlan, selectedDay]);
 
@@ -46,8 +64,15 @@ export default function DietDetail({ diet }: DietDetailProps) {
 
   const statusInfo = getDietStatus(diet.endDate, diet.status);
 
+  const weeklyPlanMap = useMemo(() => {
+    return diet.weeklyPlan.reduce((acc, dayPlan) => {
+      acc[dayPlan.day] = dayPlan;
+      return acc;
+    }, {} as any);
+  }, [diet.weeklyPlan]);
+
   return (
-    <ScrollView className="flex-1 bg-background" showsVerticalScrollIndicator={false}>
+    <ScrollView ref={scrollViewRef} className="flex-1 bg-background" showsVerticalScrollIndicator={false}>
       {/* Info Summary Card */}
       <View className="bg-card shadow-sm p-4 m-4 mt-7 rounded-lg border border-secondary">
         <View className="flex-row items-center justify-between mb-3">
@@ -95,7 +120,10 @@ export default function DietDetail({ diet }: DietDetailProps) {
             {sortedWeeklyPlan.map((dayPlan) => (
               <TouchableOpacity
                 key={dayPlan.day}
-                onPress={() => setSelectedDay(dayPlan.day)}
+                onPress={() => {
+                  setSelectedDay(dayPlan.day);
+                  setHasAutoSelected(true);
+                }}
                 className={`px-4 py-2 mr-2 rounded-full border ${selectedDay === dayPlan.day ? "bg-primary border-primary" : "bg-card border-secondary"}`}
               >
                 <Text className={`font-medium ${selectedDay === dayPlan.day ? "text-primary-foreground" : "text-foreground"}`}>
@@ -107,8 +135,8 @@ export default function DietDetail({ diet }: DietDetailProps) {
         </ScrollView>
       </View>
 
-      {/* Selected Day Plan */}
-      {selectedDayPlan && <DayPlanView dayPlan={selectedDayPlan} />}
+      {/* Selected Day Plan - Passa il ref del ScrollView parent */}
+      {selectedDayPlan && <DayPlanView dayPlan={selectedDayPlan} weeklyPlan={weeklyPlanMap} scrollViewRef={scrollViewRef} />}
     </ScrollView>
   );
 }
