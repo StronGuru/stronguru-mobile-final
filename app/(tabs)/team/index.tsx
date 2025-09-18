@@ -2,8 +2,8 @@ import ProfessionalCard from "@/components/Team/ProfessionalCardTeam";
 import { ProfileType } from "@/lib/zod/userSchemas";
 import { useAuthStore } from "@/src/store/authStore";
 import { useUserDataStore } from "@/src/store/userDataStore";
-import { router } from "expo-router";
-import React, { useEffect, useMemo, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import React, { useCallback, useMemo, useState } from "react";
 import { ActivityIndicator, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function Team() {
@@ -75,10 +75,12 @@ export default function Team() {
     }
   };
 
-  useEffect(() => {
-    fetchUpdatedProfiles();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchUpdatedProfiles();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+  );
 
   const handleNutritionPress = () => {
     const { user } = useUserDataStore.getState();
