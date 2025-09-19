@@ -1,14 +1,16 @@
+import { useGlobalChatRealtime } from "@/hooks/use-global-chat-realtime";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { useOnboardingStore } from "@/src/store/onboardingStore";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import { useAuthStore } from "../src/store/authStore";
+
 import "./globals.css";
 
 export default function RootLayout() {
+  useGlobalChatRealtime();
   const { isAuthenticated, isHydrated: authHydrated } = useAuthStore();
-  const { hasCompletedOnboarding, isHydrated: onboardingHydrated } =
-    useOnboardingStore();
+  const { hasCompletedOnboarding, isHydrated: onboardingHydrated } = useOnboardingStore();
 
   // Mantieni la splash fino a quando gli store non sono idratati
   useEffect(() => {

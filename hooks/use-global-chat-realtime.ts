@@ -27,14 +27,11 @@ export function useGlobalChatRealtime() {
       return;
     }
 
-    // Always fetch unread count for the current user, even if no rooms
-    fetchRoomsForUser(userId).then((rooms) => {
-      if (!active) return;
-      const totalUnread = rooms.reduce((sum, r) => sum + (r.unreadCount || 0), 0);
-      setMaxUnread(totalUnread);
-
-      // Subscribe to each room for realtime updates
-      channelsRef.current = rooms.map((room) => {
+    // Helper to (re)subscribe to all rooms
+    const subscribeToRooms = (rooms: any[]) => {
+      channelsRef.current.forEach((ch) => ch.unsubscribe && ch.unsubscribe());
+      channelsRef.current = [];
+      channelsRef.current = rooms.map((room: any) => {
         const channel = supabase.channel(`room:${room.roomId}`);
         channel.on(
           "postgres_changes",
@@ -55,7 +52,48 @@ export function useGlobalChatRealtime() {
         channel.subscribe();
         return channel;
       });
+    };
+
+    // Always fetch unread count for the current user, even if no rooms
+    fetchRoomsForUser(userId).then((rooms) => {
+      if (!active) return;
+      const totalUnread = rooms.reduce((sum, r) => sum + (r.unreadCount || 0), 0);
+      setMaxUnread(totalUnread);
+      subscribeToRooms(rooms);
     });
+
+    // GLOBAL subscription to all INSERTs on messages (no room_id filter)
+    const globalChannel = supabase.channel('global-messages-insert');
+    globalChannel.on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "messages"
+        // no filter: catch all new messages
+      },
+      async (payload) => {
+        // payload.new is the inserted message row
+  const message = payload?.new || payload;
+        if (!message || !message.room_id) return;
+        // Check if the current user is a participant in this room
+        const participantRes = await supabase
+          .from("room_partecipants")
+          .select("user_id")
+          .eq("room_id", message.room_id)
+          .eq("user_id", userId)
+          .maybeSingle();
+        if (!participantRes?.data || participantRes.error) return;
+        // Only update if the user is a participant
+        const updatedRooms = await fetchRoomsForUser(userId);
+        const totalUnread = updatedRooms.reduce((sum, r) => sum + (r.unreadCount || 0), 0);
+        setMaxUnread(totalUnread);
+        subscribeToRooms(updatedRooms);
+        triggerRefresh();
+      }
+    );
+    globalChannel.subscribe();
+    channelsRef.current.push(globalChannel);
 
     return () => {
       active = false;
