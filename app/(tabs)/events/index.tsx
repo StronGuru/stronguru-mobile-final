@@ -1,6 +1,6 @@
 import apiClient from "@/api/apiClient";
 import { useRouter } from "expo-router";
-import { Filter, MapPin, Search, X } from "lucide-react-native";
+import { Filter, X } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -27,7 +27,7 @@ interface FilterOption {
 
 export default function EventsScreen() {
   const [loading, setLoading] = useState(false);
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<EventsType[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const filterOptions: FilterOption[] = [
@@ -39,9 +39,23 @@ export default function EventsScreen() {
   const [maxPrice, setMaxPrice] = useState<string>("");
   const router = useRouter();
 
+  // Aggiorna i filtri di prezzo ogni volta che cambiano minPrice o maxPrice
+  useEffect(() => {
+    let newFilters = selectedFilters.filter(
+      (f) => !f.startsWith("min_price_") && !f.startsWith("max_price_")
+    );
+    if (minPrice) {
+      newFilters.push(`min_price_${minPrice}`);
+    }
+    if (maxPrice) {
+      newFilters.push(`max_price_${maxPrice}`);
+    }
+    setSelectedFilters(newFilters);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [minPrice, maxPrice]);
+
   const filteredEvents = events
     .filter((event) => {
-      // Se nessun filtro selezionato, mostra tutti
       if (selectedFilters.length === 0) {
         return true;
       }
@@ -58,7 +72,6 @@ export default function EventsScreen() {
       let passesTypeFilter = true;
       let passesPriceRangeFilter = true;
 
-      // Filtro per tipo (paid/free)
       if (hasPaidFilter && hasFreeFilter) {
         passesTypeFilter = true;
       } else if (hasFreeFilter && !hasPaidFilter) {
@@ -67,7 +80,6 @@ export default function EventsScreen() {
         passesTypeFilter = event.prezzo > 0;
       }
 
-      // Filtro per range di prezzo
       if (hasMinPrice || hasMaxPrice) {
         const minPriceFilter = selectedFilters.find((f) =>
           f.startsWith("min_price_")
@@ -94,13 +106,12 @@ export default function EventsScreen() {
         event.titolo.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
         event.luogo.toLowerCase().includes(searchQuery.trim().toLowerCase())
     );
+
   const handleFilterSelect = (option: FilterOption) => {
     setSelectedFilters((prev) => {
       if (prev.includes(option.value)) {
-        //se gia presente rimuove
         return prev.filter((filter) => filter !== option.value);
       } else {
-        //se non presente aggiunge
         return [...prev, option.value];
       }
     });
@@ -111,7 +122,6 @@ export default function EventsScreen() {
       prev.filter((filter) => filter !== filterValue)
     );
 
-    // Se rimuovo "paid", rimuovo anche i filtri di prezzo
     if (filterValue === "paid") {
       setSelectedFilters((prev) =>
         prev.filter(
@@ -121,6 +131,8 @@ export default function EventsScreen() {
       setMinPrice("");
       setMaxPrice("");
     }
+    if (filterValue.startsWith("min_price_")) setMinPrice("");
+    if (filterValue.startsWith("max_price_")) setMaxPrice("");
   };
 
   const fetchEvents = async () => {
@@ -135,7 +147,6 @@ export default function EventsScreen() {
     } catch (error) {
       console.error("Errore nel caricamento degli eventi:", error);
     } finally {
-      console.log("Finished loading");
       setLoading(false);
     }
   };
@@ -148,50 +159,18 @@ export default function EventsScreen() {
     return (
       <TouchableOpacity
         onPress={() => {
-          router.push(`/events/${event._id}` as any);
+          router.push(`/events/${event._id}`);
         }}
+        className="bg-card rounded-xl mb-4 shadow-sm p-4"
       >
-        <View className="bg-card rounded-xl mb-4 shadow-sm border border-border">
-          {/* Header con titolo e logo */}
-          <View className="flex-row items-center p-4 border-b border-border">
-            <View className="flex-1">
-              <Text
-                className="text-lg font-semibold text-card-foreground"
-                numberOfLines={1}
-              >
-                {event.titolo}
-              </Text>
-            </View>
-          </View>
-
-          {/* Body con descrizione */}
-          <View className="p-4">
-            <Text
-              className="text-card-foreground text-sm mb-3"
-              numberOfLines={3}
-            >
-              {event.descrizione}
-            </Text>
-
-            {/* Footer con prezzo */}
-            <View className="flex-row justify-between items-center">
-              <View className="flex-row items-center">
-                <MapPin size={14} color="#64748b" />
-                <Text
-                  className="text-muted-foreground text-sm ml-1"
-                  numberOfLines={1}
-                >
-                  {event.luogo}
-                </Text>
-              </View>
-              <View className="bg-primary/10 px-3 py-1 rounded-lg">
-                <Text className="text-primary font-semibold text-sm">
-                  {event.prezzo === 0 ? "Gratuito" : `€${event.prezzo}`}
-                </Text>
-              </View>
-            </View>
-          </View>
-        </View>
+        <Text className="text-lg font-bold text-card-foreground mb-2">
+          {event.titolo}
+        </Text>
+        <Text className="text-muted-foreground mb-1">{event.luogo}</Text>
+        <Text className="text-muted-foreground mb-1">{event.descrizione}</Text>
+        <Text className="text-primary font-semibold">
+          {event.prezzo === 0 ? "Gratuito" : `€${event.prezzo}`}
+        </Text>
       </TouchableOpacity>
     );
   };
@@ -201,8 +180,7 @@ export default function EventsScreen() {
       {/* SearchBar Filter View */}
       <View className="bg-background px-4 py-3 border-b border-border">
         <View className="flex-row items-center">
-          <View className="flex-1 flex-row items-center bg-input rounded-lg px-3  mr-3">
-            <Search size={20} color="#64748b" />
+          <View className="flex-1 flex-row items-center bg-input rounded-lg px-3 mr-3">
             <TextInput
               className="flex-1 ml-2 text-card-foreground"
               style={{
@@ -215,7 +193,7 @@ export default function EventsScreen() {
             />
           </View>
           <TouchableOpacity
-            className="p-2 "
+            className="p-2"
             onPress={() => {
               setOpenFilter(true);
             }}
@@ -243,7 +221,7 @@ export default function EventsScreen() {
           >
             <View className="flex-row justify-between items-center mb-4">
               <Text className="text-lg font-semibold text-popover-foreground">
-                Filtra eventi
+                Filtra Eventi
               </Text>
               <TouchableOpacity onPress={() => setOpenFilter(false)}>
                 <X size={24} color="#64748b" />
@@ -273,109 +251,57 @@ export default function EventsScreen() {
                 </TouchableOpacity>
               ))}
             </View>
-
-            {/* Range di prezzo - appare solo se "paid" è selezionato */}
+            {/* Range di prezzo */}
             {selectedFilters.includes("paid") && (
-              <View className="mt-4 p-4 bg-secondary/20 rounded-lg">
-                <Text className="text-popover-foreground font-medium mb-3">
-                  Range di prezzo (€)
+              <View className="mt-6">
+                <Text className="text-base font-semibold mb-2 text-popover-foreground">
+                  Range di prezzo
                 </Text>
-                <View className="flex-row items-center gap-3">
-                  <View className="flex-1">
-                    <Text className="text-sm text-muted-foreground mb-1">
-                      Minimo
-                    </Text>
-                    <TextInput
-                      className="bg-input border border-border rounded-lg px-3 py-2 text-card-foreground"
-                      value={minPrice}
-                      onChangeText={(text) => {
-                        setMinPrice(text);
-                        // Rimuovi il filtro minimo precedente
-                        setSelectedFilters((prev) =>
-                          prev.filter((f) => !f.startsWith("min_price_"))
-                        );
-                        // Aggiungi il nuovo filtro se il valore non è vuoto
-                        if (text && !isNaN(parseInt(text))) {
-                          setSelectedFilters((prev) => [
-                            ...prev,
-                            `min_price_${text}`
-                          ]);
-                        }
-                      }}
-                      keyboardType="numeric"
-                      placeholder="1"
-                    />
-                  </View>
-                  <Text className="text-muted-foreground">-</Text>
-                  <View className="flex-1">
-                    <Text className="text-sm text-muted-foreground mb-1">
-                      Massimo
-                    </Text>
-                    <TextInput
-                      className="bg-input border border-border rounded-lg px-3 py-2 text-card-foreground"
-                      value={maxPrice}
-                      onChangeText={(text) => {
-                        setMaxPrice(text);
-
-                        setSelectedFilters((prev) =>
-                          prev.filter((f) => !f.startsWith("max_price_"))
-                        );
-
-                        if (text && !isNaN(parseInt(text))) {
-                          setSelectedFilters((prev) => [
-                            ...prev,
-                            `max_price_${text}`
-                          ]);
-                        }
-                      }}
-                      keyboardType="numeric"
-                      placeholder="1000"
-                    />
-                  </View>
+                <View className="flex-row gap-2">
+                  <TextInput
+                    className="bg-input rounded-lg px-3 py-2 w-[40%] text-card-foreground"
+                    keyboardType="numeric"
+                    placeholder="Min €"
+                    value={minPrice}
+                    onChangeText={setMinPrice}
+                  />
+                  <TextInput
+                    className="bg-input rounded-lg px-3 py-2 w-[40%] text-card-foreground"
+                    keyboardType="numeric"
+                    placeholder="Max €"
+                    value={maxPrice}
+                    onChangeText={setMaxPrice}
+                  />
                 </View>
               </View>
             )}
           </TouchableOpacity>
         </TouchableOpacity>
       </Modal>
+
       {selectedFilters.length > 0 && (
         <View className="px-4 py-2 bg-background">
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View className="flex-row gap-2">
               {selectedFilters.map((filterValue, index) => {
-                let displayText = "";
-
-                if (filterValue === "paid") {
-                  displayText = "Paid";
-                } else if (filterValue === "free") {
-                  displayText = "Free";
-                } else if (filterValue.startsWith("min_price_")) {
-                  const price = filterValue.split("_")[2];
-                  displayText = `Min: €${price}`;
-                } else if (filterValue.startsWith("max_price_")) {
-                  const price = filterValue.split("_")[2];
-                  displayText = `Max: €${price}`;
+                let label = filterOptions.find(
+                  (opt) => opt.value === filterValue
+                )?.label;
+                if (filterValue.startsWith("min_price_")) {
+                  label = `Min €${filterValue.split("_")[2]}`;
                 }
-
+                if (filterValue.startsWith("max_price_")) {
+                  label = `Max €${filterValue.split("_")[2]}`;
+                }
                 return (
                   <View
                     key={`filter-${filterValue}-${index}`}
                     className="flex-row items-center bg-secondary border border-border rounded-full px-3 py-1"
                   >
                     <Text className="text-secondary-foreground text-sm mr-2">
-                      {displayText}
+                      {label}
                     </Text>
-                    <TouchableOpacity
-                      onPress={() => {
-                        removeFilter(filterValue);
-                        // Reset degli input se si rimuovono i filtri di prezzo
-                        if (filterValue.startsWith("min_price_")) {
-                          setMinPrice("");
-                        } else if (filterValue.startsWith("max_price_")) {
-                          setMaxPrice("");
-                        }
-                      }}
-                    >
+                    <TouchableOpacity onPress={() => removeFilter(filterValue)}>
                       <X size={16} color="#10b981" />
                     </TouchableOpacity>
                   </View>
@@ -385,6 +311,7 @@ export default function EventsScreen() {
           </ScrollView>
         </View>
       )}
+
       {loading ? (
         <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" color="#10b981" />
@@ -392,7 +319,7 @@ export default function EventsScreen() {
         </View>
       ) : (
         <ScrollView className="flex-1 px-4 py-4 bg-background">
-          <View className="space-y-2">
+          <View>
             {filteredEvents.map((event: EventsType) => (
               <EventCard key={event._id} event={event} />
             ))}
