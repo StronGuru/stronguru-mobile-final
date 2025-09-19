@@ -69,10 +69,10 @@ export default function ProgressLineChart({ nutrition }: ProgressLineChartProps)
 
     return (
       <View className="mt-3 items-center">
-        <Text className="text-center text-sm text-foreground">
+        <Text className="text-center text-md text-foreground">
           Peso {changeText} del <Text className={`font-semibold ${changeColor}`}>{weightChange.percentage.toFixed(1)}%</Text>
         </Text>
-        <Text className="text-center text-xs text-foreground mt-1">
+        <Text className="text-center text-sm text-foreground mt-1">
           {weightChange.isDecrease ? "-" : "+"}
           {Math.abs(weightChange.change).toFixed(1)} kg rispetto alla prima misurazione
         </Text>
@@ -113,6 +113,7 @@ export default function ProgressLineChart({ nutrition }: ProgressLineChartProps)
           yAxisTextStyle={{ color: colorScheme === "dark" ? "white" : "#6b7280", fontSize: 13 }}
           xAxisLabelTextStyle={{ color: colorScheme === "dark" ? "white" : "#6b7280", fontSize: 13 }}
           scrollToEnd
+          noOfSections={4}
         />
       </View>
 

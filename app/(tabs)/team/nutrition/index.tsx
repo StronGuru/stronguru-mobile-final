@@ -103,7 +103,7 @@ export default function Nutrition() {
     <View className="flex-1 bg-background">
       {/* Tab Selector */}
       <View className="px-4 pt-4">
-        <View className="flex-row bg-secondary dark:bg-input rounded-lg p-1 ">
+        <View className="flex-row bg-secondary dark:bg-input shadow-sm rounded-lg p-1 ">
           {tabOptions.map((option) => (
             <TouchableOpacity
               key={option.key}

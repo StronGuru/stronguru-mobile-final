@@ -30,7 +30,9 @@ export default function TeamLayout() {
       <Stack.Screen name="nutrition/selector" options={{ title: "" }} />
       <Stack.Screen name="nutrition/diet/[dietId]" options={{ title: "Dettagli Dieta" }} />
       <Stack.Screen name="psychology" options={{ title: "Psicologia" }} />
-      <Stack.Screen name="training" options={{ title: "Allenamento" }} />
+      <Stack.Screen name="training/index" options={{ title: "Allenamento" }} />
+      <Stack.Screen name="training/selector" options={{ title: "" }} />
+      <Stack.Screen name="training/training-plan/[trainingPlanId]" options={{ title: "Scheda Allenamento" }} />
       <Stack.Screen name="[professionalId]" options={{ title: "Dettagli Professionista" }} />
     </Stack>
   );

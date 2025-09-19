@@ -54,14 +54,14 @@ export default function NutritionChartsCard({ profileId }: NutritionChartsCardPr
   return (
     <View className="bg-card p-4 rounded-lg my-6 shadow-sm border border-card dark:border-secondary">
       {/* Custom Segmented Control */}
-      <View className="flex-row bg-secondary dark:bg-input rounded-lg p-1 mb-6">
+      <View className="flex-row bg-secondary dark:bg-input shadow-sm rounded-lg p-1 mb-6">
         {chartOptions.map((option) => (
           <TouchableOpacity
             key={option.key}
             onPress={() => setSelectedChart(option.key)}
             className={`flex-1 flex-row items-center justify-center py-2 px-3 rounded-md ${selectedChart === option.key ? "bg-primary" : "bg-transparent"}`}
           >
-            <Text className={`text-sm font-medium ${selectedChart === option.key ? "text-primary-foreground" : "text-foreground"}`}>{option.label}</Text>
+            <Text className={`text-md font-medium ${selectedChart === option.key ? "text-primary-foreground" : "text-foreground"}`}>{option.label}</Text>
           </TouchableOpacity>
         ))}
       </View>
