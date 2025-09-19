@@ -11,6 +11,8 @@ import { useAuthStore } from "@/src/store/authStore";
 import type { ChatMessage, MessageRow } from "@/src/types/chatTypes";
 import { mapMessageRowToChatMessage } from "@/src/types/chatTypes";
 
+
+
 interface Props {
   roomName?: string; // legacy
   roomId?: number | string | null; // prefer numeric id
@@ -20,6 +22,8 @@ interface Props {
 }
 
 export const RealtimeChatNative = ({ roomName, roomId: roomIdProp, username, initialMessages = [], onMessage }: Props) => {
+    // const inputRef = useRef<TextInput>(null); // Removed duplicate declaration
+
   const { listRef, scrollToBottom } = useChatScrollNative<ChatMessage>();
   // prefer explicit roomId, else try to parse roomName
   const roomId = roomIdProp ? Number(roomIdProp) : roomName ? Number(roomName) : null;
@@ -31,6 +35,7 @@ export const RealtimeChatNative = ({ roomName, roomId: roomIdProp, username, ini
   const typingTimeoutRef = useRef<number | null>(null);
   const isTypingRef = useRef<boolean>(false);
   const keepAliveIntervalRef = useRef<number | null>(null);
+  const inputRef = useRef<TextInput>(null);
 
   // normalize any incoming message shape to ChatMessage
   const normalize = useCallback(
@@ -77,9 +82,11 @@ export const RealtimeChatNative = ({ roomName, roomId: roomIdProp, username, ini
   }, [allMessages, onMessage]);
 
   useEffect(() => {
-    scrollToBottom();
-    const t1 = setTimeout(scrollToBottom, 50);
-    const t2 = setTimeout(scrollToBottom, 200);
+    // Scrolla a fondo pagina su apertura chat e ogni volta che cambiano i messaggi
+    const scroll = () => scrollToBottom();
+    scroll();
+    const t1 = setTimeout(scroll, 50);
+    const t2 = setTimeout(scroll, 200);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
@@ -214,8 +221,11 @@ export const RealtimeChatNative = ({ roomName, roomId: roomIdProp, username, ini
         console.error("Error sending message", err);
       }
       setText("");
+      inputRef.current?.clear();
+      inputRef.current?.focus();
+      setTimeout(() => scrollToBottom(), 50);
     },
-    [text, isConnected, currentUserId, sendMessage, sendTyping]
+    [text, isConnected, currentUserId, sendMessage, sendTyping, scrollToBottom]
   );
 
   return (
@@ -236,6 +246,7 @@ export const RealtimeChatNative = ({ roomName, roomId: roomIdProp, username, ini
 
         <View className="flex-row items-center px-4 py-3 border-t border-border bg-background">
           <TextInput
+            ref={inputRef}
             className="flex-1 border border-accent text-foreground rounded-lg px-3 py-3"
             value={text}
             onChangeText={handleTextChange}

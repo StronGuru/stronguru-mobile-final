@@ -17,12 +17,23 @@ export function useGlobalChatRealtime() {
 
   useEffect(() => {
     let active = true;
-    if (!userId) return;
+    // Always cleanup previous subscriptions
+    channelsRef.current.forEach((ch) => ch.unsubscribe && ch.unsubscribe());
+    channelsRef.current = [];
 
-    // 1. Recupera tutte le room dell'utente
+    // If no user, reset badge and exit
+    if (!userId) {
+      setMaxUnread(0);
+      return;
+    }
+
+    // Always fetch unread count for the current user, even if no rooms
     fetchRoomsForUser(userId).then((rooms) => {
       if (!active) return;
-      // 2. Sottoscrivi ogni room per INSERT su messages
+      const totalUnread = rooms.reduce((sum, r) => sum + (r.unreadCount || 0), 0);
+      setMaxUnread(totalUnread);
+
+      // Subscribe to each room for realtime updates
       channelsRef.current = rooms.map((room) => {
         const channel = supabase.channel(`room:${room.roomId}`);
         channel.on(
@@ -34,10 +45,10 @@ export function useGlobalChatRealtime() {
             filter: `room_id=eq.${room.roomId}`
           },
           async () => {
-            // Quando arriva un nuovo messaggio, ricalcola il badge e notifica la chat list
+            // On new message, recalculate badge and notify chat list
             const updatedRooms = await fetchRoomsForUser(userId);
-            const maxUnread = Math.max(...updatedRooms.map((r) => r.unreadCount || 0));
-            setMaxUnread(maxUnread);
+            const totalUnread = updatedRooms.reduce((sum, r) => sum + (r.unreadCount || 0), 0);
+            setMaxUnread(totalUnread);
             triggerRefresh();
           }
         );
@@ -48,9 +59,8 @@ export function useGlobalChatRealtime() {
 
     return () => {
       active = false;
-      // Unsubscribe da tutti i canali
       channelsRef.current.forEach((ch) => ch.unsubscribe && ch.unsubscribe());
       channelsRef.current = [];
     };
-  }, [userId, setMaxUnread]);
+  }, [userId, setMaxUnread, triggerRefresh]);
 }
