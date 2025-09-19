@@ -119,7 +119,66 @@ const DietSchema = z.object({
   updatedAt: z.string()
 });
 
-// ------------------ Nutrition, Training, Psychology schemi ------------------
+// ------------------ Training sub-schemas ------------------
+
+// Exercise schema - singolo esercizio
+const ExerciseSchema = z.object({
+  _id: z.string().optional(),
+  name: z.string(),
+  sets: z.number(),
+  reps: z.string(),
+  rest: z.string(),
+  weight: z.string().optional(),
+  duration: z.string().optional(),
+  intensity: z.string().optional(),
+  distance: z.string().optional(),
+  notes: z.string().optional()
+});
+
+// Circuit schema - circuito con array di esercizi
+const CircuitSchema = z.object({
+  _id: z.string().optional(),
+  name: z.string(),
+  sets: z.number(),
+  rest: z.string(),
+  exercises: z.array(ExerciseSchema)
+});
+
+// DayContent schema - contenuto di un giorno (esercizio o circuito)
+const DayContentSchema = z.object({
+  type: z.enum(["exercise", "circuit"]),
+  data: z.union([ExerciseSchema, CircuitSchema]),
+  _id: z.string().optional()
+});
+
+// Day schema - singolo giorno di allenamento
+const TrainingDaySchema = z.object({
+  dayNumber: z.string(),
+  contents: z.array(DayContentSchema),
+  _id: z.string().optional()
+});
+
+// Week schema - settimana di allenamento
+const TrainingWeekSchema = z.object({
+  _id: z.string().optional(),
+  weekNumber: z.number(),
+  days: z.array(TrainingDaySchema)
+});
+
+// TrainingPlan schema - piano di allenamento completo
+const TrainingPlanSchema = z.object({
+  _id: z.string().optional(),
+  planName: z.string(),
+  goal: z.string(),
+  level: z.string().optional(),
+  sportActivity: z.string().optional(),
+  description: z.string().optional(),
+  weeklyPlanning: z.array(TrainingWeekSchema),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional()
+});
+
+// ------------------ Nutrition, Training, Psychology schemi principali------------------
 
 const NutritionSchema = z.object({
   _id: z.string(),
@@ -129,14 +188,12 @@ const NutritionSchema = z.object({
   createdAt: z.string().optional(),
   updatedAt: z.string().optional()
 });
-
 const TrainingSchema = z.object({
   _id: z.string(),
-  goals: z.array(z.any()).optional(),
-  injuries: z.array(z.any()).optional(),
-  trainingPlans: z.array(z.any()).optional(),
+  trainingPlans: z.array(TrainingPlanSchema).optional(),
   createdAt: z.string().optional(),
-  updatedAt: z.string().optional()
+  updatedAt: z.string().optional(),
+  __v: z.number().optional()
 });
 
 const PsychologySchema = z.object({
@@ -199,7 +256,9 @@ export const UserSchema = z.object({
 // Export tipi inferiti
 export type UserType = z.infer<typeof UserSchema>;
 export type ProfessionalType = z.infer<typeof ProfessionalSchema>;
+// Profile
 export type ProfileType = z.infer<typeof ProfileSchema>;
+// Nutrizione
 export type NutritionType = z.infer<typeof NutritionSchema>;
 export type DietType = z.infer<typeof DietSchema>;
 export type BiaEntryType = z.infer<typeof BiaEntrySchema>;
@@ -210,3 +269,11 @@ export type MealType = z.infer<typeof MealSchema>;
 export type SupplementationType = z.infer<typeof SupplementationSchema>;
 export type DailyPlanType = z.infer<typeof DailyPlanSchema>;
 export type WeeklyPlanItemType = z.infer<typeof WeeklyPlanItemSchema>;
+// Training
+export type TrainingType = z.infer<typeof TrainingSchema>;
+export type TrainingPlanType = z.infer<typeof TrainingPlanSchema>;
+export type TrainingWeekType = z.infer<typeof TrainingWeekSchema>;
+export type TrainingDayType = z.infer<typeof TrainingDaySchema>;
+export type TrainingDayContentType = z.infer<typeof DayContentSchema>;
+export type TrainingExerciseType = z.infer<typeof ExerciseSchema>;
+export type TrainingCircuitType = z.infer<typeof CircuitSchema>;
