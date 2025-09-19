@@ -1,8 +1,8 @@
 import { TrainingPlanType } from "@/lib/zod/userSchemas";
 import { useRouter } from "expo-router";
-import { Gauge, Target } from "lucide-react-native";
+import { Calendar, Gauge, Target } from "lucide-react-native";
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 interface TrainingPlanElementCardProps {
   trainingPlan: TrainingPlanType;
@@ -12,6 +12,7 @@ interface TrainingPlanElementCardProps {
 
 export default function TrainingPlanElementCard({ trainingPlan, profileId, variant = "list" }: TrainingPlanElementCardProps) {
   const router = useRouter();
+  const colorScheme = useColorScheme();
 
   const handlePress = () => {
     router.push(`/team/training/training-plan/${trainingPlan._id}?profileId=${profileId}`);
@@ -32,16 +33,24 @@ export default function TrainingPlanElementCard({ trainingPlan, profileId, varia
 
       {/* Info secondarie */}
       <View className="mt-1 gap-1">
-        <Text className="text-md text-primary font-semibold">
-          {trainingPlan.weeklyPlanning?.length || 0} {trainingPlan.weeklyPlanning?.length === 1 ? "settimana" : "settimane"}
-        </Text>
+        <View className="flex-row items-center">
+          <Calendar size={14} color={colorScheme === "dark" ? "white" : "#000000"} />
+          <Text className="text-md text-primary font-semibold ms-1">
+            {trainingPlan.weeklyPlanning?.length || 0} {trainingPlan.weeklyPlanning?.length === 1 ? "settimana" : "settimane"}
+          </Text>
+        </View>
 
-        <Text className="text-md font-medium text-foreground  ">
-          <Target size={14} color="#6b7280" /> {trainingPlan.goal}
-        </Text>
-        <Text className="text-md font-medium text-foreground">
-          <Gauge size={14} color="#6b7280" /> {trainingPlan.level}
-        </Text>
+        <View className="gap-0.5">
+          <View className="flex-row items-center">
+            <Target size={14} color={colorScheme === "dark" ? "white" : "#000000"} />
+            <Text className="text-md font-base text-foreground ms-1">{trainingPlan.goal}</Text>
+          </View>
+          <View className="mx-2"></View>
+          <View className="flex-row items-center">
+            <Gauge size={14} color={colorScheme === "dark" ? "white" : "#000000"} />
+            <Text className="text-md font-base text-foreground ms-1">{trainingPlan.level}</Text>
+          </View>
+        </View>
       </View>
     </View>
   );
