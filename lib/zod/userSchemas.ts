@@ -18,31 +18,133 @@ export const ProfessionalSchema = z.object({
   profileImg: z.string().optional()
 });
 
-// Schema per nutrition, training, psychology
-const NutritionSchema = z.object({
+// ------------------ Nutrition sub-schemas (più dettagliati) ------------------
+
+// singola voce BIA
+const BiaEntrySchema = z.object({
+  examDate: z.string(),
+  fatMassKg: z.number().optional(),
+  leanMassKg: z.number().optional(),
+  totalBodyWaterL: z.number().optional(),
+  intracellularWaterL: z.number().optional(),
+  extracellularWaterL: z.number().optional(),
+  basalMetabolismKg: z.number().optional(),
+  phaseAngle: z.number().optional(),
+  muscleMassIndex: z.number().optional(),
+  visceralFatIndex: z.number().optional(),
+  _id: z.string().optional()
+});
+
+// singola misurazione antropometrica
+const MeasurementEntrySchema = z.object({
+  date: z.string(),
+  weightKg: z.number().optional(),
+  heightCm: z.number().optional(),
+  bmi: z.number().optional(),
+  neckCm: z.number().optional(),
+  shouldersCm: z.number().optional(),
+  chestCm: z.number().optional(),
+  waistCm: z.number().optional(),
+  abdomenCm: z.number().optional(),
+  armCm: z.number().optional(),
+  hipsCm: z.number().optional(),
+  glutesCm: z.number().optional(),
+  legsCm: z.number().optional(),
+  thighCm: z.number().optional(),
+  innerThighCm: z.number().optional(),
+  calfCm: z.number().optional(),
+  notes: z.string().optional(),
+  _id: z.string().optional()
+});
+
+const FoodItemSchema = z.object({
+  name: z.string(),
+  quantity: z.number(), // Nei tuoi dati è sempre number, non union
+  unit: z.string(),
+  _id: z.string()
+});
+
+// supplement item (stesso del food)
+const SupplementItemSchema = z.object({
+  name: z.string(),
+  quantity: z.number(), // Nei tuoi dati è sempre number
+  unit: z.string(),
+  _id: z.string()
+});
+
+// meal structure - i campi sono sempre presenti nei tuoi dati
+const MealSchema = z.object({
+  foods: z.array(FoodItemSchema),
+  substitutes: z.array(FoodItemSchema),
+  _id: z.string()
+});
+
+// supplementation - sempre presente nella struttura
+const SupplementationSchema = z.object({
+  supplements: z.array(SupplementItemSchema),
+  substitutes: z.array(SupplementItemSchema)
+});
+
+// daily plan schema - corretto per matchare la struttura reale
+const DailyPlanSchema = z.object({
+  supplementation: SupplementationSchema,
+  breakfast: MealSchema,
+  morningSnack: MealSchema,
+  lunch: MealSchema,
+  afternoonSnack: MealSchema,
+  dinner: MealSchema,
+  _id: z.string()
+});
+
+// weekly plan item - il "day" ha valori specifici
+const WeeklyPlanItemSchema = z.object({
+  day: z.enum(["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]),
+  plan: DailyPlanSchema,
+  _id: z.string()
+});
+
+// dieta schema - corretto per i campi obbligatori nei tuoi dati
+const DietSchema = z.object({
   _id: z.string(),
-  bia: z.array(z.any()),
-  measurements: z.array(z.any()),
-  diets: z.array(z.any()).optional(),
+  name: z.string(),
+  goal: z.string(),
+  notes: z.string(),
+  duration: z.number(),
+  startDate: z.string(),
+  endDate: z.string(),
+  status: z.boolean(),
+  type: z.string(),
+  weeklyPlan: z.array(WeeklyPlanItemSchema),
   createdAt: z.string(),
   updatedAt: z.string()
+});
+
+// ------------------ Nutrition, Training, Psychology schemi ------------------
+
+const NutritionSchema = z.object({
+  _id: z.string(),
+  bia: z.array(BiaEntrySchema).optional(),
+  measurements: z.array(MeasurementEntrySchema).optional(),
+  diets: z.array(DietSchema).optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional()
 });
 
 const TrainingSchema = z.object({
   _id: z.string(),
-  goals: z.array(z.any()),
-  injuries: z.array(z.any()),
+  goals: z.array(z.any()).optional(),
+  injuries: z.array(z.any()).optional(),
   trainingPlans: z.array(z.any()).optional(),
-  createdAt: z.string(),
-  updatedAt: z.string()
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional()
 });
 
 const PsychologySchema = z.object({
   _id: z.string(),
-  issues: z.array(z.any()),
-  goals: z.array(z.any()),
-  createdAt: z.string(),
-  updatedAt: z.string()
+  issues: z.array(z.any()).optional(),
+  goals: z.array(z.any()).optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional()
 });
 
 // Schema per Profile completo
@@ -52,11 +154,11 @@ export const ProfileSchema = z.object({
   connectedUser: z.string(),
   status: z.string(),
   notes: z.string().optional(),
-  nutrition: NutritionSchema,
-  training: TrainingSchema,
-  psychology: PsychologySchema,
-  createdAt: z.string(),
-  updatedAt: z.string()
+  nutrition: NutritionSchema.optional().nullable(),
+  training: TrainingSchema.optional().nullable(),
+  psychology: PsychologySchema.optional().nullable(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional()
 });
 
 // 🎯 Schema User - solo firstName, lastName, email obbligatori
@@ -98,3 +200,13 @@ export const UserSchema = z.object({
 export type UserType = z.infer<typeof UserSchema>;
 export type ProfessionalType = z.infer<typeof ProfessionalSchema>;
 export type ProfileType = z.infer<typeof ProfileSchema>;
+export type NutritionType = z.infer<typeof NutritionSchema>;
+export type DietType = z.infer<typeof DietSchema>;
+export type BiaEntryType = z.infer<typeof BiaEntrySchema>;
+export type MeasurementEntryType = z.infer<typeof MeasurementEntrySchema>;
+export type FoodItemType = z.infer<typeof FoodItemSchema>;
+export type SupplementItemType = z.infer<typeof SupplementItemSchema>;
+export type MealType = z.infer<typeof MealSchema>;
+export type SupplementationType = z.infer<typeof SupplementationSchema>;
+export type DailyPlanType = z.infer<typeof DailyPlanSchema>;
+export type WeeklyPlanItemType = z.infer<typeof WeeklyPlanItemSchema>;

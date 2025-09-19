@@ -1,0 +1,44 @@
+import { useUserDataStore } from "@/src/store/userDataStore";
+import { router } from "expo-router";
+import { useMemo } from "react";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
+
+export default function NutritionSelector() {
+  const { user } = useUserDataStore();
+
+  const nutritionProfiles = useMemo(() => user?.profiles?.filter((p) => p.nutrition) || [], [user?.profiles]);
+
+  const handleProfileSelect = (profileId: string) => {
+    router.push(`/team/nutrition?profileId=${profileId}`);
+  };
+
+  return (
+    <View className="flex-1 bg-background p-4 justify-center items-center">
+      <View className="w-full max-w-sm">
+        <Text className="text-primary font-semibold text-2xl text-center mb-1 ">Hai più nutrizionisti nel tuo team.</Text>
+        <Text className="text-foreground text-xl text-center mb-8">I dati di quale nutrizionista vuoi vedere?</Text>
+
+        <FlatList
+          data={nutritionProfiles}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => (
+            <View className="shadow-sm px-1">
+              <TouchableOpacity
+                onPress={() => handleProfileSelect(item._id)}
+                className="flex items-center bg-muted dark:bg-primary p-4 rounded-2xl mb-3 border border-secondary "
+              >
+                <Text className="text-lg font-semibold text-primary dark:text-card">
+                  {item.createdBy?.firstName} {item.createdBy?.lastName}
+                </Text>
+
+                {/* {item.createdBy?.specializations && <Text className="text-sm text-foreground mt-1">{item.createdBy.specializations.join(", ")}</Text>} */}
+              </TouchableOpacity>
+            </View>
+          )}
+          className="w-full"
+          scrollEnabled={false}
+        />
+      </View>
+    </View>
+  );
+}
