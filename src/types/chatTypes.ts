@@ -4,6 +4,7 @@ export type MessageRow = {
   room_id: number;
   sender_id: string;
   content: string;
+  read?: boolean | null;
 };
 
 export type RoomRow = {
@@ -25,6 +26,7 @@ export type ChatMessage = {
   roomId: number;
   senderId: string;
   content: string;
+  read?: boolean | null;
 };
 
 export type ChatRoomPreview = {

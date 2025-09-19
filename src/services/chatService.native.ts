@@ -4,12 +4,32 @@ import type { ChatRoomPreview, MessageRow, RoomParticipantRow, RoomRow } from ".
 import { buildRoomPreview } from "../types/chatTypes";
 
 /**
+ * Marca tutti i messaggi non letti (read null/false, non inviati dall'utente) come letti per una room.
+ */
+export const markMessagesAsRead = async (roomId: number, userId: string) => {
+  try {
+    const { error } = await supabase
+      .from("messages")
+      .update({ read: true })
+      .eq("room_id", roomId)
+      .neq("sender_id", userId)
+      .or("read.is.null,read.eq.false");
+    if (error) {
+      console.error("Errore aggiornamento read messaggi:", error);
+    }
+  } catch (err) {
+    console.error("Errore markMessagesAsRead:", err);
+  }
+};
+
+
+/**
  * Recupera le stanze (preview) per un determinato utente.
  * - Legge room_partecipants per ottenere le room a cui partecipa l'utente
  * - Recupera in batch rooms, participants e messaggi (prendendo l'ultimo per room)
  * - Restituisce array di ChatRoomPreview
  */
-export const fetchRoomsForUser = async (userId: string): Promise<ChatRoomPreview[]> => {
+export const fetchRoomsForUser = async (userId: string): Promise<(ChatRoomPreview & { unreadCount: number })[]> => {
   try {
     // 1) trova room_ids dove l'utente partecipa
     const participantResult = await supabase.from("room_partecipants").select("room_id").eq("user_id", userId);
@@ -30,7 +50,7 @@ export const fetchRoomsForUser = async (userId: string): Promise<ChatRoomPreview
       supabase.from("rooms").select("id, created_at").in("id", roomIds),
       supabase.from("room_partecipants").select("room_id, user_id, name, created_at").in("room_id", roomIds),
       // fetch messages for these rooms ordered desc so we can pick the latest per room
-      supabase.from("messages").select("id, created_at, room_id, sender_id, content").in("room_id", roomIds).order("created_at", { ascending: false })
+      supabase.from("messages").select("id, created_at, room_id, sender_id, content, read").in("room_id", roomIds).order("created_at", { ascending: false })
     ]);
 
     const roomsRes = roomsResRaw;
@@ -70,10 +90,21 @@ export const fetchRoomsForUser = async (userId: string): Promise<ChatRoomPreview
       participantsByRoom.set(p.room_id, arr);
     }
 
-    // 5) build previews
-    const previews: ChatRoomPreview[] = rooms.map((r) => buildRoomPreview(r, participantsByRoom.get(r.id) || [], lastMessageByRoom.get(r.id) || null));
+    // 5) calcola unreadCount per ogni room (messaggi non letti, non inviati dall'utente)
+    const unreadCountByRoom = new Map<number, number>();
+    for (const m of messages) {
+      if ((m.read === null || m.read === false) && m.sender_id !== userId) {
+        unreadCountByRoom.set(m.room_id, (unreadCountByRoom.get(m.room_id) || 0) + 1);
+      }
+    }
 
-    // 6) sort: by lastMessage.createdAt desc, fallback to room.created_at
+    // 6) build previews
+    const previews: (ChatRoomPreview & { unreadCount: number })[] = rooms.map((r) => ({
+      ...buildRoomPreview(r, participantsByRoom.get(r.id) || [], lastMessageByRoom.get(r.id) || null),
+      unreadCount: unreadCountByRoom.get(r.id) || 0
+    }));
+
+    // 7) sort: by lastMessage.createdAt desc, fallback to room.created_at
     previews.sort((a, b) => {
       const aTs = a.lastMessage?.createdAt ?? null;
       const bTs = b.lastMessage?.createdAt ?? null;
