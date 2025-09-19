@@ -1,11 +1,11 @@
 // app/ProfessionalDetails.tsx
 import apiClient from "@/api/apiClient";
+import { getOrCreateRoom } from "@/src/services/chatService.native";
 import { useUserDataStore } from "@/src/store/userDataStore";
 import { router, useLocalSearchParams } from "expo-router";
 import { Award, Book, Brain, Building2, Dumbbell, Mail, Phone, Rocket, Salad } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View, Alert } from "react-native";
-import { getOrCreateRoom } from "@/src/services/chatService.native";
+import { ActivityIndicator, Alert, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 interface Address {
   street: string;
