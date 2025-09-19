@@ -1,7 +1,8 @@
+import Card from "@/components/ui/Card";
 import { TrainingPlanType } from "@/lib/zod/userSchemas";
-import { ChevronDown, ChevronUp, Clock, Hash, Repeat, Target, Weight } from "lucide-react-native";
+import { ChevronDown, ChevronUp, Clock, Dumbbell, FileText, Flame, RotateCw, Route, Shuffle, Weight, Zap } from "lucide-react-native";
 import React, { useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 interface TrainingPlanDetailProps {
   trainingPlan: TrainingPlanType;
@@ -12,6 +13,7 @@ const weekLabels = ["Week 1", "Week 2", "Week 3", "Week 4"];
 export default function TrainingPlanDetail({ trainingPlan }: TrainingPlanDetailProps) {
   const [selectedWeek, setSelectedWeek] = useState<number>(1);
   const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set());
+  const colorScheme = useColorScheme();
 
   const toggleDay = (weekNumber: number, dayNumber: string) => {
     const dayId = `${weekNumber}-${dayNumber}`;
@@ -28,66 +30,148 @@ export default function TrainingPlanDetail({ trainingPlan }: TrainingPlanDetailP
     if (content.type === "exercise") {
       const exercise = content.data;
       return (
-        <View key={`exercise-${index}`} className="bg-secondary/50 p-3 rounded-lg mb-2">
-          <Text className="font-semibold text-foreground mb-2">{exercise.name}</Text>
-
-          <View className="flex-row flex-wrap gap-4 mb-2">
-            <View className="flex-row items-center">
-              <Hash size={14} color="#6b7280" />
-              <Text className="text-sm text-muted-foreground ml-1">{exercise.sets} serie</Text>
-            </View>
-            <View className="flex-row items-center">
-              <Target size={14} color="#6b7280" />
-              <Text className="text-sm text-muted-foreground ml-1">{exercise.reps}</Text>
-            </View>
-            {exercise.weight && (
-              <View className="flex-row items-center">
-                <Weight size={14} color="#6b7280" />
-                <Text className="text-sm text-muted-foreground ml-1">{exercise.weight}</Text>
-              </View>
-            )}
-            <View className="flex-row items-center">
-              <Clock size={14} color="#6b7280" />
-              <Text className="text-sm text-muted-foreground ml-1">{exercise.rest}</Text>
-            </View>
+        <Card key={`exercise-${index}`} className="mt-4">
+          {/* Header */}
+          <View className="flex-row items-center mb-2 px-2 rounded-md">
+            <Dumbbell size={18} color="#10b981" />
+            <Text className="font-semibold text-primary ml-2 text-base">{exercise.name}</Text>
           </View>
 
-          {exercise.notes && <Text className="text-sm text-muted-foreground mt-2 italic">{exercise.notes}</Text>}
-        </View>
+          {/* Dettagli */}
+          <View className=" flex-row flex-wrap px-1 py-1 mb-2 gap-1 rounded-md">
+            <View className="flex-row items-center mb-1">
+              <Flame size={16} color="#f97316" />
+              <Text className="text-md  text-foreground ml-1">Sets: {exercise.sets}</Text>
+            </View>
+            <View className="flex-row items-center mb-1">
+              <Shuffle size={16} color="#3b82f6" />
+              <Text className="text-md  text-foreground ml-1">Reps: {exercise.reps}</Text>
+            </View>
+            {exercise.rest && (
+              <View className="flex-row items-center mb-1">
+                <Clock size={16} color="#10b981" />
+                <Text className="text-md  text-foreground ml-1">Rest: {exercise.rest}</Text>
+              </View>
+            )}
+            {exercise.weight && (
+              <View className="flex-row items-center mb-1">
+                <Weight size={16} color="#6b7280" />
+                <Text className="text-md  text-foreground ml-1">Peso: {exercise.weight}</Text>
+              </View>
+            )}
+            {exercise.distance && (
+              <View className="flex-row items-center mb-1">
+                <Route size={16} color="#6b7280" />
+                <Text className="text-md  text-foreground ml-1">Distanza: {exercise.distance}</Text>
+              </View>
+            )}
+            {exercise.intensity && (
+              <View className="flex-row items-center mb-1">
+                <Zap size={16} color="#facc15" />
+                <Text className="text-md  text-foreground ml-1">Intensità: {exercise.intensity}</Text>
+              </View>
+            )}
+            {exercise.duration && (
+              <View className="flex-row items-center mb-1">
+                <Clock size={16} color="#6b7280" />
+                <Text className="text-md  text-foreground ml-1">Durata: {exercise.duration}</Text>
+              </View>
+            )}
+          </View>
+
+          {/* Note */}
+          {exercise.notes && (
+            <View className="bg-gray-100 dark:bg-muted p-3 rounded-md flex-row items-start">
+              <FileText size={16} color="#6b7280" />
+              <Text className="text-sm text-wrap text-muted-foreground  ml-2 italic">{exercise.notes}</Text>
+            </View>
+          )}
+        </Card>
       );
     } else if (content.type === "circuit") {
       const circuit = content.data;
       return (
-        <View key={`circuit-${index}`} className="bg-primary/10 p-3 rounded-lg mb-2">
-          <Text className="font-semibold text-primary mb-2">🔄 {circuit.name}</Text>
-          <View className="flex-row items-center mb-2">
-            <Repeat size={14} color="#10b981" />
-            <Text className="text-sm text-primary ml-1">{circuit.sets} giri</Text>
-            <Clock size={14} color="#10b981" className="ml-4" />
-            <Text className="text-sm text-primary ml-1">{circuit.rest}</Text>
+        <Card key={`circuit-${index}`} className="bg-muted border-2 border-secondary dark:border-accent p-4 mt-4">
+          {/* Header */}
+          <View className="flex-row items-center mb-3 bg-green-100 dark:bg-ring p-2 rounded-md">
+            <RotateCw size={18} color={colorScheme === "dark" ? "#1e293b" : "#10b981"} />
+            <Text className="font-bold text-primary dark:text-card ml-2 text-base">{circuit.name}</Text>
           </View>
 
+          {/* Dettagli del circuito */}
+          <View className="flex-row gap-2 p-2 justify-center rounded-md mb-3">
+            <View className="flex-row items-center mb-2">
+              <Flame size={16} color="#f97316" />
+              <Text className="text-md font-medium text-foreground ml-2">Sets: {circuit.sets}</Text>
+            </View>
+            <View className="flex-row items-center mb-2">
+              <Clock size={16} color="#10b981" />
+              <Text className="text-md font-medium text-foreground ml-2">Rest: {circuit.rest}</Text>
+            </View>
+          </View>
+
+          {/* Esercizi nel circuito */}
           {circuit.exercises &&
             circuit.exercises.map((exercise: any, exIndex: number) => (
-              <View key={exIndex} className="bg-background/50 p-2 rounded mb-1 ml-4">
-                <Text className="text-sm font-medium text-foreground">{exercise.name}</Text>
-                <View className="flex-row flex-wrap gap-2 mt-1">
-                  <Text className="text-xs text-muted-foreground">
-                    {exercise.sets} x {exercise.reps}
-                  </Text>
-                  {exercise.weight && <Text className="text-xs text-muted-foreground">• {exercise.weight}</Text>}
-                  {exercise.distance && <Text className="text-xs text-muted-foreground">• {exercise.distance}</Text>}
-                  {exercise.intensity && <Text className="text-xs text-muted-foreground">• {exercise.intensity}</Text>}
-                  {exercise.duration && <Text className="text-xs text-muted-foreground">• {exercise.duration}</Text>}
+              <Card key={exIndex} className="border border-secondary p-3 mb-2">
+                {/* Header */}
+                <View className="flex-row items-center mb-2">
+                  <Dumbbell size={16} color="#10b981" />
+                  <Text className="text-md font-semibold text-primary ml-2">{exercise.name}</Text>
                 </View>
+
+                {/* Dettagli */}
+                <View className="flex-row flex-wrap gap-2">
+                  <View className="flex-row items-center">
+                    <Flame size={14} color="#f97316" />
+                    <Text className="text-md text-foreground ml-1">Sets: {exercise.sets}</Text>
+                  </View>
+                  <View className="flex-row items-center">
+                    <Shuffle size={14} color="#3b82f6" />
+                    <Text className="text-md text-foreground ml-1">Reps: {exercise.reps}</Text>
+                  </View>
+                  {exercise.rest && (
+                    <View className="flex-row items-center">
+                      <Clock size={14} color="#10b981" />
+                      <Text className="text-md text-foreground ml-1">Rest: {exercise.rest}</Text>
+                    </View>
+                  )}
+                  {exercise.weight && (
+                    <View className="flex-row items-center">
+                      <Weight size={14} color="#6b7280" />
+                      <Text className="text-md text-foreground ml-1">Peso: {exercise.weight}</Text>
+                    </View>
+                  )}
+                  {exercise.distance && (
+                    <View className="flex-row items-center">
+                      <Route size={14} color="#6b7280" />
+                      <Text className="text-md text-foreground ml-1">Distanza: {exercise.distance}</Text>
+                    </View>
+                  )}
+                  {exercise.intensity && (
+                    <View className="flex-row items-center">
+                      <Zap size={14} color="#facc15" />
+                      <Text className="text-md text-foreground ml-1">Intensità: {exercise.intensity}</Text>
+                    </View>
+                  )}
+                  {exercise.duration && (
+                    <View className="flex-row items-center">
+                      <Clock size={14} color="#6b7280" />
+                      <Text className="text-md text-foreground ml-1">Durata: {exercise.duration}</Text>
+                    </View>
+                  )}
+                </View>
+
+                {/* Note */}
                 {exercise.notes && (
-                  <Text className="text-xs text-muted-foreground mt-1 italic" numberOfLines={2}>
-                    {exercise.notes}
-                  </Text>
+                  <View className="bg-gray-100 dark:bg-muted p-3 mt-2 rounded-md flex-row items-start">
+                    <FileText size={16} color="#6b7280" />
+                    <Text className="text-sm text-wrap text-muted-foreground  ml-2 italic">{exercise.notes}</Text>
+                  </View>
                 )}
-              </View>
+              </Card>
             ))}
-        </View>
+        </Card>
       );
     }
     return null;
@@ -104,18 +188,18 @@ export default function TrainingPlanDetail({ trainingPlan }: TrainingPlanDetailP
       <View key={day.dayNumber} className="mb-3 px-4">
         <TouchableOpacity
           onPress={() => toggleDay(weekNumber, day.dayNumber)}
-          className="bg-card border border-border shadow-sm rounded-lg p-3 flex-row justify-between items-center"
+          className="bg-card border border-border shadow-sm rounded-lg p-4 flex-row justify-between items-center"
         >
-          <Text className="font-semibold text-foreground">{day.dayNumber}</Text>
+          <Text className="font-semibold text-xl text-foreground dark:text-primary">{day.dayNumber}</Text>
           <View className="flex-row items-center">
-            <Text className="text-sm text-muted-foreground mr-2">
+            <Text className="text-md text-muted-foreground dark:text-foreground mr-2">
               {exerciseCount} esercizi • {circuitCount} circuiti
             </Text>
             {isExpanded ? <ChevronUp size={20} color="#6b7280" /> : <ChevronDown size={20} color="#10b981" />}
           </View>
         </TouchableOpacity>
 
-        {isExpanded && <View className="mt-2 ml-4">{day.contents.map((content: any, index: number) => renderExercise(content, index))}</View>}
+        {isExpanded && <View className="">{day.contents.map((content: any, index: number) => renderExercise(content, index))}</View>}
       </View>
     );
   };
