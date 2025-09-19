@@ -1,3 +1,4 @@
+import apiClient from "@/api/apiClient";
 import { supabase } from "../../lib/supabase/client";
 import type { ChatRoomPreview, MessageRow, RoomParticipantRow, RoomRow } from "../types/chatTypes";
 import { buildRoomPreview } from "../types/chatTypes";
@@ -88,4 +89,97 @@ export const fetchRoomsForUser = async (userId: string): Promise<ChatRoomPreview
     console.error("fetchRoomsForUser unexpected error", err);
     return [];
   }
+};
+
+// Helper per ottenere il nome completo di un utente (simile al web)
+const getUserDisplayName = async (userId: string, otherUserId?: string): Promise<string> => {
+  try {
+    // Prima prova a cercare nei professionisti
+    try {
+      const professionalResp = await apiClient.get(`/professionals/${userId}`);
+      if (professionalResp.status >= 200 && professionalResp.status < 300 && professionalResp.data) {
+        const professional = professionalResp.data;
+        const fullName = `${professional.firstName || ''} ${professional.lastName || ''}`.trim();
+        return fullName || 'Professional';
+      }
+    } catch {
+      // Non è un professionista
+    }
+
+    // Se non è un professionista, potrebbe essere un client
+    if (otherUserId) {
+      try {
+        const clientResp = await apiClient.get(`/clientUsers/${userId}`);
+        if (clientResp.status >= 200 && clientResp.status < 300 && clientResp.data) {
+          const client = clientResp.data;
+          const fullName = `${client.firstName || ''} ${client.lastName || ''}`.trim();
+          return fullName || 'Client';
+        }
+      } catch {
+        // Non è un client
+      }
+    }
+
+    // Fallback
+    console.warn(`Nome non trovato per userId: ${userId}, usando fallback`);
+    return 'Utente Sconosciuto';
+  } catch (error) {
+    console.error('Errore nel recupero del nome utente:', error);
+    return 'Utente';
+  }
+};
+
+/**
+ * Crea o recupera una room 1:1 tra due utenti.
+ * Se esiste già una room con entrambi i partecipanti, la restituisce.
+ * Altrimenti crea la room e aggiunge i partecipanti con i nomi reali.
+ */
+export const getOrCreateRoom = async (otherUserId: string, userId: string): Promise<RoomRow> => {
+  // 1. Cerca una room esistente dove entrambi sono partecipanti
+  const { data: existingRoom } = await supabase
+    .from("room_partecipants")
+    .select(`room_id, rooms!inner(id, created_at)`)
+    .in("user_id", [userId, otherUserId]);
+
+  if (existingRoom && existingRoom.length >= 2) {
+    const roomIds = existingRoom.map((r: any) => r.room_id);
+    const duplicateRoomId = roomIds.find((id: any) => roomIds.filter((rid: any) => rid === id).length >= 2);
+    if (duplicateRoomId) {
+      const { data: room } = await supabase.from("rooms").select("*").eq("id", duplicateRoomId).single();
+      if (room) return room as RoomRow;
+    }
+  }
+
+  // 2. Crea una nuova room
+  const { data: newRoom, error: roomError } = await supabase.from("rooms").insert([{}]).select().single();
+  if (roomError || !newRoom) {
+    console.error("Errore nella creazione della room:", roomError);
+    throw new Error("Errore nella creazione della room");
+  }
+
+  // 3. Ottieni i nomi reali degli utenti
+  const [currentUserName, otherUserName] = await Promise.all([
+    getUserDisplayName(userId, otherUserId),
+    getUserDisplayName(otherUserId, userId)
+  ]);
+
+  // 4. Aggiungi i partecipanti con i nomi reali
+  const participantsToInsert = [
+    {
+      room_id: newRoom.id,
+      user_id: userId.toString(),
+      name: currentUserName
+    },
+    {
+      room_id: newRoom.id,
+      user_id: otherUserId.toString(),
+      name: otherUserName
+    }
+  ];
+  const { error: participantsError } = await supabase.from("room_partecipants").insert(participantsToInsert).select();
+  if (participantsError) {
+    console.error("Errore nell'aggiunta dei partecipanti:", participantsError);
+    throw new Error(`Errore nell'aggiunta dei partecipanti: ${participantsError.message}`);
+  }
+  return newRoom as RoomRow;
 };

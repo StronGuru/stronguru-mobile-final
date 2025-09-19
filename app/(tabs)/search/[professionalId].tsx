@@ -4,7 +4,8 @@ import { useUserDataStore } from "@/src/store/userDataStore";
 import { router, useLocalSearchParams } from "expo-router";
 import { Award, Book, Brain, Building2, Dumbbell, Mail, Phone, Rocket, Salad } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View, Alert } from "react-native";
+import { getOrCreateRoom } from "@/src/services/chatService.native";
 
 interface Address {
   street: string;
@@ -52,6 +53,7 @@ interface Qualification {
 export default function ProfessionalDetails() {
   const [professional, setProfessional] = useState<Professional | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [chatLoading, setChatLoading] = useState<boolean>(false);
   const { user } = useUserDataStore();
 
   // Ottieni l'ID dai parametri di ricerca con Expo Router
@@ -139,12 +141,25 @@ export default function ProfessionalDetails() {
 
   const badges = getBadgesFromSpecializations(professional.specializations);
 
-  function getPrivateRoomName(id1: string, id2: string) {
-    return [id1, id2].sort().join("_");
-  }
 
-  const roomId = getPrivateRoomName(professionalId, user?._id as string);
-  console.log("user:", user);
+  // Handler per il click su "Chatta con il professionista"
+  const handleChatPress = async () => {
+    if (!user?._id || !professionalId) return;
+    try {
+      setChatLoading(true);
+      const room = await getOrCreateRoom(professionalId as string, user._id as string);
+      if (room && room.id) {
+        router.push(`/chat/${room.id}`);
+      } else {
+        Alert.alert("Errore", "Impossibile avviare la chat.");
+      }
+    } catch (err) {
+      console.error("Errore nella creazione/recupero room:", err);
+      Alert.alert("Errore", "Impossibile avviare la chat.");
+    } finally {
+      setChatLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-background ">
@@ -175,12 +190,15 @@ export default function ProfessionalDetails() {
           </View>
           <View className="mt-4">
             <TouchableOpacity
-              onPress={() => {
-                router.push(`/chat/${roomId}`);
-              }}
+              onPress={handleChatPress}
               className="bg-muted px-4 py-2 rounded-xl"
+              disabled={chatLoading}
             >
-              <Text className="text-white text-center">Chatta con il professionista</Text>
+              {chatLoading ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text className="text-white text-center">Chatta con il professionista</Text>
+              )}
             </TouchableOpacity>
           </View>
           {professional.ambassador === true && (
