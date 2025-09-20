@@ -10,8 +10,7 @@ import {
   Shapes,
   Tag,
   Target,
-  User,
-  Users
+  User
 } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import {
@@ -36,7 +35,7 @@ type Event = {
   immagine: string;
   categoria: string;
   prezzo: number;
-  posti_disponibili: number;
+  // posti_disponibili: number;
   tags: string[];
 
   chiusura_iscrizioni: string;
@@ -323,7 +322,7 @@ export default function EventDetails() {
           {/* Dettagli aggiuntivi */}
           <View className="bg-card rounded-2xl p-6 mb-4 shadow-sm">
             {/* Posti disponibili */}
-            <View className="flex-row justify-between items-center mb-4">
+            {/* <View className="flex-row justify-between items-center mb-4">
               <View className="flex-row items-center">
                 <Users size={20} color="#10b981" />
                 <Text className="text-muted-foreground ml-2">
@@ -337,7 +336,7 @@ export default function EventDetails() {
               )}
             </View>
 
-            <View className="h-px bg-border mb-4" />
+            <View className="h-px bg-border mb-4" /> */}
 
             {/* Chiusura iscrizioni  */}
             <View className="flex-row justify-between items-center mb-4">
