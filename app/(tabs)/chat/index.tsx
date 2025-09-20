@@ -1,17 +1,24 @@
+
+import ChatSidebarNative from "@/components/chat/ChatSidebar.native";
 import { fetchRoomsForUser } from "@/src/services/chatService.native";
 import { useAuthStore } from "@/src/store/authStore";
+
+import { useChatRoomsRefreshStore } from "@/src/store/chatRoomsRefreshStore";
+import { useFocusEffect } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { View } from "react-native";
-/* import { useUserDataStore } from "@/src/store/userDataStore"; */
-import ChatSidebarNative from "@/components/chat/ChatSidebar.native";
-import { useFocusEffect } from "@react-navigation/native";
 
 export default function ChatIndex() {
   const router = useRouter();
   const userId = useAuthStore((s: any) => s.user?._id ?? s.user?.id ?? s.userId ?? s.authData?.user?.id ?? "");
   const [rooms, setRooms] = useState<any[]>([]);
 
+
+  // Il badge viene aggiornato dal global hook, non serve più calcolarlo qui
+
+  // Aggiorna rooms sia su focus che quando arriva un nuovo messaggio
+  const refreshKey = useChatRoomsRefreshStore((s) => s.refreshKey);
   useFocusEffect(
     React.useCallback(() => {
       let active = true;
@@ -31,6 +38,23 @@ export default function ChatIndex() {
       };
     }, [userId])
   );
+
+  // Aggiorna rooms anche quando refreshKey cambia (nuovo messaggio realtime)
+  React.useEffect(() => {
+    let active = true;
+    if (!userId) return;
+    (async () => {
+      try {
+        const result = await fetchRoomsForUser(userId);
+        if (active) setRooms(result);
+      } catch (e) {
+        console.warn("Failed to fetch rooms:", e);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [refreshKey, userId]);
 
   return (
     <View style={{ flex: 1, backgroundColor: "transparent" }}>

@@ -1,3 +1,4 @@
+import { useGlobalChatRealtime } from "@/hooks/use-global-chat-realtime";
 import { useAuthStore } from "@/src/store/authStore";
 import { useUserDataStore } from "@/src/store/userDataStore";
 import { Tabs } from "expo-router";
@@ -10,12 +11,28 @@ import {
   UsersRound
 } from "lucide-react-native";
 import { useEffect } from "react";
-import { useColorScheme, View } from "react-native";
+
+import { useChatBadgeStore } from "@/src/store/chatBadgeStore";
+import { Text, useColorScheme, View } from "react-native";
+
+
+// Extend the Window interface to include __maxChatUnread
+declare global {
+  interface Window {
+    __maxChatUnread?: number;
+  }
+}
+
+
+
+
 
 export default function TabsLayout() {
+  useGlobalChatRealtime();
   const { isAuthenticated, userId } = useAuthStore();
   const { user, fetchUserData } = useUserDataStore();
   const colorScheme = useColorScheme();
+  const maxChatUnread = useChatBadgeStore((s) => s.maxUnread);
 
   const colors = {
     light: {
@@ -135,8 +152,26 @@ export default function TabsLayout() {
         options={{
           title: "Chat",
           headerShown: false,
-          tabBarIcon: ({ color, focused }) => (
-            <TabIcon icon={MessagesSquare} color={color} focused={focused} />
+                    tabBarIcon: ({ color, focused }) => (
+            <View style={{ position: 'relative' }}>
+              <TabIcon icon={MessagesSquare} color={color} focused={focused} />
+              {maxChatUnread > 0 && (
+                <View style={{
+                  position: 'absolute',
+                  top: -2,
+                  right: -8,
+                  minWidth: 18,
+                  height: 18,
+                  borderRadius: 9,
+                  backgroundColor: '#ef4444',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 10
+                }}>
+                  <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 12 }}>{maxChatUnread}</Text>
+                </View>
+              )}
+            </View>
           )
         }}
       />
