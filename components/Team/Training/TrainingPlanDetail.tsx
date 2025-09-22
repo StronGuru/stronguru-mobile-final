@@ -81,7 +81,7 @@ export default function TrainingPlanDetail({ trainingPlan }: TrainingPlanDetailP
 
           {/* Note */}
           {exercise.notes && (
-            <View className="bg-gray-100 dark:bg-muted p-3 rounded-md flex-row items-start">
+            <View className="bg-gray-100 dark:bg-muted pr-8 py-3 ps-3 rounded-md flex-row items-start">
               <FileText size={16} color="#6b7280" />
               <Text className="text-sm text-wrap text-muted-foreground  ml-2 italic">{exercise.notes}</Text>
             </View>
@@ -164,7 +164,7 @@ export default function TrainingPlanDetail({ trainingPlan }: TrainingPlanDetailP
 
                 {/* Note */}
                 {exercise.notes && (
-                  <View className="bg-gray-100 dark:bg-muted p-3 mt-2 rounded-md flex-row items-start">
+                  <View className="bg-gray-100 dark:bg-muted pr-8 py-3 ps-3 mt-2 rounded-md flex-row items-start">
                     <FileText size={16} color="#6b7280" />
                     <Text className="text-sm text-wrap text-muted-foreground  ml-2 italic">{exercise.notes}</Text>
                   </View>
