@@ -4,7 +4,7 @@ import { useUserDataStore } from "@/src/store/userDataStore";
 import { useRouter } from "expo-router";
 import { Activity, Flame, Heart, Settings, User2 } from "lucide-react-native";
 import React from "react";
-import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Circle } from "react-native-svg";
 
@@ -123,7 +123,7 @@ const Index = () => {
     <SafeAreaView className={`flex-1 ${isDark ? "bg-slate-900" : "bg-gray-50"}`}>
       {/* Header Name, Profile, Settings - sticky top */}
       <View className="px-4 pb-3 ">
-        <View className="flex-row items-center justify-between mt-4">
+        <View className="flex-row items-center justify-between mt-2">
           <Text className="text-foreground text-2xl font-semibold">
             Ciao {user?.firstName} {user?.lastName}
           </Text>
@@ -137,15 +137,14 @@ const Index = () => {
           </View>
         </View>
       </View>
-
-      <View className="flex-1 ">
+      <ScrollView className="flex-1">
         {/* Health Stats Card */}
-        <TouchableOpacity onPress={() => router.push("/home/targets")} className="px-4 pt-6 mb-4">
+        <TouchableOpacity onPress={() => router.push("/home/targets")} className="px-4 mb-4">
           <HealthStats />
         </TouchableOpacity>
         {/* Quick Access scrollable Cards */}
         <Slider />
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
