@@ -1,9 +1,10 @@
+import Slider from "@/components/home/Slider";
 import Card from "@/components/ui/Card";
 import { useUserDataStore } from "@/src/store/userDataStore";
 import { useRouter } from "expo-router";
 import { Activity, Flame, Heart, Settings, User2 } from "lucide-react-native";
 import React from "react";
-import { ScrollView, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Circle } from "react-native-svg";
 
@@ -137,13 +138,14 @@ const Index = () => {
         </View>
       </View>
 
-      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+      <View className="flex-1 ">
         {/* Health Stats Card */}
-        <TouchableOpacity onPress={() => router.push("/home/targets")} className="px-4 pt-6">
+        <TouchableOpacity onPress={() => router.push("/home/targets")} className="px-4 pt-6 mb-4">
           <HealthStats />
         </TouchableOpacity>
         {/* Quick Access scrollable Cards */}
-      </ScrollView>
+        <Slider />
+      </View>
     </SafeAreaView>
   );
 };
