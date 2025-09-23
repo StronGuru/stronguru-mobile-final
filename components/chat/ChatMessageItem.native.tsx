@@ -14,10 +14,22 @@ export default function ChatMessageItemNative({ message, currentUserId, showHead
 
   return (
     <View className={`${isOwn ? "items-end" : "items-start"} my-2`}>
-      {showHeader ? <Text className="text-xs text-muted-foreground mb-1">{isOwn ? "Tu" : String(message.senderId ?? "")}</Text> : null}
+      {showHeader && !isOwn ? (
+        <Text className="text-xs text-muted-foreground mb-1">{String(message.senderId ?? "")}</Text>
+      ) : null}
+      
       <View className={`${isOwn ? "bg-primary" : "bg-surface"} px-3 py-2 rounded-2xl max-w-[80%]`}>
-        <Text className={`${isOwn ? "text-white" : "text-foreground"}`}>{message.content}</Text>
-        {time ? <Text className={`text-[10px] mt-1 ${isOwn ? "text-white/80" : "text-muted-foreground"}`}>{time}</Text> : null}
+        <Text className={`${isOwn ? "text-primary-foreground" : "text-foreground"} leading-relaxed`}>
+          {message.content}
+        </Text>
+        
+        <View className="flex-row justify-end items-center mt-1">
+          {time ? (
+            <Text className={`text-[11px] ${isOwn ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
+              {time}
+            </Text>
+          ) : null}
+        </View>
       </View>
     </View>
   );

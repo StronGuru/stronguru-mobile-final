@@ -5,12 +5,10 @@ import { useAuthStore } from "@/src/store/authStore";
 
 import { useChatRoomsRefreshStore } from "@/src/store/chatRoomsRefreshStore";
 import { useFocusEffect } from "@react-navigation/native";
-import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { View } from "react-native";
 
 export default function ChatIndex() {
-  const router = useRouter();
   const userId = useAuthStore((s: any) => s.user?._id ?? s.user?.id ?? s.userId ?? s.authData?.user?.id ?? "");
   const [rooms, setRooms] = useState<any[]>([]);
 

@@ -40,6 +40,10 @@ export type ChatRoomPreview = {
   participants: {
     userId: string;
     name?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    avatar?: string | null;
+    lastSeen?: string | null;
   }[];
 };
 
@@ -54,7 +58,15 @@ export const mapMessageRowToChatMessage = (r: MessageRow): ChatMessage => ({
 
 export const buildRoomPreview = (room: RoomRow, participants: RoomParticipantRow[], lastMessage?: MessageRow | null): ChatRoomPreview => ({
   roomId: room.id,
-  participants: participants.map((p) => ({ userId: p.user_id, name: p.name })),
+  participants: participants.map((p) => ({ 
+    userId: p.user_id, 
+    name: p.name,
+    // Questi campi verranno popolati dal servizio con una query separata
+    firstName: null,
+    lastName: null,
+    avatar: null,
+    lastSeen: null
+  })),
   lastMessage: lastMessage
     ? {
         id: lastMessage.id,
