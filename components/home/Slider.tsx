@@ -9,9 +9,9 @@ const sliderData = [
   {
     title: "Cerca Pro",
     description: "Trova il professionista giusto per te, filtrali per specializzazione, distanza, E crea il tuo tema di esperti.",
-    route: "/home/professionals"
+    route: "/search"
   },
-  { title: "Eventi", description: "Esplora tutti gli eventi sportivi in Italia, nella tua citta e degli sport che più ti interessano", route: "/home/events" },
+  { title: "Eventi", description: "Esplora tutti gli eventi sportivi in Italia, nella tua citta e degli sport che più ti interessano", route: "/events" },
   { title: "Ricette", description: "Scopri nuove ricette e idee per i tuoi pasti, filtrale per ingredienti e difficoltà.", route: "/home/recipes" },
   { title: "Allenamenti", description: "Trova allenamenti personalizzati per il tuo livello e obiettivi, e segui i progressi.", route: "/home/workouts" }
   // Aggiungi altri oggetti se necessario

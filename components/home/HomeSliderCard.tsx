@@ -1,4 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient"; // Import corretto
+import { router } from "expo-router";
 import React from "react";
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, { Extrapolation, interpolate, SharedValue, useAnimatedStyle } from "react-native-reanimated";
@@ -43,7 +44,13 @@ export default function HomeSliderCard({ item, index, scrollX }: HomeSliderCardP
         end={{ x: 1, y: 1 }}
         style={styles.gradientBackground}
       >
-        <TouchableOpacity className="rounded-xl p-6 my-2 items-center justify-center shadow-lg" style={{ width: 280, height: 400 }}>
+        <TouchableOpacity
+          onPress={() => {
+            router.push(`${item.route}` as any);
+          }}
+          className="rounded-xl p-6 my-2 items-center justify-center shadow-lg"
+          style={{ width: 280, height: 400 }}
+        >
           <View className="items-center justify-center">
             <Text className="text-4xl font-bold text-white mb-10">{item.title}</Text>
             <Text className="text-base text-gray-100">{item.description}</Text>
