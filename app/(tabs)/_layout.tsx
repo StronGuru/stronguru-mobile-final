@@ -2,19 +2,11 @@ import { useGlobalChatRealtime } from "@/hooks/use-global-chat-realtime";
 import { useAuthStore } from "@/src/store/authStore";
 import { useUserDataStore } from "@/src/store/userDataStore";
 import { Tabs } from "expo-router";
-import {
-  CalendarSearch,
-  Home,
-  MessagesSquare,
-  Search,
-  Settings,
-  UsersRound
-} from "lucide-react-native";
+import { CalendarSearch, Home, MessagesSquare, Search, UsersRound } from "lucide-react-native";
 import { useEffect } from "react";
 
 import { useChatBadgeStore } from "@/src/store/chatBadgeStore";
 import { Text, useColorScheme, View } from "react-native";
-
 
 // Extend the Window interface to include __maxChatUnread
 declare global {
@@ -22,10 +14,6 @@ declare global {
     __maxChatUnread?: number;
   }
 }
-
-
-
-
 
 export default function TabsLayout() {
   useGlobalChatRealtime();
@@ -50,15 +38,7 @@ export default function TabsLayout() {
   };
   const currentColors = colors[colorScheme ?? "light"];
 
-  const TabIcon = ({
-    icon: IconComponent,
-    color,
-    focused
-  }: {
-    icon: any;
-    color: string;
-    focused: boolean;
-  }) => (
+  const TabIcon = ({ icon: IconComponent, color, focused }: { icon: any; color: string; focused: boolean }) => (
     <View
       style={{
         alignItems: "center",
@@ -66,15 +46,10 @@ export default function TabsLayout() {
         width: 60,
         height: 30,
         borderRadius: 15,
-        backgroundColor: focused
-          ? currentColors.activeTint + "20"
-          : "transparent" // 20 = opacità 12.5%
+        backgroundColor: focused ? currentColors.activeTint + "20" : "transparent" // 20 = opacità 12.5%
       }}
     >
-      <IconComponent
-        size={24}
-        color={focused ? currentColors.activeTint : color}
-      />
+      <IconComponent size={24} color={focused ? currentColors.activeTint : color} />
     </View>
   );
 
@@ -96,7 +71,8 @@ export default function TabsLayout() {
         tabBarStyle: {
           backgroundColor: currentColors.background,
           borderTopColor: currentColors.border,
-          paddingTop: 3
+          paddingTop: 3,
+          paddingInline: 10
         },
         tabBarLabelStyle: {
           fontSize: 12,
@@ -108,7 +84,8 @@ export default function TabsLayout() {
         name="home"
         options={{
           title: "Home",
-          headerShown: false, tabBarIcon: ({ color, focused }) => <TabIcon icon={Home} color={color} focused={focused} />
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => <TabIcon icon={Home} color={color} focused={focused} />
         }}
       />
       <Tabs.Screen
@@ -116,9 +93,7 @@ export default function TabsLayout() {
         options={{
           title: "CercaPro",
           headerShown: false,
-          tabBarIcon: ({ color, focused }) => (
-            <TabIcon icon={Search} color={color} focused={focused} />
-          )
+          tabBarIcon: ({ color, focused }) => <TabIcon icon={Search} color={color} focused={focused} />
         }}
       />
       <Tabs.Screen
@@ -142,9 +117,7 @@ export default function TabsLayout() {
         options={{
           title: "Eventi",
           headerShown: false,
-          tabBarIcon: ({ color, focused }) => (
-            <TabIcon icon={CalendarSearch} color={color} focused={focused} />
-          )
+          tabBarIcon: ({ color, focused }) => <TabIcon icon={CalendarSearch} color={color} focused={focused} />
         }}
       />
       <Tabs.Screen
@@ -152,36 +125,28 @@ export default function TabsLayout() {
         options={{
           title: "Chat",
           headerShown: false,
-                    tabBarIcon: ({ color, focused }) => (
-            <View style={{ position: 'relative' }}>
+          tabBarIcon: ({ color, focused }) => (
+            <View style={{ position: "relative" }}>
               <TabIcon icon={MessagesSquare} color={color} focused={focused} />
               {maxChatUnread > 0 && (
-                <View style={{
-                  position: 'absolute',
-                  top: -2,
-                  right: -8,
-                  minWidth: 18,
-                  height: 18,
-                  borderRadius: 9,
-                  backgroundColor: '#ef4444',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 10
-                }}>
-                  <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 12 }}>{maxChatUnread}</Text>
+                <View
+                  style={{
+                    position: "absolute",
+                    top: -2,
+                    right: -8,
+                    minWidth: 18,
+                    height: 18,
+                    borderRadius: 9,
+                    backgroundColor: "#ef4444",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    zIndex: 10
+                  }}
+                >
+                  <Text style={{ color: "white", fontWeight: "bold", fontSize: 12 }}>{maxChatUnread}</Text>
                 </View>
               )}
             </View>
-          )
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: "Settings",
-          headerShown: false,
-          tabBarIcon: ({ color, focused }) => (
-            <TabIcon icon={Settings} color={color} focused={focused} />
           )
         }}
       />
