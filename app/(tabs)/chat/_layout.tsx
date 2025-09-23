@@ -26,7 +26,7 @@ export default function ChatLayout() {
       }}
     >
       <Stack.Screen name="index" options={{ title: "Chat" }} />
-      <Stack.Screen name="[room]" options={{ title: "Messaggi" }} />
+      <Stack.Screen name="[room]" options={{ headerShown: false }} />
     </Stack>
   );
 }

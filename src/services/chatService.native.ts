@@ -1,7 +1,6 @@
 import apiClient from "@/api/apiClient";
 import { supabase } from "../../lib/supabase/client";
 import type { ChatRoomPreview, MessageRow, RoomParticipantRow, RoomRow } from "../types/chatTypes";
-import { buildRoomPreview } from "../types/chatTypes";
 
 /**
  * Marca tutti i messaggi non letti (read null/false, non inviati dall'utente) come letti per una room.
@@ -99,10 +98,60 @@ export const fetchRoomsForUser = async (userId: string): Promise<(ChatRoomPrevie
     }
 
     // 6) build previews
-    const previews: (ChatRoomPreview & { unreadCount: number })[] = rooms.map((r) => ({
-      ...buildRoomPreview(r, participantsByRoom.get(r.id) || [], lastMessageByRoom.get(r.id) || null),
-      unreadCount: unreadCountByRoom.get(r.id) || 0
-    }));
+    const previews: (ChatRoomPreview & { unreadCount: number })[] = [];
+    
+    for (const room of rooms) {
+      const roomParticipants = participantsByRoom.get(room.id) || [];
+      const lastMessage = lastMessageByRoom.get(room.id) || null;
+      
+      // Arricchisci i dati dei partecipanti con informazioni dal database users
+      const enrichedParticipants = await Promise.all(
+        roomParticipants.map(async (p) => {
+          try {
+            const { data: userData } = await supabase
+              .from("users")
+              .select("id, first_name, last_name, avatar_url")
+              .eq("id", p.user_id)
+              .single();
+            
+            if (userData) {
+              return {
+                userId: p.user_id,
+                name: p.name,
+                firstName: userData.first_name,
+                lastName: userData.last_name,
+                avatar: userData.avatar_url,
+                lastSeen: null
+              };
+            }
+          } catch (error) {
+            console.warn(`Failed to fetch user data for ${p.user_id}:`, error);
+          }
+          
+          // Fallback ai dati esistenti
+          return {
+            userId: p.user_id,
+            name: p.name,
+            firstName: null,
+            lastName: null,
+            avatar: null,
+            lastSeen: null
+          };
+        })
+      );
+      
+      previews.push({
+        roomId: room.id,
+        participants: enrichedParticipants,
+        lastMessage: lastMessage ? {
+          id: lastMessage.id,
+          content: lastMessage.content,
+          createdAt: lastMessage.created_at,
+          senderId: lastMessage.sender_id
+        } : null,
+        unreadCount: unreadCountByRoom.get(room.id) || 0
+      });
+    }
 
     // 7) sort: by lastMessage.createdAt desc, fallback to room.created_at
     previews.sort((a, b) => {

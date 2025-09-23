@@ -121,11 +121,9 @@ const Index = () => {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       {/* Header Name, Profile, Settings - sticky top */}
-      <View className="px-4 pb-3 ">
+      <View className="px-4 pb-3 mb-2">
         <View className="flex-row items-center justify-between mt-2">
-          <Text className="text-foreground text-2xl font-semibold">
-            Ciao {user?.firstName} {user?.lastName}
-          </Text>
+          <Text className="text-foreground text-2xl font-semibold">Ciao {user?.firstName}!</Text>
           <View className="flex-row items-center justify-between gap-4">
             <TouchableOpacity onPress={() => router.push("/home/settings")}>
               <Settings size={25} color={colorScheme === "dark" ? "white" : "black"} />

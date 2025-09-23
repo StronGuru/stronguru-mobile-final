@@ -26,12 +26,12 @@ export default function HomeSliderCard({ item, index, scrollX }: HomeSliderCardP
           translateX: interpolate(
             scrollX?.value ?? 0,
             [(index - 1) * width, index * width, (index + 1) * width],
-            [-width * 0.25, 0, width * 0.25],
+            [-width * 0.3, 0, width * 0.3],
             Extrapolation.CLAMP
           )
         },
         {
-          scale: interpolate(scrollX?.value ?? 0, [(index - 1) * width, index * width, (index + 1) * width], [0.96, 1, 0.96], Extrapolation.CLAMP)
+          scale: interpolate(scrollX?.value ?? 0, [(index - 1) * width, index * width, (index + 1) * width], [0.85, 1, 0.85], Extrapolation.CLAMP)
         }
       ]
     };

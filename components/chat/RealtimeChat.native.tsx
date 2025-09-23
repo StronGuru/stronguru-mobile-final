@@ -1,7 +1,18 @@
 import { useFocusEffect } from "@react-navigation/native";
-import { Send } from "lucide-react-native";
+import { router } from "expo-router";
+import { ArrowLeft, Send } from "lucide-react-native";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from "react-native";
 import { TypingIndicatorNative } from "./TypingIndicator.native";
 
 import ChatMessageItemNative from "@/components/chat/ChatMessageItem.native";
@@ -19,9 +30,15 @@ interface Props {
   username?: string;
   initialMessages?: any[];
   onMessage?: (m: ChatMessage[]) => void;
+  // Dati per l'header
+  chatUser?: {
+    id: string;
+    name: string;
+    avatar?: string;
+  };
 }
 
-export const RealtimeChatNative = ({ roomName, roomId: roomIdProp, username, initialMessages = [], onMessage }: Props) => {
+export const RealtimeChatNative = ({ roomName, roomId: roomIdProp, username, initialMessages = [], onMessage, chatUser }: Props) => {
     // const inputRef = useRef<TextInput>(null); // Removed duplicate declaration
 
   const { listRef, scrollToBottom } = useChatScrollNative<ChatMessage>();
@@ -81,25 +98,42 @@ export const RealtimeChatNative = ({ roomName, roomId: roomIdProp, username, ini
     onMessage?.(allMessages);
   }, [allMessages, onMessage]);
 
+  // Scroll automatico quando cambiano i messaggi o quando si apre la chat
   useEffect(() => {
-    // Scrolla a fondo pagina su apertura chat e ogni volta che cambiano i messaggi
-    const scroll = () => scrollToBottom();
-    scroll();
-    const t1 = setTimeout(scroll, 50);
-    const t2 = setTimeout(scroll, 200);
+    if (!allMessages.length) return;
+    
+    // Scroll immediato
+    scrollToBottom();
+    
+    // Scroll ritardati per assicurarsi che la FlatList sia renderizzata
+    const timeouts = [
+      setTimeout(scrollToBottom, 100),
+      setTimeout(scrollToBottom, 300),
+      setTimeout(scrollToBottom, 500)
+    ];
+    
     return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
+      timeouts.forEach(clearTimeout);
     };
   }, [allMessages, scrollToBottom]);
 
+  // Scroll automatico quando si entra nella chat
   useFocusEffect(
     React.useCallback(() => {
+      // Scroll immediato
       scrollToBottom();
-      const t = setTimeout(scrollToBottom, 80);
-      return () => clearTimeout(t);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [roomId, scrollToBottom])
+      
+      // Scroll ritardati per gestire il caricamento dei messaggi iniziali
+      const timeouts = [
+        setTimeout(scrollToBottom, 150),
+        setTimeout(scrollToBottom, 400),
+        setTimeout(scrollToBottom, 800)
+      ];
+      
+      return () => {
+        timeouts.forEach(clearTimeout);
+      };
+    }, [scrollToBottom])
   );
 
   const isConnected = !!roomId && !loading;
@@ -228,38 +262,86 @@ export const RealtimeChatNative = ({ roomName, roomId: roomIdProp, username, ini
     [text, isConnected, currentUserId, sendMessage, sendTyping, scrollToBottom]
   );
 
+  const handleGoBack = () => {
+    // Naviga indietro usando router
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/(tabs)/chat');
+    }
+  };
+
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? 98 : 0} className="flex-1">
-      <SafeAreaView className="flex-1 bg-background">
-        <FlatList
-          ref={listRef}
-          data={allMessages}
-          keyExtractor={(i) => String(i.id)}
-          renderItem={({ item }) => <ChatMessageItemNative message={item} currentUserId={String(currentUserId ?? "")} />}
-          className="flex-1 p-3"
-          showsVerticalScrollIndicator={false}
-          onLayout={() => scrollToBottom()}
-        />
-
-        {/* Typing indicator */}
-        <TypingIndicatorNative typingUsers={typingUsers} currentUserId={String(currentUserId ?? "")} />
-
-        <View className="flex-row items-center px-4 py-3 border-t border-border bg-background">
-          <TextInput
-            ref={inputRef}
-            className="flex-1 border border-accent text-foreground rounded-lg px-3 py-3"
-            value={text}
-            onChangeText={handleTextChange}
-            placeholder="Scrivi un messaggio..."
-            editable={isConnected}
-            onSubmitEditing={handleSend}
-            returnKeyType="send"
-          />
-          <TouchableOpacity onPress={handleSend} disabled={!isConnected || !text.trim()} className="ml-2 flex-row items-center justify-center">
-            <Send size={24} color={isConnected && text.trim() ? "#fff" : "#999"} />
+    <View className="flex-1 bg-background">
+      <SafeAreaView className="flex-1 bg-background" style={{ paddingTop: Platform.OS === 'ios' ? 0 : 26 }}>
+        {/* Header Chat */}
+        <View className="flex-row items-center px-4 py-4 bg-surface border-b border-border" style={{ paddingTop: Platform.OS === 'ios' ? 12 : 28 }}>
+          <TouchableOpacity onPress={handleGoBack} className="mr-3">
+            <ArrowLeft size={24} color="currentColor" className="text-foreground" />
           </TouchableOpacity>
+          
+          <View className="flex-row items-center flex-1">
+            {chatUser?.avatar ? (
+              <Image 
+                source={{ uri: chatUser.avatar }} 
+                className="w-10 h-10 rounded-full mr-3"
+                defaultSource={require('@/assets/images/icon.png')}
+              />
+            ) : (
+              <View className="w-10 h-10 rounded-full bg-accent mr-3 items-center justify-center">
+                <Text className="text-accent-foreground font-semibold">
+                  {chatUser?.name?.charAt(0)?.toUpperCase() || '?'}
+                </Text>
+              </View>
+            )}
+            
+            <View className="flex-1">
+              <Text className="text-foreground font-semibold text-base">
+                {chatUser?.name || 'Utente'}
+              </Text>
+            </View>
+          </View>
         </View>
+        
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="flex-1">
+          <FlatList
+            ref={listRef}
+            data={allMessages}
+            keyExtractor={(i) => String(i.id)}
+            renderItem={({ item }) => <ChatMessageItemNative message={item} currentUserId={String(currentUserId ?? "")} />}
+            className="flex-1 p-3 bg-background"
+            showsVerticalScrollIndicator={false}
+            onLayout={() => scrollToBottom()}
+          />
+
+          {/* Typing indicator */}
+          <TypingIndicatorNative typingUsers={typingUsers} currentUserId={String(currentUserId ?? "")} />
+
+          <View className="flex-row items-center px-4 py-3 border-t border-border bg-background">
+            <TextInput
+              ref={inputRef}
+              className="flex-1 border border-accent text-foreground rounded-lg px-3 py-3 mr-3"
+              value={text}
+              onChangeText={handleTextChange}
+              placeholder="Scrivi un messaggio..."
+              editable={isConnected}
+              onSubmitEditing={handleSend}
+              returnKeyType="send"
+              multiline
+              style={{ maxHeight: 100 }}
+            />
+            
+            <TouchableOpacity 
+              onPress={handleSend} 
+              disabled={!isConnected || !text.trim()} 
+              className="w-10 h-10 rounded-lg bg-primary items-center justify-center"
+              style={{ opacity: isConnected && text.trim() ? 1 : 0.6 }}
+            >
+              <Send size={20} color={isConnected && text.trim() ? "#fff" : "#999"} />
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
       </SafeAreaView>
-    </KeyboardAvoidingView>
+    </View>
   );
 };

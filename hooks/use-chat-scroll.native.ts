@@ -15,27 +15,40 @@ import type { FlatList } from "react-native";
 export function useChatScrollNative<T>() {
   const listRef = useRef<FlatList<T> | null>(null);
 
-  const scrollToBottom = useCallback((opts?: { index?: number }) => {
+  const scrollToBottom = useCallback((opts?: { index?: number; force?: boolean }) => {
     try {
       const refAny = (listRef as any).current;
       if (!refAny) return;
-      // prefer scrollToEnd se disponibile (scorre alla fine reale della lista)
+      
+      // Metodo più aggressivo: prova tutti i metodi disponibili
       if (typeof refAny.scrollToEnd === "function") {
-        refAny.scrollToEnd({ animated: true });
+        refAny.scrollToEnd({ animated: !opts?.force });
         return;
       }
-      // fallback a scrollToOffset (big offset)
+      
+      // Fallback con offset molto grande
       if (typeof refAny.scrollToOffset === "function") {
-        refAny.scrollToOffset({ offset: 9999999, animated: true });
+        refAny.scrollToOffset({ 
+          offset: 999999, 
+          animated: !opts?.force 
+        });
         return;
       }
-      // fallback a scrollToIndex se viene passato l'indice finale
+      
+      // Fallback con scrollToIndex all'ultimo elemento
       if (typeof refAny.scrollToIndex === "function" && typeof opts?.index === "number") {
-        refAny.scrollToIndex({ index: opts!.index, animated: true });
+        refAny.scrollToIndex({ 
+          index: Math.max(0, opts.index - 1), 
+          animated: !opts?.force,
+          viewPosition: 1 // Posiziona l'elemento alla fine della vista
+        });
         return;
       }
     } catch {
-      // noop
+      // Se tutti i metodi falliscono, riprova senza animazione
+      if (!opts?.force) {
+        setTimeout(() => scrollToBottom({ ...opts, force: true }), 100);
+      }
     }
   }, []);
 
