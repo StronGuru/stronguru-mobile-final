@@ -119,7 +119,7 @@ const Index = () => {
   const { user } = useUserDataStore();
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       {/* Header Name, Profile, Settings - sticky top */}
       <View className="px-4 pb-3 ">
         <View className="flex-row items-center justify-between mt-2">
