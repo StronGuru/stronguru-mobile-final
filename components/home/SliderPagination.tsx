@@ -13,7 +13,7 @@ export default function SliderPagination({ items, paginationIndex, scrollX }: Pr
   return (
     <View className="flex-row h-15 justify-center items-center">
       {items.map((_, index) => {
-        return <View key={index} className={`h-2 rounded-full mx-1 ${index === paginationIndex ? "bg-primary w-4" : "bg-secondary w-2"}`} />;
+        return <View key={index} className={`h-2 rounded-full mx-1 ${index === paginationIndex ? "bg-primary w-4" : "bg-muted-foreground w-2"}`} />;
       })}
     </View>
   );

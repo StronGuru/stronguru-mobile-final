@@ -115,12 +115,11 @@ const HealthStats = () => {
 
 const Index = () => {
   const colorScheme = useColorScheme();
-  const isDark = colorScheme === "dark";
   const router = useRouter();
   const { user } = useUserDataStore();
 
   return (
-    <SafeAreaView className={`flex-1 ${isDark ? "bg-slate-900" : "bg-gray-50"}`}>
+    <SafeAreaView className="flex-1 bg-background">
       {/* Header Name, Profile, Settings - sticky top */}
       <View className="px-4 pb-3 ">
         <View className="flex-row items-center justify-between mt-2">

@@ -36,17 +36,17 @@ export default function HomeSliderCard({ item, index, scrollX }: HomeSliderCardP
     };
   });
   return (
-    <Animated.View style={[styles.itemContainer, rnAnimatedStyle]}>
+    <Animated.View style={[styles.itemContainer, rnAnimatedStyle]} className={"shadow-sm py-3"}>
       <LinearGradient
-        colors={["#10b981", "#34d399", "#6ee7b7"]} // Tonalità di verde
+        colors={["#065f46", "#10b981", "#059669", "#34d399"]} // 4 tonalità per smoothness
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.gradientBackground}
       >
-        <TouchableOpacity className="rounded-xl p-6 my-2 items-center justify-center" style={{ width: 280, height: 400 }}>
+        <TouchableOpacity className="rounded-xl p-6 my-2 items-center justify-center shadow-lg" style={{ width: 280, height: 400 }}>
           <View className="items-center justify-center">
-            <Text className="text-3xl font-bold text-white mb-10">{item.title}</Text>
-            <Text className="text-medium text-gray-100">{item.description}</Text>
+            <Text className="text-4xl font-bold text-white mb-10">{item.title}</Text>
+            <Text className="text-base text-gray-100">{item.description}</Text>
           </View>
         </TouchableOpacity>
       </LinearGradient>
