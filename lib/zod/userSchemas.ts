@@ -18,6 +18,31 @@ export const ProfessionalSchema = z.object({
   profileImg: z.string().optional()
 });
 
+// Sottoschemi per User
+
+const SubscriptionSchema = z.object({
+  stripeCustomerId: z.string(),
+  stripeSubscriptionId: z.string(),
+  stripePriceId: z.string(),
+  status: z.string(),
+  currentPeriodStart: z.string().optional(), // string($date-time)
+  currentPeriodEnd: z.string().optional(), // string($date-time)
+  trialStart: z.string().optional(), // string($date-time)
+  trialEnd: z.string().optional(), // string($date-time)
+  cancelAtPeriodEnd: z.boolean().optional(),
+  canceledAt: z.string().optional(), // string($date-time)
+  createdAt: z.string().optional(), // string($date-time)
+  updatedAt: z.string().optional() // string($date-time)
+});
+
+const AddressSchema = z.object({
+  street: z.string().optional(),
+  city: z.string().optional(),
+  cap: z.string().optional(),
+  province: z.string().optional(),
+  country: z.string().optional()
+});
+
 // ------------------ Nutrition sub-schemas (più dettagliati) ------------------
 
 // singola voce BIA
@@ -229,8 +254,9 @@ export const UserSchema = z.object({
   role: z.string().optional(),
   dateOfBirth: z.string().optional(),
   gender: GenderEnum.optional(),
+  address: AddressSchema.optional(),
   phone: z.string().optional(),
-  subscription: z.object({}).optional(), // Da definire meglio in futuro
+  subscription: SubscriptionSchema.optional(),
   healthData: z
     .object({
       height: z.number().optional(),
@@ -277,3 +303,5 @@ export type TrainingDayType = z.infer<typeof TrainingDaySchema>;
 export type TrainingDayContentType = z.infer<typeof DayContentSchema>;
 export type TrainingExerciseType = z.infer<typeof ExerciseSchema>;
 export type TrainingCircuitType = z.infer<typeof CircuitSchema>;
+// Subscription
+export type SubscriptionType = z.infer<typeof SubscriptionSchema>;

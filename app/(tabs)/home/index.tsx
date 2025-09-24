@@ -123,14 +123,16 @@ const Index = () => {
       {/* Header Name, Profile, Settings - sticky top */}
       <View className="px-4 pb-3 mb-2">
         <View className="flex-row items-center justify-between mt-2">
-          <Text className="text-foreground text-2xl font-semibold">Ciao {user?.firstName}!</Text>
-          <View className="flex-row items-center justify-between gap-4">
+          <Text className="text-foreground text-3xl font-semibold">Ciao {user?.firstName}!</Text>
+          <View className="flex-row items-center justify-between gap-6">
             <TouchableOpacity onPress={() => router.push("/home/settings")}>
-              <Settings size={25} color={colorScheme === "dark" ? "white" : "black"} />
+              <Settings size={30} color={colorScheme === "dark" ? "white" : "black"} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push("/home/profile-page")}>
+              <User2 size={30} color={colorScheme === "dark" ? "white" : "black"} />
             </TouchableOpacity>
 
             {/* <Image source={{ uri: `${user?.}` }} className="w-10 h-10 rounded-full border border-white" /> */}
-            <User2 size={25} color={colorScheme === "dark" ? "white" : "black"} />
           </View>
         </View>
       </View>
