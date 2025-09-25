@@ -400,6 +400,7 @@ export default function ProfilePage() {
                           placeholder="Provincia"
                           value={field.value || ""}
                           onChangeText={field.onChange}
+                          autoCapitalize="characters"
                         />
                         {fieldState.error && <Text className="text-red-500 text-xs mt-1">{fieldState.error.message}</Text>}
                       </View>
