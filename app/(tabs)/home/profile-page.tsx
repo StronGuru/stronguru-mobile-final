@@ -6,7 +6,19 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { Calendar, Edit, MapPin, Phone, User } from "lucide-react-native";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ActivityIndicator, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  useColorScheme,
+  View
+} from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 
 export const GENDER_OPTIONS = [
@@ -21,6 +33,7 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const colorScheme = useColorScheme();
 
   const form = useForm<ProfileFormType>({
     resolver: zodResolver(ProfileFormSchema),
@@ -105,44 +118,44 @@ export default function ProfilePage() {
             {!isEditing ? (
               <Card className="gap-0 divide-y divide-gray-100">
                 <View className="flex-row items-center gap-4 py-4 px-1">
-                  <View className="w-10 h-10 bg-secondary rounded-full items-center justify-center">
-                    <Phone size={20} className="text-blue-600" />
+                  <View className="w-10 h-10 bg-secondary dark:bg-accent rounded-full items-center justify-center">
+                    <Phone size={20} color={colorScheme === "dark" ? "white" : "black"} />
                   </View>
                   <View className="flex-1">
                     <Text className="text-lg font-medium text-foreground">Telefono</Text>
-                    <Text className="text-md text-gray-600 mt-1">{user?.phone || "Non specificato"}</Text>
+                    <Text className="text-md text-muted-foreground mt-1">{user?.phone || "Non specificato"}</Text>
                   </View>
                 </View>
 
                 <View className="flex-row items-center gap-4 py-4 px-1">
-                  <View className="w-10 h-10 bg-secondary rounded-full items-center justify-center">
-                    <Calendar size={20} className="text-green-600" />
+                  <View className="w-10 h-10 bg-secondary dark:bg-accent rounded-full items-center justify-center">
+                    <Calendar size={20} color={colorScheme === "dark" ? "white" : "black"} />
                   </View>
                   <View className="flex-1">
                     <Text className="text-lg font-medium text-foreground">Data di nascita</Text>
-                    <Text className="text-md text-gray-600 mt-1">{formatDateOfBirth(user?.dateOfBirth)}</Text>
+                    <Text className="text-md text-muted-foreground mt-1">{formatDateOfBirth(user?.dateOfBirth)}</Text>
                   </View>
                 </View>
 
                 <View className="flex-row items-center gap-4 py-4 px-1">
-                  <View className="w-10 h-10 bg-secondary rounded-full items-center justify-center">
-                    <User size={20} className="text-purple-600" />
+                  <View className="w-10 h-10 bg-secondary dark:bg-accent rounded-full items-center justify-center">
+                    <User size={20} color={colorScheme === "dark" ? "white" : "black"} />
                   </View>
                   <View className="flex-1">
                     <Text className="text-lg font-medium text-foreground">Genere</Text>
-                    <Text className="text-md text-gray-600 mt-1">
+                    <Text className="text-md text-muted-foreground mt-1">
                       {user?.gender === "male" ? "Uomo" : user?.gender === "female" ? "Donna" : user?.gender === "other" ? "Altro" : "Non specificato"}
                     </Text>
                   </View>
                 </View>
 
                 <View className="flex-row items-center gap-4 py-4 px-1">
-                  <View className="w-10 h-10 bg-secondary rounded-full items-center justify-center">
-                    <MapPin size={20} className="text-red-600" />
+                  <View className="w-10 h-10 bg-secondary dark:bg-accent rounded-full items-center justify-center">
+                    <MapPin size={20} color={colorScheme === "dark" ? "white" : "black"} />
                   </View>
                   <View className="flex-1">
                     <Text className="text-lg font-medium text-foreground">Indirizzo</Text>
-                    <Text className="text-md text-gray-600 mt-1">
+                    <Text className="text-md text-muted-foreground mt-1">
                       {user?.address
                         ? [user.address.street, user.address.city, user.address.cap, user.address.province, user.address.country].filter(Boolean).join(", ")
                         : "Non specificato"}
@@ -417,10 +430,6 @@ const dropdownStyles = StyleSheet.create({
     fontSize: 14,
     color: "#94a3b8" // text-slate-400
   },
-  selectedText: {
-    fontSize: 14,
-    color: "#0f172a" // text-foreground
-  },
   itemText: {
     fontSize: 14,
     textAlign: "center"
@@ -444,48 +453,5 @@ const dropdownStyles = StyleSheet.create({
     marginVertical: 40,
     maxHeight: "70%",
     overflow: "hidden"
-  },
-  selectedStyle: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 20,
-    backgroundColor: "#10b981", // primary color
-    marginTop: 8,
-    marginRight: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2
-  },
-  textSelectedStyle: {
-    marginRight: 6,
-    fontSize: 14,
-    color: "#ffffff",
-    fontWeight: "500"
-  },
-  // Item rendering in dropdown list
-  item: {
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#ffffff",
-    borderBottomWidth: 0.5,
-    borderBottomColor: "#e2e8f0"
-  },
-  itemSelected: {
-    backgroundColor: "#f0fdf4" // light green background for selected item
-  },
-  selectedTextStyle: {
-    fontSize: 14, //stile testo in goals modale
-    color: "#0f172a"
   }
 });
