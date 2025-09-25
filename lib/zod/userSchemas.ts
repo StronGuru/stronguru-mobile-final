@@ -245,7 +245,7 @@ export const ProfileSchema = z.object({
 
 // 🎯 Schema User - solo firstName, lastName, email obbligatori
 export const UserSchema = z.object({
-  _id: z.string(),
+  _id: z.string().optional(),
   firstName: z.string(), // ✅ Required
   lastName: z.string(), // ✅ Required
   email: z.string().email(), // ✅ Required
@@ -278,9 +278,25 @@ export const UserSchema = z.object({
   createdAt: z.string().optional(),
   updatedAt: z.string().optional()
 });
+// -----------------schema creato per gestire il form di modifica dati profilo in Profile Page------------------
+export const ProfileFormSchema = UserSchema.pick({
+  firstName: true,
+  lastName: true,
+  dateOfBirth: true,
+  gender: true,
+  address: true,
+  phone: true,
+  fitnessLevel: true,
+  goals: true,
+  activityLevel: true
+});
+// Tipo per il form di modifica profilo
+export type ProfileFormType = z.infer<typeof ProfileFormSchema>;
 
-// Export tipi inferiti
+// ------------------------------------Export tipi inferiti-------------------------------------
+// User
 export type UserType = z.infer<typeof UserSchema>;
+// Professional
 export type ProfessionalType = z.infer<typeof ProfessionalSchema>;
 // Profile
 export type ProfileType = z.infer<typeof ProfileSchema>;
