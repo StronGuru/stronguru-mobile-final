@@ -430,6 +430,10 @@ const dropdownStyles = StyleSheet.create({
     fontSize: 14,
     color: "#94a3b8" // text-slate-400
   },
+  selectedText: {
+    fontSize: 14,
+    color: "#0f172a" // text-foreground
+  },
   itemText: {
     fontSize: 14,
     textAlign: "center"
