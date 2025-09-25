@@ -71,6 +71,40 @@ export default function ProfilePage() {
       return "Data non valida";
     }
   };
+  const getDropdownStyles = (fieldState: any) => {
+    const isDark = colorScheme === "dark";
+
+    return {
+      container: [
+        dropdownStyles.container,
+        {
+          // ✅ Usa i valori hex diretti dal tailwind.config.js
+          backgroundColor: isDark
+            ? "#334155" // --color-input dal tailwind config
+            : "#f1f5f9" // bg-slate-100
+        },
+        fieldState.error
+          ? dropdownStyles.containerError
+          : {
+              borderColor: isDark
+                ? "#e2e8f0" // --color-border dal tailwind config
+                : "#e2e8f0" // border-slate-200
+            }
+      ],
+      placeholder: {
+        fontSize: 14,
+        color: isDark
+          ? "#6b7280" // --color-muted-foreground dal tailwind config
+          : "#94a3b8" // text-slate-400
+      },
+      selectedText: {
+        fontSize: 14,
+        color: isDark
+          ? "#f1f5f9" // --color-foreground dal tailwind config
+          : "#0f172a" // text-foreground
+      }
+    };
+  };
 
   const onSubmit = async (data: ProfileFormType) => {
     console.log("📝 Partito il submit del form da pagina profilo:", data);
@@ -116,8 +150,8 @@ export default function ProfilePage() {
             </TouchableOpacity>
 
             {!isEditing ? (
-              <Card className="gap-0 divide-y divide-gray-100">
-                <View className="flex-row items-center gap-4 py-4 px-1">
+              <Card className="gap-4">
+                <View className="flex-row items-center gap-4 px-1">
                   <View className="w-10 h-10 bg-secondary dark:bg-accent rounded-full items-center justify-center">
                     <Phone size={20} color={colorScheme === "dark" ? "white" : "black"} />
                   </View>
@@ -127,7 +161,7 @@ export default function ProfilePage() {
                   </View>
                 </View>
 
-                <View className="flex-row items-center gap-4 py-4 px-1">
+                <View className="flex-row items-center gap-4 px-1">
                   <View className="w-10 h-10 bg-secondary dark:bg-accent rounded-full items-center justify-center">
                     <Calendar size={20} color={colorScheme === "dark" ? "white" : "black"} />
                   </View>
@@ -137,7 +171,7 @@ export default function ProfilePage() {
                   </View>
                 </View>
 
-                <View className="flex-row items-center gap-4 py-4 px-1">
+                <View className="flex-row items-center gap-4 px-1">
                   <View className="w-10 h-10 bg-secondary dark:bg-accent rounded-full items-center justify-center">
                     <User size={20} color={colorScheme === "dark" ? "white" : "black"} />
                   </View>
@@ -149,7 +183,7 @@ export default function ProfilePage() {
                   </View>
                 </View>
 
-                <View className="flex-row items-center gap-4 py-4 px-1">
+                <View className="flex-row items-center gap-4 px-1">
                   <View className="w-10 h-10 bg-secondary dark:bg-accent rounded-full items-center justify-center">
                     <MapPin size={20} color={colorScheme === "dark" ? "white" : "black"} />
                   </View>
@@ -173,7 +207,7 @@ export default function ProfilePage() {
                     <View className="mb-4">
                       <Text className="text-md font-medium text-foreground mb-2">Nome</Text>
                       <TextInput
-                        className={`bg-slate-100 rounded-lg p-3 border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
+                        className={`bg-slate-100 dark:bg-input dark:text-foreground  rounded-lg p-3 border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
                         placeholder="Inserisci il tuo nome"
                         value={field.value}
                         onChangeText={field.onChange}
@@ -189,7 +223,7 @@ export default function ProfilePage() {
                     <View className="mb-4">
                       <Text className="text-md font-medium text-foreground mb-2">Cognome</Text>
                       <TextInput
-                        className={`bg-slate-100 rounded-lg p-3 border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
+                        className={`bg-slate-100 dark:bg-input dark:text-foreground  rounded-lg p-3 border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
                         placeholder="Inserisci il tuo cognome"
                         value={field.value}
                         onChangeText={field.onChange}
@@ -206,7 +240,7 @@ export default function ProfilePage() {
                     <View className="mb-4">
                       <Text className="text-md font-medium text-foreground mb-2">Telefono</Text>
                       <TextInput
-                        className={`bg-slate-100 rounded-lg p-3 border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
+                        className={`bg-slate-100 dark:bg-input dark:text-foreground  rounded-lg p-3 border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
                         placeholder="Inserisci il tuo numero di telefono"
                         value={field.value}
                         onChangeText={field.onChange}
@@ -277,28 +311,32 @@ export default function ProfilePage() {
                 <Controller
                   control={form.control}
                   name="gender"
-                  render={({ field, fieldState }) => (
-                    <View className="mb-4">
-                      <Text className="text-md font-medium text-foreground mb-2">Genere</Text>
-                      <Dropdown
-                        style={[dropdownStyles.container, fieldState.error ? dropdownStyles.containerError : dropdownStyles.containerNormal]}
-                        placeholderStyle={dropdownStyles.placeholder}
-                        selectedTextStyle={dropdownStyles.selectedText}
-                        itemTextStyle={dropdownStyles.itemText}
-                        itemContainerStyle={dropdownStyles.itemContainer}
-                        containerStyle={dropdownStyles.modalContainer}
-                        mode="modal"
-                        data={GENDER_OPTIONS}
-                        maxHeight={300}
-                        labelField="label"
-                        valueField="value"
-                        placeholder="Seleziona genere"
-                        value={field.value}
-                        onChange={(item) => field.onChange(item.value)}
-                      />
-                      {fieldState.error && <Text className="text-red-500 text-xs mt-1">{fieldState.error.message}</Text>}
-                    </View>
-                  )}
+                  render={({ field, fieldState }) => {
+                    const styles = getDropdownStyles(fieldState);
+
+                    return (
+                      <View className="mb-4">
+                        <Text className="text-md font-medium text-foreground mb-2">Genere</Text>
+                        <Dropdown
+                          style={styles.container}
+                          placeholderStyle={styles.placeholder}
+                          selectedTextStyle={styles.selectedText}
+                          itemTextStyle={dropdownStyles.itemText}
+                          itemContainerStyle={dropdownStyles.itemContainer}
+                          containerStyle={dropdownStyles.modalContainer}
+                          mode="modal"
+                          data={GENDER_OPTIONS}
+                          maxHeight={300}
+                          labelField="label"
+                          valueField="value"
+                          placeholder="Seleziona genere"
+                          value={field.value}
+                          onChange={(item) => field.onChange(item.value)}
+                        />
+                        {fieldState.error && <Text className="text-red-500 text-xs mt-1">{fieldState.error.message}</Text>}
+                      </View>
+                    );
+                  }}
                 />
 
                 <Text className="text-md font-medium text-foreground mb-2">Indirizzo</Text>
@@ -309,7 +347,7 @@ export default function ProfilePage() {
                   render={({ field, fieldState }) => (
                     <View className="mb-3">
                       <TextInput
-                        className={`bg-slate-100 rounded-lg p-3 border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
+                        className={`bg-slate-100 dark:bg-input dark:text-foreground rounded-lg p-3 border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
                         placeholder="Via / indirizzo"
                         value={field.value || ""}
                         onChangeText={field.onChange}
@@ -325,7 +363,7 @@ export default function ProfilePage() {
                   render={({ field, fieldState }) => (
                     <View className="mb-3">
                       <TextInput
-                        className={`bg-slate-100 rounded-lg p-3 border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
+                        className={`bg-slate-100 dark:bg-input dark:text-foreground  rounded-lg p-3 border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
                         placeholder="Città"
                         value={field.value || ""}
                         onChangeText={field.onChange}
@@ -342,7 +380,7 @@ export default function ProfilePage() {
                     render={({ field, fieldState }) => (
                       <View className="flex-1 mb-3">
                         <TextInput
-                          className={`bg-slate-100 rounded-lg p-3 border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
+                          className={`bg-slate-100 dark:bg-input dark:text-foreground  rounded-lg p-3 border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
                           placeholder="CAP"
                           value={field.value || ""}
                           onChangeText={field.onChange}
@@ -358,7 +396,7 @@ export default function ProfilePage() {
                     render={({ field, fieldState }) => (
                       <View className="flex-1 mb-3">
                         <TextInput
-                          className={`bg-slate-100 rounded-lg p-3 border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
+                          className={`bg-slate-100 dark:bg-input dark:text-foreground  rounded-lg p-3 border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
                           placeholder="Provincia"
                           value={field.value || ""}
                           onChangeText={field.onChange}
@@ -375,7 +413,7 @@ export default function ProfilePage() {
                   render={({ field, fieldState }) => (
                     <View className="mb-4">
                       <TextInput
-                        className={`bg-slate-100 rounded-lg p-3 border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
+                        className={`bg-slate-100 dark:bg-input dark:text-foreground  rounded-lg p-3 border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
                         placeholder="Paese"
                         value={field.value || ""}
                         onChangeText={field.onChange}
@@ -414,9 +452,8 @@ export default function ProfilePage() {
 }
 const dropdownStyles = StyleSheet.create({
   container: {
-    backgroundColor: "#f1f5f9", // bg-slate-100
-    borderRadius: 8, // rounded-lg
-    padding: 12, // p-3
+    borderRadius: 8,
+    padding: 12,
     borderWidth: 1,
     height: 40
   },
@@ -424,15 +461,26 @@ const dropdownStyles = StyleSheet.create({
     borderColor: "#ef4444" // border-red-500
   },
   containerNormal: {
-    borderColor: "#e2e8f0" // border-slate-200
+    borderColor: "#e2e8f0" // border-slate-200 (light mode)
+  },
+  containerNormalDark: {
+    borderColor: "#374151" // border-gray-700 (dark mode)
   },
   placeholder: {
     fontSize: 14,
-    color: "#94a3b8" // text-slate-400
+    color: "#94a3b8" // text-slate-400 (light mode)
+  },
+  placeholderDark: {
+    fontSize: 14,
+    color: "#9ca3af" // text-gray-400 (dark mode)
   },
   selectedText: {
     fontSize: 14,
-    color: "#0f172a" // text-foreground
+    color: "#0f172a" // text-foreground (light mode)
+  },
+  selectedTextDark: {
+    fontSize: 14,
+    color: "#ffffff" // text-white (dark mode)
   },
   itemText: {
     fontSize: 14,
