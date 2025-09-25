@@ -2,7 +2,7 @@ import Slider from "@/components/home/Slider";
 import Card from "@/components/ui/Card";
 import { useUserDataStore } from "@/src/store/userDataStore";
 import { useRouter } from "expo-router";
-import { Activity, Flame, Heart, Settings, User2 } from "lucide-react-native";
+import { Activity, CircleUser, Flame, Heart, Settings } from "lucide-react-native";
 import React from "react";
 import { ScrollView, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -118,20 +118,34 @@ const Index = () => {
   const router = useRouter();
   const { user } = useUserDataStore();
 
+  const today = new Date();
+  let weekday = today.toLocaleDateString("it-IT", { weekday: "long" }).replace(".", "");
+  weekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+
+  const day = today.toLocaleDateString("it-IT", { day: "numeric" });
+  let month = today.toLocaleDateString("it-IT", { month: "short" }).replace(".", "");
+  month = month.charAt(0).toUpperCase() + month.slice(1);
+
+  const formattedFull = `${weekday}, ${day} ${month}`; // "Gio, 25 Set"
+
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       {/* Header Name, Profile, Settings - sticky top */}
-      <View className="px-4 pb-3 mb-2">
-        <View className="flex-row items-center justify-between mt-2">
-          <Text className="text-foreground text-2xl font-semibold">Ciao {user?.firstName}!</Text>
-          <View className="flex-row items-center justify-between gap-4">
-            <TouchableOpacity onPress={() => router.push("/home/settings")}>
-              <Settings size={25} color={colorScheme === "dark" ? "white" : "black"} />
-            </TouchableOpacity>
-
-            {/* <Image source={{ uri: `${user?.}` }} className="w-10 h-10 rounded-full border border-white" /> */}
-            <User2 size={25} color={colorScheme === "dark" ? "white" : "black"} />
+      <View className="px-4 pb-1 mb-2">
+        <View className="flex-row items-center justify-between mt-2 gap-6">
+          <TouchableOpacity onPress={() => router.push("/home/profile-page")}>
+            <CircleUser size={32} color={colorScheme === "dark" ? "white" : "black"} />
+          </TouchableOpacity>
+          <View className="flex-1 items-center">
+            <Text className="text-foreground text-xl font-semibold">Ciao, {user?.firstName}</Text>
+            <Text className="text-sm text-muted-foreground">{formattedFull}</Text>
           </View>
+
+          <TouchableOpacity onPress={() => router.push("/home/settings")}>
+            <Settings size={32} color={colorScheme === "dark" ? "white" : "black"} />
+          </TouchableOpacity>
+
+          {/* <Image source={{ uri: `${user?.}` }} className="w-10 h-10 rounded-full border border-white" /> */}
         </View>
       </View>
       <ScrollView className="flex-1">

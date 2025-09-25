@@ -36,6 +36,14 @@ export default function HomeLayout() {
           headerBackTitle: "Home"
         }}
       />
+      <Stack.Screen
+        name="profile-page"
+        options={{
+          headerShown: true,
+          title: "Il tuo Profilo",
+          headerBackTitle: "Home"
+        }}
+      />
     </Stack>
   );
 }
