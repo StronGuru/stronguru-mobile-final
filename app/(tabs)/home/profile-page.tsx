@@ -3,39 +3,17 @@ import { ProfileFormSchema, ProfileFormType, UserType } from "@/lib/zod/userSche
 import { useUserDataStore } from "@/src/store/userDataStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Activity, Calendar, Dumbbell, Edit, MapPin, Phone, Target, User, X } from "lucide-react-native";
+import { Calendar, Edit, MapPin, Phone, User } from "lucide-react-native";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { Dropdown, MultiSelect } from "react-native-element-dropdown";
+import { Dropdown } from "react-native-element-dropdown";
 
 export const GENDER_OPTIONS = [
   /* { value: "", label: "Seleziona genere" }, */
   { value: "male", label: "Uomo" },
   { value: "female", label: "Donna" },
   { value: "other", label: "Altro" }
-];
-
-export const FITNESS_LEVEL_OPTIONS = [
-  /* { value: "", label: "Seleziona livello" }, */
-  { value: "beginner", label: "Principiante" },
-  { value: "intermediate", label: "Intermedio" },
-  { value: "advanced", label: "Avanzato" }
-];
-
-export const ACTIVITY_LEVEL_OPTIONS = [
-  /* { value: "", label: "Seleziona attività" }, */
-  { value: "sedentary", label: "Sedentario" },
-  { value: "lightly_active", label: "Leggermente attivo" },
-  { value: "moderately_active", label: "Moderatamente attivo" },
-  { value: "very_active", label: "Molto attivo" }
-];
-
-export const GOALS_OPTIONS = [
-  { value: "weight_loss", label: "Perdita di peso" },
-  { value: "muscle_gain", label: "Aumento massa muscolare" },
-  { value: "endurance", label: "Resistenza" },
-  { value: "flexibility", label: "Flessibilità" }
 ];
 
 export default function ProfilePage() {
@@ -57,10 +35,7 @@ export default function ProfilePage() {
         province: user?.address?.province || "",
         country: user?.address?.country || ""
       },
-      phone: user?.phone || "",
-      fitnessLevel: user?.fitnessLevel,
-      goals: user?.goals || [],
-      activityLevel: user?.activityLevel
+      phone: user?.phone || ""
     }
   });
   const getInitials = (firstName?: string, lastName?: string): string => {
@@ -72,7 +47,6 @@ export default function ProfilePage() {
     console.log("🔄 INIZIO handleSave function");
     console.log("🔄 Saving profile data:", JSON.stringify(data, null, 2));
     console.log("📋 Form validation errors:", JSON.stringify(form.formState.errors, null, 2));
-    console.log("📊 Goals array:", data.goals);
     console.log("🏠 Address object:", JSON.stringify(data.address, null, 2));
     console.log("📅 Date of birth:", data.dateOfBirth);
     console.log("✅ Form is valid:", form.formState.isValid);
@@ -91,33 +65,6 @@ export default function ProfilePage() {
   const onSubmit = (data: ProfileFormType) => {
     console.log("📝 FORM SUBMITTED:", data);
     handleSave(data);
-  };
-
-  const renderItem = (item: any, selected?: boolean) => {
-    return (
-      <View
-        style={[
-          dropdownStyles.item,
-          selected && dropdownStyles.itemSelected // Apply selected styling
-        ]}
-      >
-        <Text style={[dropdownStyles.selectedTextStyle, { color: "#0f172a" }]}>{item.label}</Text>
-        {selected && (
-          <View
-            style={{
-              width: 20,
-              height: 20,
-              borderRadius: 10,
-              backgroundColor: "#10b981",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
-          >
-            <Text className="text-white text-sm font-bold">✓</Text>
-          </View>
-        )}
-      </View>
-    );
   };
 
   return (
@@ -182,28 +129,6 @@ export default function ProfilePage() {
                           ? [user.address.street, user.address.city, user.address.cap, user.address.province, user.address.country].filter(Boolean).join(", ")
                           : "Non specificato"}
                       </Text>
-                    </Text>
-                  </View>
-
-                  <View className="flex-row items-center gap-2">
-                    <Dumbbell size={20} />
-                    <Text>
-                      <Text className="font-semibold">Livello di fitness: </Text>
-                      <Text className="font-light">{user?.fitnessLevel || "Non specificato"}</Text>
-                    </Text>
-                  </View>
-                  <View className="flex-row items-center gap-2">
-                    <Activity size={20} />
-                    <Text>
-                      <Text className="font-semibold">Livello di attività: </Text>
-                      <Text className="font-light">{user?.activityLevel || "Non specificato"}</Text>
-                    </Text>
-                  </View>
-                  <View className="flex-row items-center gap-2">
-                    <Target size={20} />
-                    <Text>
-                      <Text className="font-semibold">Obiettivi: </Text>
-                      <Text className="font-light">{user?.goals || "Non specificato"}</Text>
                     </Text>
                   </View>
                 </View>
@@ -429,98 +354,6 @@ export default function ProfilePage() {
                     )}
                   />
 
-                  <Controller
-                    control={form.control}
-                    name="fitnessLevel"
-                    render={({ field, fieldState }) => (
-                      <View className="mb-4">
-                        <Text className="text-md font-medium text-foreground mb-2">Livello di fitness</Text>
-                        <Dropdown
-                          style={[dropdownStyles.container, fieldState.error ? dropdownStyles.containerError : dropdownStyles.containerNormal]}
-                          placeholderStyle={dropdownStyles.placeholder}
-                          selectedTextStyle={dropdownStyles.selectedText}
-                          itemTextStyle={dropdownStyles.itemText}
-                          itemContainerStyle={dropdownStyles.itemContainer}
-                          containerStyle={dropdownStyles.modalContainer}
-                          mode="modal"
-                          data={FITNESS_LEVEL_OPTIONS}
-                          maxHeight={300}
-                          labelField="label"
-                          valueField="value"
-                          placeholder="Seleziona livello di fitness"
-                          value={field.value}
-                          onChange={(item) => field.onChange(item.value)}
-                        />
-                        {fieldState.error && <Text className="text-red-500 text-xs mt-1">{fieldState.error.message}</Text>}
-                      </View>
-                    )}
-                  />
-                  <Controller
-                    control={form.control}
-                    name="activityLevel"
-                    render={({ field, fieldState }) => (
-                      <View className="mb-4">
-                        <Text className="text-md font-medium text-foreground mb-2">Livello di attività</Text>
-                        <Dropdown
-                          style={[dropdownStyles.container, fieldState.error ? dropdownStyles.containerError : dropdownStyles.containerNormal]}
-                          placeholderStyle={dropdownStyles.placeholder}
-                          selectedTextStyle={dropdownStyles.selectedText}
-                          itemTextStyle={dropdownStyles.itemText}
-                          itemContainerStyle={dropdownStyles.itemContainer}
-                          containerStyle={dropdownStyles.modalContainer}
-                          mode="modal"
-                          data={ACTIVITY_LEVEL_OPTIONS}
-                          maxHeight={300}
-                          labelField="label"
-                          valueField="value"
-                          placeholder="Seleziona livello di attività"
-                          value={field.value}
-                          onChange={(item) => field.onChange(item.value)}
-                        />
-                        {fieldState.error && <Text className="text-red-500 text-xs mt-1">{fieldState.error.message}</Text>}
-                      </View>
-                    )}
-                  />
-                  <Controller
-                    control={form.control}
-                    name="goals"
-                    render={({ field, fieldState }) => (
-                      <View className="mb-4">
-                        <Text className="text-md font-medium text-foreground mb-2">Obiettivi</Text>
-                        <MultiSelect
-                          style={[dropdownStyles.container, fieldState.error ? dropdownStyles.containerError : dropdownStyles.containerNormal]}
-                          placeholderStyle={dropdownStyles.placeholder}
-                          selectedTextStyle={dropdownStyles.selectedText}
-                          itemTextStyle={dropdownStyles.itemText}
-                          itemContainerStyle={dropdownStyles.itemContainer}
-                          containerStyle={dropdownStyles.modalContainer}
-                          mode="modal"
-                          data={GOALS_OPTIONS}
-                          maxHeight={300}
-                          labelField="label"
-                          valueField="value"
-                          placeholder="Seleziona i tuoi obiettivi"
-                          value={field.value || []}
-                          onChange={(selectedItems) => {
-                            field.onChange(selectedItems);
-                          }}
-                          renderItem={(item) => {
-                            const isSelected = (field.value || []).includes(item.value);
-                            return renderItem(item, isSelected);
-                          }}
-                          renderSelectedItem={(item, unSelect) => (
-                            <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
-                              <View style={dropdownStyles.selectedStyle}>
-                                <Text style={dropdownStyles.textSelectedStyle}>{item.label}</Text>
-                                <X size={16} color="white" />
-                              </View>
-                            </TouchableOpacity>
-                          )}
-                        />
-                        {fieldState.error && <Text className="text-red-500 text-xs mt-1">{fieldState.error.message}</Text>}
-                      </View>
-                    )}
-                  />
                   <View className="flex-row-reverse justify-between mt-6">
                     <TouchableOpacity className="bg-primary rounded-lg px-10 py-3 items-center" onPress={form.handleSubmit(onSubmit)}>
                       <Text className="text-white font-semibold">Salva</Text>

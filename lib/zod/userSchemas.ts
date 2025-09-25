@@ -285,10 +285,7 @@ export const ProfileFormSchema = UserSchema.pick({
   dateOfBirth: true,
   gender: true,
   address: true,
-  phone: true,
-  fitnessLevel: true,
-  goals: true,
-  activityLevel: true
+  phone: true
 });
 // Tipo per il form di modifica profilo
 export type ProfileFormType = z.infer<typeof ProfileFormSchema>;
