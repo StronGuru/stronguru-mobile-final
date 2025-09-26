@@ -10,6 +10,7 @@ interface AuthState {
   token: string | null;
   error: string | null;
   deviceId: string | null;
+  pushToken: string | null;
   isAuthenticated: boolean;
   userId: string | null;
   isHydrated: boolean;
@@ -19,6 +20,7 @@ interface AuthState {
   forgotPassword: (email: string) => Promise<void>;
   logoutUser: () => Promise<void>;
   setAuthData: (data: Partial<AuthState>) => void;
+  setPushToken: (token: string | null) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -29,10 +31,12 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       error: null,
       deviceId: null,
+      pushToken: null,
       userId: null,
       isHydrated: false,
 
       setAuthData: (data) => set((state) => ({ ...state, ...data })),
+      setPushToken: (token) => set((state) => ({ ...state, pushToken: token })),
 
       loginUser: async (email, password) => {
         console.log("loginUser chiamato nell'authStore"); // DEBUG
@@ -42,6 +46,7 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: false,
           error: null,
           deviceId: null,
+          pushToken: null,
           userId: null
         });
 
@@ -122,7 +127,7 @@ export const useAuthStore = create<AuthState>()(
       logoutUser: async () => {
         console.log("Logout user chiamato"); // DEBUG
         //Cancellazione dati auth store
-        set({ isAuthenticated: false, error: null, token: null, deviceId: null });
+        set({ isAuthenticated: false, error: null, token: null, deviceId: null, pushToken: null });
 
         //Cancellazione dati user store
         useUserDataStore.getState().clearUser();

@@ -1,4 +1,6 @@
 import ThemeToggle from "@/components/ThemeToggle";
+import { NotificationTestPanel } from "@/components/NotificationTestPanel";
+// import { SimpleNotificationDebug } from "@/components/SimpleNotificationDebug";
 import { useAuthStore } from "@/src/store/authStore";
 import { useOnboardingStore } from "@/src/store/onboardingStore";
 import { useUserDataStore } from "@/src/store/userDataStore";
@@ -152,6 +154,12 @@ export default function Settings() {
               <Feather name="chevron-right" size={20} color={colorScheme === "dark" ? "white" : "var(--color-muted-foreground)"} />
             </TouchableOpacity>
           </View>
+        </View>
+
+        {/* Notifications Test Section */}
+        <View className="mb-8">
+          <Text className="text-lg font-semibold text-foreground mb-4">Notifiche Push (Test)</Text>
+          <NotificationTestPanel />
         </View>
 
         {/* Account Section */}

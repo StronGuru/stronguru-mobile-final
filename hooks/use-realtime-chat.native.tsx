@@ -2,6 +2,7 @@ import { supabase } from "@/lib/supabase/client";
 import type { ChatMessage, MessageRow } from "@/src/types/chatTypes";
 import { mapMessageRowToChatMessage } from "@/src/types/chatTypes";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { ChatNotificationService } from "@/src/services/chatNotificationService";
 
 type UseRealtimeChatResult = {
   messages: ChatMessage[];
@@ -187,6 +188,20 @@ export default function useRealtimeChat(roomId: number | null): UseRealtimeChatR
         }
 
         const insertedRow = insertRes.data as MessageRow;
+
+        // Invia notifica push agli altri partecipanti
+        try {
+          await ChatNotificationService.sendChatNotification({
+            roomId: roomId,
+            senderId: senderId,
+            message: content,
+            messageId: insertedRow.id,
+            timestamp: insertedRow.created_at || new Date().toISOString(),
+          });
+        } catch (notificationError) {
+          console.warn("📱 Errore invio notifica push:", notificationError);
+          // Non bloccare l'invio del messaggio se la notifica fallisce
+        }
 
         // broadcast through channel if available
         const channel = channelRef.current;

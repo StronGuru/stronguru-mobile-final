@@ -1,4 +1,6 @@
 import { useGlobalChatRealtime } from "@/hooks/use-global-chat-realtime";
+import { useNotificationAuth } from "@/hooks/use-notification-auth.native";
+import { useChatNotifications } from "@/hooks/use-chat-notifications.native";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { useOnboardingStore } from "@/src/store/onboardingStore";
 import { SplashScreen, Stack } from "expo-router";
@@ -9,6 +11,8 @@ import "./globals.css";
 
 export default function RootLayout() {
   useGlobalChatRealtime();
+  useNotificationAuth(); // Riabilitato con token fisso
+  useChatNotifications(); // Hook per gestire le notifiche chat
   const { isAuthenticated, isHydrated: authHydrated } = useAuthStore();
   const { hasCompletedOnboarding, isHydrated: onboardingHydrated } = useOnboardingStore();
 
