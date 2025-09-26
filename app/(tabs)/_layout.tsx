@@ -75,8 +75,9 @@ export default function TabsLayout() {
           paddingInline: 10
         },
         tabBarLabelStyle: {
-          fontSize: 12,
-          marginTop: 3
+          fontSize: 14,
+          marginTop: 2,
+          fontFamily: "Kanit_400Regular"
         }
       }}
     >
@@ -91,7 +92,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="search"
         options={{
-          title: "CercaPro",
+          title: "Cerca Pro",
           headerShown: false,
           tabBarIcon: ({ color, focused }) => <TabIcon icon={Search} color={color} focused={focused} />
         }}

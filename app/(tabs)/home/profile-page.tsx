@@ -1,3 +1,4 @@
+import AppText from "@/components/ui/AppText";
 import Card from "@/components/ui/Card";
 import { ProfileFormSchema, ProfileFormType } from "@/lib/zod/userSchemas";
 import { useUserDataStore } from "@/src/store/userDataStore";
@@ -134,10 +135,10 @@ export default function ProfilePage() {
             )} */}
                 <Text className="text-4xl font-bold text-white">{getInitials(user?.firstName, user?.lastName)}</Text>
               </View>
-              <Text className="text-2xl font-semibold mb-1 text-foreground">
+              <AppText w="semi" className="text-2xl  mb-1">
                 {user?.firstName} {user?.lastName}
-              </Text>
-              <Text className="font-light text-foreground">{user?.email}</Text>
+              </AppText>
+              <AppText className="text-lg">{user?.email}</AppText>
             </View>
 
             <TouchableOpacity
@@ -146,7 +147,9 @@ export default function ProfilePage() {
               style={{ display: isEditing ? "none" : "flex" }}
             >
               <Edit size={20} color="white" />
-              <Text className="text-white font-semibold text-lg">Modifica profilo</Text>
+              <AppText w="semi" className="text-white text-lg">
+                Modifica profilo
+              </AppText>
             </TouchableOpacity>
 
             {!isEditing ? (
@@ -156,8 +159,10 @@ export default function ProfilePage() {
                     <Phone size={20} color={colorScheme === "dark" ? "white" : "black"} />
                   </View>
                   <View className="flex-1">
-                    <Text className="text-lg font-medium text-foreground">Telefono</Text>
-                    <Text className="text-md text-muted-foreground mt-1">{user?.phone || "Non specificato"}</Text>
+                    <AppText w="semi" className="text-xl ">
+                      Telefono
+                    </AppText>
+                    <AppText className="text-lg text-muted-foreground">{user?.phone || "Non specificato"}</AppText>
                   </View>
                 </View>
 
@@ -166,8 +171,10 @@ export default function ProfilePage() {
                     <Calendar size={20} color={colorScheme === "dark" ? "white" : "black"} />
                   </View>
                   <View className="flex-1">
-                    <Text className="text-lg font-medium text-foreground">Data di nascita</Text>
-                    <Text className="text-md text-muted-foreground mt-1">{formatDateOfBirth(user?.dateOfBirth)}</Text>
+                    <AppText w="semi" className="text-xl">
+                      Data di nascita
+                    </AppText>
+                    <AppText className="text-lg text-muted-foreground">{formatDateOfBirth(user?.dateOfBirth)}</AppText>
                   </View>
                 </View>
 
@@ -176,10 +183,12 @@ export default function ProfilePage() {
                     <User size={20} color={colorScheme === "dark" ? "white" : "black"} />
                   </View>
                   <View className="flex-1">
-                    <Text className="text-lg font-medium text-foreground">Genere</Text>
-                    <Text className="text-md text-muted-foreground mt-1">
+                    <AppText w="semi" className="text-xl">
+                      Genere
+                    </AppText>
+                    <AppText className="text-lg text-muted-foreground">
                       {user?.gender === "male" ? "Uomo" : user?.gender === "female" ? "Donna" : user?.gender === "other" ? "Altro" : "Non specificato"}
-                    </Text>
+                    </AppText>
                   </View>
                 </View>
 
@@ -188,31 +197,35 @@ export default function ProfilePage() {
                     <MapPin size={20} color={colorScheme === "dark" ? "white" : "black"} />
                   </View>
                   <View className="flex-1">
-                    <Text className="text-lg font-medium text-foreground">Indirizzo</Text>
-                    <Text className="text-md text-muted-foreground mt-1">
+                    <AppText w="semi" className="text-xl">
+                      Indirizzo
+                    </AppText>
+                    <AppText className="text-lg text-muted-foreground">
                       {user?.address
                         ? [user.address.street, user.address.city, user.address.cap, user.address.province, user.address.country].filter(Boolean).join(", ")
                         : "Non specificato"}
-                    </Text>
+                    </AppText>
                   </View>
                 </View>
               </Card>
             ) : (
               <Card>
-                <Text className="text-lg font-semibold mb-4 text-foreground">Modifica i tuoi dati</Text>
+                <AppText w="semi" className="text-xl mb-4 ">
+                  Modifica i tuoi dati
+                </AppText>
                 <Controller
                   control={form.control}
                   name="firstName"
                   render={({ field, fieldState }) => (
                     <View className="mb-4">
-                      <Text className="text-md font-medium text-foreground mb-2">Nome</Text>
+                      <AppText className="text-lg mb-2">Nome</AppText>
                       <TextInput
                         className={`bg-slate-100 dark:bg-input dark:text-foreground  rounded-lg p-3 border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
                         placeholder="Inserisci il tuo nome"
                         value={field.value}
                         onChangeText={field.onChange}
                       />
-                      {fieldState.error && <Text className="text-red-500 text-xs mt-1">{fieldState.error.message}</Text>}
+                      {fieldState.error && <AppText className="text-red-500 text-xs mt-1">{fieldState.error.message}</AppText>}
                     </View>
                   )}
                 />
@@ -221,14 +234,14 @@ export default function ProfilePage() {
                   name="lastName"
                   render={({ field, fieldState }) => (
                     <View className="mb-4">
-                      <Text className="text-md font-medium text-foreground mb-2">Cognome</Text>
+                      <AppText className="text-lg mb-2">Cognome</AppText>
                       <TextInput
                         className={`bg-slate-100 dark:bg-input dark:text-foreground  rounded-lg p-3 border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
                         placeholder="Inserisci il tuo cognome"
                         value={field.value}
                         onChangeText={field.onChange}
                       />
-                      {fieldState.error && <Text className="text-red-500 text-xs mt-1">{fieldState.error.message}</Text>}
+                      {fieldState.error && <AppText className="text-red-500 text-xs mt-1">{fieldState.error.message}</AppText>}
                     </View>
                   )}
                 />
@@ -238,7 +251,7 @@ export default function ProfilePage() {
                   name="phone"
                   render={({ field, fieldState }) => (
                     <View className="mb-4">
-                      <Text className="text-md font-medium text-foreground mb-2">Telefono</Text>
+                      <AppText className="text-lg mb-2">Telefono</AppText>
                       <TextInput
                         className={`bg-slate-100 dark:bg-input dark:text-foreground  rounded-lg p-3 border ${fieldState.error ? "border-red-500" : "border-slate-200"}`}
                         placeholder="Inserisci il tuo numero di telefono"
@@ -256,7 +269,7 @@ export default function ProfilePage() {
                   name="dateOfBirth"
                   render={({ field, fieldState }) => (
                     <View className=" flex-row items-center justify-between mb-2">
-                      <Text className="text-md font-medium text-foreground mb-2">Data di nascita</Text>
+                      <AppText className="text-lg mb-2">Data di nascita</AppText>
                       {Platform.OS === "ios" ? (
                         // iOS: DateTimePicker sempre visibile
 
@@ -281,9 +294,9 @@ export default function ProfilePage() {
                             }`}
                             onPress={() => setShowDatePicker(true)}
                           >
-                            <Text className={field.value ? "text-foreground" : "text-slate-400"}>
+                            <AppText className={field.value ? "text-foreground" : "text-slate-400"}>
                               {field.value ? new Date(field.value).toLocaleDateString("it-IT") : "Seleziona data di nascita"}
-                            </Text>
+                            </AppText>
                             <Calendar size={20} className="text-slate-400" />
                           </TouchableOpacity>
 
@@ -303,7 +316,7 @@ export default function ProfilePage() {
                           )}
                         </>
                       )}
-                      {fieldState.error && <Text className="text-red-500 text-xs mt-1">{fieldState.error.message}</Text>}
+                      {fieldState.error && <AppText className="text-red-500 text-xs mt-1">{fieldState.error.message}</AppText>}
                     </View>
                   )}
                 />
@@ -316,7 +329,7 @@ export default function ProfilePage() {
 
                     return (
                       <View className="mb-4">
-                        <Text className="text-md font-medium text-foreground mb-2">Genere</Text>
+                        <AppText className="text-lg mb-2">Genere</AppText>
                         <Dropdown
                           style={styles.container}
                           placeholderStyle={styles.placeholder}
@@ -333,13 +346,13 @@ export default function ProfilePage() {
                           value={field.value}
                           onChange={(item) => field.onChange(item.value)}
                         />
-                        {fieldState.error && <Text className="text-red-500 text-xs mt-1">{fieldState.error.message}</Text>}
+                        {fieldState.error && <AppText className="text-red-500 text-xs mt-1">{fieldState.error.message}</AppText>}
                       </View>
                     );
                   }}
                 />
 
-                <Text className="text-md font-medium text-foreground mb-2">Indirizzo</Text>
+                <AppText className="text-lg mb-2">Indirizzo</AppText>
 
                 <Controller
                   control={form.control}
@@ -352,7 +365,7 @@ export default function ProfilePage() {
                         value={field.value || ""}
                         onChangeText={field.onChange}
                       />
-                      {fieldState.error && <Text className="text-red-500 text-xs mt-1">{fieldState.error.message}</Text>}
+                      {fieldState.error && <AppText className="text-red-500 text-xs mt-1">{fieldState.error.message}</AppText>}
                     </View>
                   )}
                 />
@@ -368,7 +381,7 @@ export default function ProfilePage() {
                         value={field.value || ""}
                         onChangeText={field.onChange}
                       />
-                      {fieldState.error && <Text className="text-red-500 text-xs mt-1">{fieldState.error.message}</Text>}
+                      {fieldState.error && <AppText className="text-red-500 text-xs mt-1">{fieldState.error.message}</AppText>}
                     </View>
                   )}
                 />
@@ -386,7 +399,7 @@ export default function ProfilePage() {
                           onChangeText={field.onChange}
                           keyboardType="numeric"
                         />
-                        {fieldState.error && <Text className="text-red-500 text-xs mt-1">{fieldState.error.message}</Text>}
+                        {fieldState.error && <AppText className="text-red-500 text-xs mt-1">{fieldState.error.message}</AppText>}
                       </View>
                     )}
                   />
@@ -402,7 +415,7 @@ export default function ProfilePage() {
                           onChangeText={field.onChange}
                           autoCapitalize="characters"
                         />
-                        {fieldState.error && <Text className="text-red-500 text-xs mt-1">{fieldState.error.message}</Text>}
+                        {fieldState.error && <AppText className="text-red-500 text-xs mt-1">{fieldState.error.message}</AppText>}
                       </View>
                     )}
                   />
@@ -419,7 +432,7 @@ export default function ProfilePage() {
                         value={field.value || ""}
                         onChangeText={field.onChange}
                       />
-                      {fieldState.error && <Text className="text-red-500 text-xs mt-1">{fieldState.error.message}</Text>}
+                      {fieldState.error && <AppText className="text-red-500 text-xs mt-1">{fieldState.error.message}</AppText>}
                     </View>
                   )}
                 />
@@ -433,14 +446,20 @@ export default function ProfilePage() {
                     {isLoading ? (
                       <View className="flex-row items-center gap-2">
                         <ActivityIndicator size="small" color="white" />
-                        <Text className="text-white font-semibold">Salvando...</Text>
+                        <AppText w="semi" className="text-lg text-white ">
+                          Salvando...
+                        </AppText>
                       </View>
                     ) : (
-                      <Text className="text-white font-semibold">Salva</Text>
+                      <AppText w="semi" className="text-lg text-white ">
+                        Salva
+                      </AppText>
                     )}
                   </TouchableOpacity>
                   <TouchableOpacity className="bg-destructive rounded-lg px-4 py-3 items-center" onPress={() => setIsEditing(false)}>
-                    <Text className="text-white font-semibold">Annulla</Text>
+                    <AppText w="semi" className="text-white">
+                      Annulla
+                    </AppText>
                   </TouchableOpacity>
                 </View>
               </Card>
