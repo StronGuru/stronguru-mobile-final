@@ -156,7 +156,7 @@ export default function ProfilePage() {
               <Card className="gap-4">
                 <View className="flex-row items-center gap-4 px-1">
                   <View className="w-10 h-10 bg-secondary dark:bg-accent rounded-full items-center justify-center">
-                    <Phone size={20} color={colorScheme === "dark" ? "white" : "black"} />
+                    <Phone size={20} color={colorScheme === "dark" ? "white" : "#10b981"} />
                   </View>
                   <View className="flex-1">
                     <AppText w="semi" className="text-xl ">
@@ -168,7 +168,7 @@ export default function ProfilePage() {
 
                 <View className="flex-row items-center gap-4 px-1">
                   <View className="w-10 h-10 bg-secondary dark:bg-accent rounded-full items-center justify-center">
-                    <Calendar size={20} color={colorScheme === "dark" ? "white" : "black"} />
+                    <Calendar size={20} color={colorScheme === "dark" ? "white" : "#10b981"} />
                   </View>
                   <View className="flex-1">
                     <AppText w="semi" className="text-xl">
@@ -180,7 +180,7 @@ export default function ProfilePage() {
 
                 <View className="flex-row items-center gap-4 px-1">
                   <View className="w-10 h-10 bg-secondary dark:bg-accent rounded-full items-center justify-center">
-                    <User size={20} color={colorScheme === "dark" ? "white" : "black"} />
+                    <User size={20} color={colorScheme === "dark" ? "white" : "#10b981"} />
                   </View>
                   <View className="flex-1">
                     <AppText w="semi" className="text-xl">
@@ -194,7 +194,7 @@ export default function ProfilePage() {
 
                 <View className="flex-row items-center gap-4 px-1">
                   <View className="w-10 h-10 bg-secondary dark:bg-accent rounded-full items-center justify-center">
-                    <MapPin size={20} color={colorScheme === "dark" ? "white" : "black"} />
+                    <MapPin size={20} color={colorScheme === "dark" ? "white" : "#10b981"} />
                   </View>
                   <View className="flex-1">
                     <AppText w="semi" className="text-xl">
