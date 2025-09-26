@@ -21,10 +21,15 @@ interface AppTextProps extends TextProps {
 }
 
 const AppText = React.memo<AppTextProps>(({ w = "regular", className, children, style, ...props }) => {
+  // Solo aggiungi text-foreground se non c'è già una classe text-* in className
+  const hasTextColor = className?.match(
+    /\btext-(primary|secondary|accent|destructive|foreground|muted|red-|blue-|green-|yellow-|purple-|pink-|gray-|slate-|zinc-|neutral-|stone-|orange-|amber-|lime-|emerald-|teal-|cyan-|sky-|indigo-|violet-|fuchsia-|rose-|white|black)\S*/
+  );
+
   const textClasses = cn(
-    "text-foreground", // classe base per dark/light mode
-    fontWeights[w],
-    className
+    fontWeights[w], // font per primo
+    ...(hasTextColor ? [] : ["text-foreground"]), // classe base solo se non specificata
+    className // classi custom per ultime
   );
 
   return (

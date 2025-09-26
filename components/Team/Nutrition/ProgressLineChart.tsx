@@ -1,3 +1,4 @@
+import AppText from "@/components/ui/AppText";
 import { NutritionType } from "@/lib/zod/userSchemas";
 import React, { useMemo } from "react";
 import { Dimensions, Text, useColorScheme, View } from "react-native";
@@ -51,8 +52,8 @@ export default function ProgressLineChart({ nutrition }: ProgressLineChartProps)
 
   if (chartData.length === 0) {
     return (
-      <View className="bg-muted p-4 rounded-lg">
-        <Text className="text-foreground text-center">Dati insufficienti per il grafico di progresso peso</Text>
+      <View className=" p-4 rounded-lg">
+        <AppText className="text-lg text-center text-muted-foreground">Dati insufficienti per il grafico di progresso peso</AppText>
       </View>
     );
   }
@@ -69,20 +70,22 @@ export default function ProgressLineChart({ nutrition }: ProgressLineChartProps)
 
     return (
       <View className="mt-3 items-center">
-        <Text className="text-center text-md text-foreground">
+        <AppText className="text-center text-md text-foreground">
           Peso {changeText} del <Text className={`font-semibold ${changeColor}`}>{weightChange.percentage.toFixed(1)}%</Text>
-        </Text>
-        <Text className="text-center text-sm text-foreground mt-1">
+        </AppText>
+        <AppText className="text-center text-md text-foreground mt-1">
           {weightChange.isDecrease ? "-" : "+"}
           {Math.abs(weightChange.change).toFixed(1)} kg rispetto alla prima misurazione
-        </Text>
+        </AppText>
       </View>
     );
   };
 
   return (
     <View>
-      <Text className="text-xl text-center font-semibold text-primary mb-3">Andamento Peso nel Tempo</Text>
+      <AppText w="semi" className="text-xl text-center font-semibold text-primary mb-3">
+        Andamento Peso nel Tempo
+      </AppText>
       <View className="p-2 rounded-lg">
         <LineChart
           data={chartData}
