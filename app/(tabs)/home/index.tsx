@@ -1,4 +1,5 @@
 import Slider from "@/components/home/Slider";
+import AppText from "@/components/ui/AppText";
 import Card from "@/components/ui/Card";
 import { useUserDataStore } from "@/src/store/userDataStore";
 import { useRouter } from "expo-router";
@@ -137,8 +138,10 @@ const Index = () => {
             <CircleUser size={32} color={colorScheme === "dark" ? "white" : "black"} />
           </TouchableOpacity>
           <View className="flex-1 items-center">
-            <Text className="text-foreground text-xl font-semibold">Ciao, {user?.firstName}</Text>
-            <Text className="text-sm text-muted-foreground">{formattedFull}</Text>
+            <AppText w="semi" className="text-xl">
+              Ciao, {user?.firstName}
+            </AppText>
+            <AppText className="text-sm text-muted-foreground">{formattedFull}</AppText>
           </View>
 
           <TouchableOpacity onPress={() => router.push("/home/settings")}>

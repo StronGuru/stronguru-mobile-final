@@ -1,6 +1,7 @@
 import { useGlobalChatRealtime } from "@/hooks/use-global-chat-realtime";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { useOnboardingStore } from "@/src/store/onboardingStore";
+import { Kanit_200ExtraLight, Kanit_400Regular, Kanit_600SemiBold, useFonts } from "@expo-google-fonts/kanit";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import { useAuthStore } from "../src/store/authStore";
@@ -12,19 +13,25 @@ export default function RootLayout() {
   const { isAuthenticated, isHydrated: authHydrated } = useAuthStore();
   const { hasCompletedOnboarding, isHydrated: onboardingHydrated } = useOnboardingStore();
 
+  const [fontsLoaded, fontError] = useFonts({
+    Kanit_200ExtraLight,
+    Kanit_400Regular,
+    Kanit_600SemiBold
+  });
+
   // Mantieni la splash fino a quando gli store non sono idratati
   useEffect(() => {
     SplashScreen.preventAutoHideAsync().catch(() => {});
   }, []);
 
   useEffect(() => {
-    if (authHydrated && onboardingHydrated) {
+    if (authHydrated && onboardingHydrated && (fontsLoaded || fontError)) {
       SplashScreen.hideAsync().catch(() => {});
     }
-  }, [authHydrated, onboardingHydrated]);
+  }, [authHydrated, onboardingHydrated, fontsLoaded, fontError]);
 
-  // Non renderizzare nulla finché gli store non sono pronti (la splash native rimane visibile)
-  if (!authHydrated || !onboardingHydrated) {
+  // Non renderizzare nulla finché gli store e i font non sono pronti (la splash native rimane visibile)
+  if (!authHydrated || !onboardingHydrated || (!fontsLoaded && !fontError)) {
     return null;
   }
 
