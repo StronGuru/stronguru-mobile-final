@@ -1,7 +1,8 @@
+import AppText from "@/components/ui/AppText";
 import { DietType } from "@/lib/zod/userSchemas";
 import { getAutoSelectedDay } from "@/utils/mealUtils";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, TouchableOpacity, View } from "react-native";
 import DayPlanView from "./DayPlanView";
 
 interface DietDetailProps {
@@ -101,37 +102,43 @@ export default function DietDetail({ diet }: DietDetailProps) {
       <View className="bg-card shadow-sm p-4 m-4 mt-7 rounded-lg border border-card dark:border-secondary">
         <View className="flex-row items-center justify-between mb-3">
           <View className="flex-1">
-            <Text className="text-xl font-semibold text-primary">{diet.name}</Text>
-            <Text className="text-md text-foreground font-medium">{diet.goal}</Text>
+            <AppText w="semi" className="text-xl text-primary">
+              {diet.name}
+            </AppText>
+            <AppText className="text-md">{diet.goal}</AppText>
           </View>
           <View className={`px-4 py-1 rounded-full ${statusInfo.bg}`}>
-            <Text className={`text-lg font-medium ${statusInfo.color}`}>{statusInfo.text}</Text>
+            <AppText w="semi" className={`text-lg ${statusInfo.color}`}>
+              {statusInfo.text}
+            </AppText>
           </View>
         </View>
 
         <View className="space-y-2">
           <View className="flex-row justify-between">
-            <Text className="text-foreground font-semibold">Durata:</Text>
-            <Text className="text-foreground font-light">{diet.duration} settimane</Text>
+            <AppText w="semi">Durata:</AppText>
+            <AppText className=" font-light">{diet.duration} settimane</AppText>
           </View>
           <View className="flex-row justify-between">
-            <Text className="text-foreground font-semibold">Inizio:</Text>
-            <Text className="text-foreground font-light">{formatDate(diet.startDate)}</Text>
+            <AppText w="semi">Inizio:</AppText>
+            <AppText className=" font-light">{formatDate(diet.startDate)}</AppText>
           </View>
           <View className="flex-row justify-between">
-            <Text className="text-foreground font-semibold">Fine:</Text>
-            <Text className="text-foreground font-light">{formatDate(diet.endDate)}</Text>
+            <AppText w="semi">Fine:</AppText>
+            <AppText className=" font-light">{formatDate(diet.endDate)}</AppText>
           </View>
           <View className="flex-row justify-between">
-            <Text className="text-foreground font-semibold">Tipo:</Text>
-            <Text className="text-foreground font-light">{diet.type}</Text>
+            <AppText w="semi">Tipo:</AppText>
+            <AppText className=" font-light">{diet.type}</AppText>
           </View>
         </View>
 
         {diet.notes && diet.notes.trim() !== "" && (
           <View className="mt-3 pt-3 border-t border-secondary">
-            <Text className="text-foreground text-md font-semibold mb-1">Note:</Text>
-            <Text className="text-foreground italic">{diet.notes}</Text>
+            <AppText w="semi" className="text-md  mb-1">
+              Note:
+            </AppText>
+            <AppText>{diet.notes}</AppText>
           </View>
         )}
       </View>
@@ -146,9 +153,9 @@ export default function DietDetail({ diet }: DietDetailProps) {
                 onPress={() => handleDayPress(dayPlan.day)}
                 className={`px-3 py-2 mr-2 shadow-sm rounded-xl border ${selectedDay === dayPlan.day ? "bg-primary border-primary" : "bg-card border-card"}`}
               >
-                <Text className={`font-medium text-lg ${selectedDay === dayPlan.day ? "text-primary-foreground" : "text-foreground"}`}>
+                <AppText w="semi" className={` text-lg ${selectedDay === dayPlan.day ? "text-primary-foreground" : "text-foreground"}`}>
                   {dayLabels[dayPlan.day as keyof typeof dayLabels]}
-                </Text>
+                </AppText>
               </TouchableOpacity>
             ))}
           </View>
