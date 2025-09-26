@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import { Brain, Dumbbell, Salad } from "lucide-react-native";
 import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
+import AppText from "../ui/AppText";
 type BadgeType = "salad" | "dumbbell" | "brain";
 
 const ProfessionalCardTeam = ({ professional }: { professional: ProfessionalType }) => {
@@ -52,7 +53,7 @@ const ProfessionalCardTeam = ({ professional }: { professional: ProfessionalType
         router.push(`/team/${professional._id}` as any);
       }}
     >
-      <View className=" items-center mb-4 ">
+      <View className=" items-center mb-1 ">
         {/* Avatar */}
         <View className="w-28 h-28 rounded-full items-center justify-center mt-4 mb-2 bg-secondary overflow-hidden">
           {professional.profileImg ? (
@@ -64,9 +65,9 @@ const ProfessionalCardTeam = ({ professional }: { professional: ProfessionalType
 
         <View className="items-center  ">
           {/* Name */}
-          <Text className="text-lg font-medium text-foreground mb-2 text-center text-wrap">
+          <AppText className="text-xl  mb-2 text-center text-wrap">
             {professional.firstName} {professional.lastName}
-          </Text>
+          </AppText>
 
           {/* Badges */}
           <View className="flex-row gap-2 mb-3">
