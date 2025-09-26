@@ -116,7 +116,7 @@ export default function Team() {
     }
   };
 
-  const handlePsychologyPress = () => {
+  /*   const handlePsychologyPress = () => {
     const { user } = useUserDataStore.getState();
     const psychologyProfiles = user?.profiles?.filter((p) => p.psychology?._id) || [];
 
@@ -130,7 +130,7 @@ export default function Team() {
       // Più psicologi, vai alla selezione
       router.push("/team/psychology/selector");
     }
-  };
+  }; */
 
   if (loading) {
     return (
@@ -194,14 +194,14 @@ export default function Team() {
               )}
 
               {/* Psychology Button - mostra solo se disponibile */}
-              {availableServices.psychology.available && (
+              {/* {availableServices.psychology.available && (
                 <TouchableOpacity
                   onPress={handlePsychologyPress}
                   className="mt-2 bg-muted dark:bg-primary rounded-2xl p-4 items-center border border-secondary"
                 >
                   <AppText className="text-primary dark:text-card text-2xl font-bold">Psicologia</AppText>
                 </TouchableOpacity>
-              )}
+              )} */}
             </View>
           ) : (
             <View className="bg-muted p-6 rounded-2xl border border-secondary">
