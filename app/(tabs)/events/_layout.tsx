@@ -22,7 +22,12 @@ export default function EventsLayout() {
         headerShown: true,
         headerTintColor: "#fff",
         headerStyle: { backgroundColor: currentColors.background },
-        headerTitleStyle: { fontWeight: "bold", fontSize: 20 }
+        headerTitleStyle: {
+          fontWeight: "bold",
+          fontSize: 20,
+          fontFamily: "Kanit_400Regular"
+        },
+        headerBackTitleStyle: { fontFamily: "Kanit_400Regular" }
       }}
     >
       <Stack.Screen name="index" options={{ title: "Eventi" }} />

@@ -1,28 +1,9 @@
 import apiClient from "@/api/apiClient";
+import AppText from "@/components/ui/AppText";
 import { useLocalSearchParams } from "expo-router";
-import {
-  Calendar,
-  ChartNoAxesGantt,
-  Clock,
-  ExternalLink,
-  Mail,
-  MapPin,
-  Shapes,
-  Tag,
-  Target,
-  User
-} from "lucide-react-native";
+import { Calendar, ChartNoAxesGantt, Clock, ExternalLink, Mail, MapPin, Shapes, Tag, Target, User } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  ImageBackground,
-  Linking,
-  SafeAreaView,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View
-} from "react-native";
+import { ActivityIndicator, ImageBackground, Linking, SafeAreaView, ScrollView, TouchableOpacity, View } from "react-native";
 
 type Event = {
   _id: string;
@@ -100,14 +81,11 @@ export default function EventDetails() {
   };
   useEffect(() => {
     defineImage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [event]);
 
   const defineImage = () => {
-    if (
-      event?.immagine === null ||
-      event?.immagine === "" ||
-      event?.immagine === undefined
-    ) {
+    if (event?.immagine === null || event?.immagine === "" || event?.immagine === undefined) {
       setImage("static");
       console.log("No image found, using static image.");
     } else {
@@ -128,7 +106,7 @@ export default function EventDetails() {
       <SafeAreaView className="flex-1 bg-background">
         <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" color="#10b981" />
-          <Text className="text-foreground mt-2">Caricamento...</Text>
+          <AppText className="mt-2">Caricamento...</AppText>
         </View>
       </SafeAreaView>
     );
@@ -138,7 +116,7 @@ export default function EventDetails() {
     return (
       <SafeAreaView className="flex-1 bg-background">
         <View className="flex-1 justify-center items-center">
-          <Text className="text-foreground">Evento non trovato</Text>
+          <AppText className="">Evento non trovato</AppText>
         </View>
       </SafeAreaView>
     );
@@ -152,9 +130,7 @@ export default function EventDetails() {
           {image === "dynamic" && event.immagine ? (
             <ImageBackground
               source={{
-                uri: event.immagine.startsWith("http")
-                  ? event.immagine
-                  : `${process.env.EXPO_PUBLIC_API_URL}${event.immagine}`
+                uri: event.immagine.startsWith("http") ? event.immagine : `${process.env.EXPO_PUBLIC_API_URL}${event.immagine}`
               }}
               className="flex-1"
               resizeMode="cover"
@@ -165,13 +141,8 @@ export default function EventDetails() {
               <View className="absolute top-4 left-4 right-4">
                 <View className="flex-row flex-wrap gap-2">
                   {event.tags.map((tag, index) => (
-                    <View
-                      key={index}
-                      className="bg-primary px-3 py-1 rounded-full"
-                    >
-                      <Text className="text-white text-sm font-medium">
-                        {tag}
-                      </Text>
+                    <View key={index} className="bg-primary px-3 py-1 rounded-full">
+                      <AppText className="text-white text-md">{tag}</AppText>
                     </View>
                   ))}
                 </View>
@@ -184,24 +155,15 @@ export default function EventDetails() {
               </View> */}
             </ImageBackground>
           ) : (
-            <ImageBackground
-              source={require("../../../assets/images/event.png")}
-              className="flex-1"
-              resizeMode="cover"
-            >
+            <ImageBackground source={require("../../../assets/images/event.png")} className="flex-1" resizeMode="cover">
               {/* Overlay */}
               <View className="absolute inset-0 bg-black/30" />
               {/* Tags in alto */}
               <View className="absolute top-4 left-4 right-4">
                 <View className="flex-row flex-wrap gap-2">
                   {event.tags.map((tag, index) => (
-                    <View
-                      key={index}
-                      className="bg-primary px-3 py-1 rounded-full"
-                    >
-                      <Text className="text-white text-sm font-medium">
-                        {tag}
-                      </Text>
+                    <View key={index} className="bg-primary px-3 py-1 rounded-full">
+                      <AppText className="text-white text-sm ">{tag}</AppText>
                     </View>
                   ))}
                 </View>
@@ -220,9 +182,9 @@ export default function EventDetails() {
         <View className="p-4">
           <View className="bg-card rounded-2xl p-6 mb-4 shadow-sm">
             <View className="w-100 items-center">
-              <Text className="text-foreground text-2xl font-bold mb-2">
+              <AppText w="semi" className="text-2xl mb-2">
                 {event.titolo}
-              </Text>
+              </AppText>
             </View>
             <View className="h-px bg-border mb-4" />
             <View className="flex-row justify-between items-start mb-4">
@@ -230,22 +192,20 @@ export default function EventDetails() {
               <View className="flex-1 mr-4">
                 <View className="flex-row items-center mb-2">
                   <User size={20} color="#10b981" />
-                  <Text className="text-muted-foreground ml-2">
-                    Organizzatore
-                  </Text>
+                  <AppText className="text-muted-foreground ml-2">Organizzatore</AppText>
                 </View>
                 {event.organizzatore && (
-                  <Text className="text-card-foreground font-semibold text-lg">
+                  <AppText w="semi" className=" text-lg">
                     {event.organizzatore}
-                  </Text>
+                  </AppText>
                 )}
               </View>
 
               {/* Prezzo */}
               <View className="bg-primary/10 px-4 py-2 rounded-lg">
-                <Text className="text-primary font-bold text-xl">
+                <AppText w="bold" className="text-primary text-2xl">
                   {event.prezzo === 0 ? "Gratuito" : `€${event.prezzo}`}
-                </Text>
+                </AppText>
               </View>
             </View>
 
@@ -255,9 +215,9 @@ export default function EventDetails() {
             <View className="flex-row items-center mb-4">
               <MapPin size={20} color="#10b981" />
               {event.luogo && (
-                <Text className="text-card-foreground font-semibold ml-2 flex-1">
+                <AppText w="semi" className="text-card-foreground ml-2 flex-1">
                   {event.luogo}
-                </Text>
+                </AppText>
               )}
             </View>
 
@@ -267,9 +227,9 @@ export default function EventDetails() {
             <View className="flex-row items-center mb-4">
               <Mail size={20} color="#10b981" />
               {event.contatto && (
-                <Text className="text-card-foreground font-semibold ml-2 flex-1">
+                <AppText w="semi" className="text-card-foreground  ml-2 flex-1">
                   {event.contatto}
-                </Text>
+                </AppText>
               )}
             </View>
 
@@ -281,19 +241,17 @@ export default function EventDetails() {
               <View className="flex-1 mr-2">
                 <View className="flex-row items-center mb-2">
                   <Calendar size={16} color="#64748b" />
-                  <Text className="text-muted-foreground ml-2 text-sm">
-                    Data inizio
-                  </Text>
+                  <AppText className="text-muted-foreground ml-2 text-sm">Data inizio</AppText>
                 </View>
                 {event.data_inizio && (
-                  <Text className="text-card-foreground font-medium">
+                  <AppText w="semi" className="text-card-foreground ">
                     {formatDate(event.data_inizio)}
-                  </Text>
+                  </AppText>
                 )}
                 {event.data_inizio && (
-                  <Text className="text-muted-foreground text-sm">
+                  <AppText w="semi" className="text-muted-foreground text-sm">
                     {formatTime(event.data_inizio)}
-                  </Text>
+                  </AppText>
                 )}
               </View>
 
@@ -301,19 +259,17 @@ export default function EventDetails() {
               <View className="flex-1 ml-2">
                 <View className="flex-row items-center mb-2">
                   <Clock size={16} color="#64748b" />
-                  <Text className="text-muted-foreground ml-2 text-sm">
-                    Data fine
-                  </Text>
+                  <AppText className="text-muted-foreground ml-2 text-sm">Data fine</AppText>
                 </View>
                 {event.data_fine && (
-                  <Text className="text-card-foreground font-medium">
+                  <AppText w="semi" className="text-card-foreground ">
                     {formatDate(event.data_fine)}
-                  </Text>
+                  </AppText>
                 )}
                 {event.data_fine && (
-                  <Text className="text-muted-foreground text-sm">
+                  <AppText w="semi" className="text-muted-foreground text-sm">
                     {formatTime(event.data_fine)}
-                  </Text>
+                  </AppText>
                 )}
               </View>
             </View>
@@ -342,20 +298,18 @@ export default function EventDetails() {
             <View className="flex-row justify-between items-center mb-4">
               <View className="flex-row items-center">
                 <Clock size={20} color="#10b981" />
-                <Text className="text-muted-foreground ml-2">
-                  Chiusura Iscrizioni
-                </Text>
+                <AppText className="text-muted-foreground ml-2">Chiusura Iscrizioni</AppText>
               </View>
               <View className="flex-col ">
                 {event.chiusura_iscrizioni && (
-                  <Text className="text-card-foreground font-medium">
+                  <AppText w="semi" className="text-card-foreground font-medium">
                     {formatDate(event.chiusura_iscrizioni)}
-                  </Text>
+                  </AppText>
                 )}
                 {event.chiusura_iscrizioni && (
-                  <Text className="text-muted-foreground text-sm ">
+                  <AppText w="semi" className="text-muted-foreground text-sm ">
                     {formatTime(event.chiusura_iscrizioni)}
-                  </Text>
+                  </AppText>
                 )}
               </View>
             </View>
@@ -365,22 +319,16 @@ export default function EventDetails() {
             {/* Link evento e biglietto   */}
             <View className="flex-row justify-around items-center ">
               {event.link_evento && (
-                <TouchableOpacity
-                  onPress={openLinkEvento}
-                  className="flex-row items-center"
-                >
+                <TouchableOpacity onPress={openLinkEvento} className="flex-row items-center">
                   <ExternalLink size={20} color="#10b981" />
-                  <Text className="text-primary ml-2">Evento</Text>
+                  <AppText className="text-primary ml-2">Evento</AppText>
                 </TouchableOpacity>
               )}
 
               {event.link_biglietto && (
-                <TouchableOpacity
-                  onPress={openLinkBiglietto}
-                  className="flex-row items-center"
-                >
+                <TouchableOpacity onPress={openLinkBiglietto} className="flex-row items-center">
                   <ExternalLink size={20} color="#10b981" />
-                  <Text className="text-primary ml-2">Biglietti</Text>
+                  <AppText className="text-primary ml-2">Biglietti</AppText>
                 </TouchableOpacity>
               )}
             </View>
@@ -392,12 +340,12 @@ export default function EventDetails() {
             <View className="flex-row justify-between items-center mb-4">
               <View className="flex-row items-center">
                 <Tag size={20} color="#10b981" />
-                <Text className="text-muted-foreground ml-2">Categoria</Text>
+                <AppText className="text-muted-foreground ml-2">Categoria</AppText>
               </View>
               {event.categoria && (
-                <Text className="text-card-foreground font-semibold">
+                <AppText w="semi" className="text-card-foreground ">
                   {event.categoria}
-                </Text>
+                </AppText>
               )}
             </View>
 
@@ -407,12 +355,12 @@ export default function EventDetails() {
             <View className="flex-row justify-between items-center mb-4">
               <View className="flex-row items-center">
                 <Shapes size={20} color="#10b981" />
-                <Text className="text-muted-foreground ml-2">Tipologia</Text>
+                <AppText className="text-muted-foreground ml-2">Tipologia</AppText>
               </View>
               {event.tipologia && (
-                <Text className="text-card-foreground font-semibold">
+                <AppText w="semi" className="text-card-foreground">
                   {event.tipologia}
-                </Text>
+                </AppText>
               )}
             </View>
 
@@ -422,12 +370,12 @@ export default function EventDetails() {
             <View className="flex-row justify-between items-center mb-4 ">
               <View className="flex-row items-center">
                 <ChartNoAxesGantt size={20} color="#10b981" />
-                <Text className="text-muted-foreground ml-2">Livello</Text>
+                <AppText className="text-muted-foreground ml-2">Livello</AppText>
               </View>
               {event.livello && (
-                <Text className="text-card-foreground font-semibold">
+                <AppText w="semi" className="text-card-foreground">
                   {event.livello}
-                </Text>
+                </AppText>
               )}
             </View>
 
@@ -437,48 +385,30 @@ export default function EventDetails() {
             <View className="flex-row justify-between items-center ">
               <View className="flex-row items-center">
                 <Target size={20} color="#10b981" />
-                <Text className="text-muted-foreground ml-2">Target</Text>
+                <AppText className="text-muted-foreground ml-2">Target</AppText>
               </View>
               {event.target && (
-                <Text className="text-card-foreground font-semibold">
+                <AppText w="semi" className="text-card-foreground ">
                   {event.target}
-                </Text>
+                </AppText>
               )}
             </View>
           </View>
 
           {/* Descrizione */}
           <View className="bg-card rounded-2xl p-6 shadow-sm mb-4">
-            <Text className="text-xl font-semibold text-accent mb-4">
-              Descrizione
-            </Text>
-            {event.descrizione && (
-              <Text className="text-card-foreground leading-6">
-                {event.descrizione}
-              </Text>
-            )}
+            <AppText className="text-xl font-semibold text-accent mb-4">Descrizione</AppText>
+            {event.descrizione && <AppText className="text-card-foreground text-lg leading-6">{event.descrizione}</AppText>}
           </View>
           {/* Come arrivare e cosa portare */}
           <View className="bg-card rounded-2xl p-6 shadow-sm">
-            <Text className="text-xl font-semibold text-accent mb-4">
-              Come arrivare
-            </Text>
-            {event.come_arrivare && (
-              <Text className="text-card-foreground leading-6 mb-4">
-                {event.come_arrivare}
-              </Text>
-            )}
+            <AppText className="text-xl font-semibold text-accent mb-4">Come arrivare</AppText>
+            {event.come_arrivare && <AppText className="text-card-foreground text-lg leading-6 mb-4">{event.come_arrivare}</AppText>}
 
             <View className="h-px bg-border mb-4" />
 
-            <Text className="text-xl font-semibold text-accent mb-4 ">
-              Cosa portare
-            </Text>
-            {event.cosa_portare && (
-              <Text className="text-card-foreground leading-6">
-                {event.cosa_portare}
-              </Text>
-            )}
+            <AppText className="text-xl font-semibold text-accent mb-4 ">Cosa portare</AppText>
+            {event.cosa_portare && <AppText className="text-card-foreground text-lg leading-6">{event.cosa_portare}</AppText>}
           </View>
         </View>
       </ScrollView>

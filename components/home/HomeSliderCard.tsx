@@ -53,7 +53,7 @@ export default function HomeSliderCard({ item, index, scrollX }: HomeSliderCardP
           style={{ width: 280, height: 400 }}
         >
           <View className="items-center justify-center">
-            <AppText w="semi" className="text-5xl text-white pt-2 mb-5">
+            <AppText w="semi" className="text-4xl text-white pt-2 mb-5">
               {item.title}
             </AppText>
             <AppText w="semi" className="text-lg text-white text-center">
