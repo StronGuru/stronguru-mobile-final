@@ -96,13 +96,15 @@ export default function ProfilePage() {
         fontSize: 14,
         color: isDark
           ? "#6b7280" // --color-muted-foreground dal tailwind config
-          : "#94a3b8" // text-slate-400
+          : "#94a3b8",
+        fontFamily: "Kanit_200ExtraLight" // text-slate-400
       },
       selectedText: {
         fontSize: 14,
         color: isDark
           ? "#f1f5f9" // --color-foreground dal tailwind config
-          : "#0f172a" // text-foreground
+          : "#0f172a", // text-foreground
+        fontFamily: "Kanit_200ExtraLight"
       }
     };
   };
@@ -159,7 +161,7 @@ export default function ProfilePage() {
                     <Phone size={20} color={colorScheme === "dark" ? "white" : "#10b981"} />
                   </View>
                   <View className="flex-1">
-                    <AppText w="semi" className="text-xl ">
+                    <AppText w="semi" className="text-lg ">
                       Telefono
                     </AppText>
                     <AppText className="text-lg text-muted-foreground">{user?.phone || "Non specificato"}</AppText>
@@ -171,7 +173,7 @@ export default function ProfilePage() {
                     <Calendar size={20} color={colorScheme === "dark" ? "white" : "#10b981"} />
                   </View>
                   <View className="flex-1">
-                    <AppText w="semi" className="text-xl">
+                    <AppText w="semi" className="text-lg">
                       Data di nascita
                     </AppText>
                     <AppText className="text-lg text-muted-foreground">{formatDateOfBirth(user?.dateOfBirth)}</AppText>
@@ -183,7 +185,7 @@ export default function ProfilePage() {
                     <User size={20} color={colorScheme === "dark" ? "white" : "#10b981"} />
                   </View>
                   <View className="flex-1">
-                    <AppText w="semi" className="text-xl">
+                    <AppText w="semi" className="text-lg">
                       Genere
                     </AppText>
                     <AppText className="text-lg text-muted-foreground">
@@ -197,7 +199,7 @@ export default function ProfilePage() {
                     <MapPin size={20} color={colorScheme === "dark" ? "white" : "#10b981"} />
                   </View>
                   <View className="flex-1">
-                    <AppText w="semi" className="text-xl">
+                    <AppText w="semi" className="text-lg">
                       Indirizzo
                     </AppText>
                     <AppText className="text-lg text-muted-foreground">
@@ -224,6 +226,7 @@ export default function ProfilePage() {
                         placeholder="Inserisci il tuo nome"
                         value={field.value}
                         onChangeText={field.onChange}
+                        style={{ fontFamily: "Kanit_200ExtraLight" }}
                       />
                       {fieldState.error && <AppText className="text-red-500 text-xs mt-1">{fieldState.error.message}</AppText>}
                     </View>
@@ -240,6 +243,7 @@ export default function ProfilePage() {
                         placeholder="Inserisci il tuo cognome"
                         value={field.value}
                         onChangeText={field.onChange}
+                        style={{ fontFamily: "Kanit_200ExtraLight" }}
                       />
                       {fieldState.error && <AppText className="text-red-500 text-xs mt-1">{fieldState.error.message}</AppText>}
                     </View>
@@ -258,6 +262,7 @@ export default function ProfilePage() {
                         value={field.value}
                         onChangeText={field.onChange}
                         keyboardType="phone-pad"
+                        style={{ fontFamily: "Kanit_200ExtraLight" }}
                       />
                       {fieldState.error && <Text className="text-red-500 text-xs mt-1">{fieldState.error.message}</Text>}
                     </View>
@@ -364,6 +369,7 @@ export default function ProfilePage() {
                         placeholder="Via / indirizzo"
                         value={field.value || ""}
                         onChangeText={field.onChange}
+                        style={{ fontFamily: "Kanit_200ExtraLight" }}
                       />
                       {fieldState.error && <AppText className="text-red-500 text-xs mt-1">{fieldState.error.message}</AppText>}
                     </View>
@@ -380,6 +386,7 @@ export default function ProfilePage() {
                         placeholder="Città"
                         value={field.value || ""}
                         onChangeText={field.onChange}
+                        style={{ fontFamily: "Kanit_200ExtraLight" }}
                       />
                       {fieldState.error && <AppText className="text-red-500 text-xs mt-1">{fieldState.error.message}</AppText>}
                     </View>
@@ -398,6 +405,7 @@ export default function ProfilePage() {
                           value={field.value || ""}
                           onChangeText={field.onChange}
                           keyboardType="numeric"
+                          style={{ fontFamily: "Kanit_200ExtraLight" }}
                         />
                         {fieldState.error && <AppText className="text-red-500 text-xs mt-1">{fieldState.error.message}</AppText>}
                       </View>
@@ -414,6 +422,7 @@ export default function ProfilePage() {
                           value={field.value || ""}
                           onChangeText={field.onChange}
                           autoCapitalize="characters"
+                          style={{ fontFamily: "Kanit_200ExtraLight" }}
                         />
                         {fieldState.error && <AppText className="text-red-500 text-xs mt-1">{fieldState.error.message}</AppText>}
                       </View>
@@ -431,6 +440,7 @@ export default function ProfilePage() {
                         placeholder="Paese"
                         value={field.value || ""}
                         onChangeText={field.onChange}
+                        style={{ fontFamily: "Kanit_200ExtraLight" }}
                       />
                       {fieldState.error && <AppText className="text-red-500 text-xs mt-1">{fieldState.error.message}</AppText>}
                     </View>
@@ -488,23 +498,28 @@ const dropdownStyles = StyleSheet.create({
   },
   placeholder: {
     fontSize: 14,
-    color: "#94a3b8" // text-slate-400 (light mode)
+    color: "#94a3b8",
+    fontFamily: "Kanit_200ExtraLight" // text-slate-400 (light mode)
   },
   placeholderDark: {
     fontSize: 14,
-    color: "#9ca3af" // text-gray-400 (dark mode)
+    color: "#9ca3af",
+    fontFamily: "Kanit_200ExtraLight" // text-gray-400 (dark mode)
   },
   selectedText: {
     fontSize: 14,
-    color: "#0f172a" // text-foreground (light mode)
+    color: "#0f172a",
+    fontFamily: "Kanit_200ExtraLight" // text-foreground (light mode)
   },
   selectedTextDark: {
     fontSize: 14,
-    color: "#ffffff" // text-white (dark mode)
+    color: "#ffffff",
+    fontFamily: "Kanit_200ExtraLight" // text-white (dark mode)
   },
   itemText: {
-    fontSize: 14,
-    textAlign: "center"
+    fontSize: 16,
+    textAlign: "center",
+    fontFamily: "Kanit_200ExtraLight"
   },
   itemContainer: {
     borderBottomWidth: 1,
