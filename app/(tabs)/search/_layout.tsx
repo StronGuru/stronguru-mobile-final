@@ -22,14 +22,16 @@ export default function SearchLayout() {
         headerShown: true,
         headerTintColor: "#fff",
         headerStyle: { backgroundColor: currentColors.background },
-        headerTitleStyle: { fontWeight: "bold", fontSize: 20 }
+        headerTitleStyle: {
+          fontWeight: "bold",
+          fontSize: 20,
+          fontFamily: "Kanit_400Regular"
+        },
+        headerBackTitleStyle: { fontFamily: "Kanit_400Regular" }
       }}
     >
       <Stack.Screen name="index" options={{ title: "Cerca PRO" }} />
-      <Stack.Screen
-        name="[professionalId]"
-        options={{ title: "Dettagli professionista" }}
-      />
+      <Stack.Screen name="[professionalId]" options={{ title: "Dettagli professionista", headerBackTitle: "Indietro" }} />
     </Stack>
   );
 }

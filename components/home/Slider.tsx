@@ -8,7 +8,7 @@ import SliderPagination from "./SliderPagination";
 const sliderData = [
   {
     title: "Cerca Pro",
-    description: "Trova il professionista giusto per te, filtrali per specializzazione, distanza, E crea il tuo tema di esperti.",
+    description: "Trova il professionista giusto per te, filtrali per specializzazione, distanza, E crea il tuo team di esperti.",
     route: "/search"
   },
   { title: "Eventi", description: "Esplora tutti gli eventi sportivi in Italia, nella tua citta e degli sport che più ti interessano", route: "/events" },

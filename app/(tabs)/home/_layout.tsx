@@ -15,8 +15,10 @@ export default function HomeLayout() {
         headerTintColor: "#ffffff",
         headerTitleStyle: {
           fontWeight: "bold",
-          fontSize: 20
-        }
+          fontSize: 20,
+          fontFamily: "Kanit_400Regular"
+        },
+        headerBackTitleStyle: { fontFamily: "Kanit_400Regular" }
       }}
     >
       <Stack.Screen name="index" options={{ headerShown: false }} />

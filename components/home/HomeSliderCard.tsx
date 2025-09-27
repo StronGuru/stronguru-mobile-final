@@ -1,8 +1,9 @@
 import { LinearGradient } from "expo-linear-gradient"; // Import corretto
 import { router } from "expo-router";
 import React from "react";
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated, { Extrapolation, interpolate, SharedValue, useAnimatedStyle } from "react-native-reanimated";
+import AppText from "../ui/AppText";
 
 export type SliderDataItem = {
   title: string;
@@ -52,8 +53,12 @@ export default function HomeSliderCard({ item, index, scrollX }: HomeSliderCardP
           style={{ width: 280, height: 400 }}
         >
           <View className="items-center justify-center">
-            <Text className="text-4xl font-bold text-white mb-10">{item.title}</Text>
-            <Text className="text-base text-gray-100">{item.description}</Text>
+            <AppText w="semi" className="text-4xl text-white pt-2 mb-5">
+              {item.title}
+            </AppText>
+            <AppText w="semi" className="text-lg text-white text-center">
+              {item.description}
+            </AppText>
           </View>
         </TouchableOpacity>
       </LinearGradient>

@@ -51,6 +51,11 @@ module.exports = {
         lg: "var(--radius, 0.625rem)",
         md: "calc(var(--radius, 0.625rem) - 2px)",
         sm: "calc(var(--radius, 0.625rem) - 4px)"
+      },
+      fontFamily: {
+        "kanit-regular": ["Kanit_200ExtraLight"],
+        "kanit-semibold": ["Kanit_400Regular"],
+        "kanit-bold": ["Kanit_600SemiBold"]
       }
     }
   },

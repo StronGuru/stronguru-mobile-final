@@ -1,8 +1,9 @@
+import AppText from "@/components/ui/AppText";
 import { MealType, SupplementationType, WeeklyPlanItemType } from "@/lib/zod/userSchemas";
 import { getAutoSelectedMeal, getCurrentMealTime, hasMealContent } from "@/utils/mealUtils";
 import { Apple, ChevronDown, ChevronUp, Coffee, Cookie, Moon, Pill, UtensilsCrossed } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import MealSection from "./MealSection";
 
 interface DayPlanViewProps {
@@ -102,9 +103,9 @@ export default function DayPlanView({ dayPlan, weeklyPlan, scrollViewRef }: DayP
           <View className="flex-row items-center">
             <mealInfo.Icon size={24} color="#9ca3af" />
             <View className="flex-1 ms-3">
-              <Text className="text-lg font-semibold text-foreground">{mealInfo.label}</Text>
+              <AppText className="text-lg">{mealInfo.label}</AppText>
             </View>
-            <Text className="text-foreground text-sm">Non definito</Text>
+            <AppText className="text-sm">Non definito</AppText>
           </View>
         </View>
       );
@@ -115,7 +116,9 @@ export default function DayPlanView({ dayPlan, weeklyPlan, scrollViewRef }: DayP
         <TouchableOpacity onPress={() => toggleSection(mealKey)} className="flex-row items-center">
           <mealInfo.Icon size={24} color="#10b981" />
           <View className="flex-1 ms-3">
-            <Text className="text-lg font-semibold text-foreground">{mealInfo.label}</Text>
+            <AppText w="semi" className="text-lg ">
+              {mealInfo.label}
+            </AppText>
           </View>
           {isExpanded ? <ChevronUp size={20} color="#6b7280" /> : <ChevronDown size={20} color="#10b981" />}
         </TouchableOpacity>
