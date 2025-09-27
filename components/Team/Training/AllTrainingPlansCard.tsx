@@ -1,6 +1,7 @@
+import AppText from "@/components/ui/AppText";
 import { TrainingPlanType } from "@/lib/zod/userSchemas";
 import { useMemo } from "react";
-import { FlatList, Text, View } from "react-native";
+import { FlatList, View } from "react-native";
 import TrainingPlanElementCard from "./TrainingPlanElementCard";
 
 interface AllTrainingsPlansCardProps {
@@ -32,7 +33,7 @@ export default function AllTrainingPlansCard({ trainingPlans, profileId }: AllTr
 
   return (
     <View className="bg-card shadow-sm p-4 rounded-lg my-4 border border-card dark:border-secondary">
-      <Text className="text-xl font-semibold text-primary mb-2">Altri Piani di Allenamento • {sortedTrainingPlans.length}</Text>
+      <AppText className="text-xl text-primary mb-2">Altri Piani di Allenamento • {sortedTrainingPlans.length}</AppText>
       <FlatList
         data={sortedTrainingPlans}
         renderItem={renderTrainingPlanItem}
