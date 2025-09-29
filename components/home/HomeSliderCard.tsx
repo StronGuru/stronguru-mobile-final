@@ -27,12 +27,12 @@ export default function HomeSliderCard({ item, index, scrollX }: HomeSliderCardP
           translateX: interpolate(
             scrollX?.value ?? 0,
             [(index - 1) * width, index * width, (index + 1) * width],
-            [-width * 0.3, 0, width * 0.3],
+            [-width * 0.2, 0, width * 0.2],
             Extrapolation.CLAMP
           )
         },
         {
-          scale: interpolate(scrollX?.value ?? 0, [(index - 1) * width, index * width, (index + 1) * width], [0.85, 1, 0.85], Extrapolation.CLAMP)
+          scale: interpolate(scrollX?.value ?? 0, [(index - 1) * width, index * width, (index + 1) * width], [0.8, 1, 0.8], Extrapolation.CLAMP)
         }
       ]
     };
@@ -50,15 +50,13 @@ export default function HomeSliderCard({ item, index, scrollX }: HomeSliderCardP
             router.push(`${item.route}` as any);
           }}
           className="rounded-xl p-6 my-2 items-center justify-center shadow-lg"
-          style={{ width: 280, height: 400 }}
+          style={{ width: 350, height: 200 }}
         >
-          <View className="items-center justify-center">
-            <AppText w="semi" className="text-4xl text-white pt-2 mb-5">
+          <View className="items-center justify-center shadow-sm">
+            <AppText w="bold" className="text-3xl text-white pt-2 mb-5">
               {item.title}
             </AppText>
-            <AppText w="semi" className="text-lg text-white text-center">
-              {item.description}
-            </AppText>
+            <AppText className="text-lg text-white text-center">{item.description}</AppText>
           </View>
         </TouchableOpacity>
       </LinearGradient>
@@ -75,8 +73,8 @@ const styles = StyleSheet.create({
   },
   gradientBackground: {
     borderRadius: 20, // Arrotondare i bordi
-    width: 280,
-    height: 400,
+    width: 350,
+    height: 200,
     justifyContent: "center",
     alignItems: "center"
   }
