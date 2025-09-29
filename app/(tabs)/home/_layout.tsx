@@ -23,10 +23,10 @@ export default function HomeLayout() {
     >
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen
-        name="targets"
+        name="hero-details"
         options={{
           headerShown: true,
-          title: "I Miei Obiettivi",
+          title: "Dettagli",
           headerBackTitle: "Home"
         }}
       />

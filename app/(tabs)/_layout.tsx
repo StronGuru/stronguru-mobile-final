@@ -106,7 +106,7 @@ export default function TabsLayout() {
           title: "Team",
           headerShown: false,
           tabBarIcon: ({ color, focused }) => <TabIcon icon={UsersRound} color={color} focused={focused} />,
-          tabBarButton: user?.profiles?.length ? undefined : () => null, // Nasconde completamente il tab se user non ha profili
+          // Nasconde completamente il tab se user non ha profili
           href: user?.profiles?.length ? undefined : null
         }}
       />
