@@ -80,8 +80,10 @@ export const HeroCard: React.FC<HeroCardProps> = ({ onPress }) => {
           <AppText w="bold" className="text-2xl mb-1 text-white text-wrap">
             {hero.homeTitle}
           </AppText>
-          <AppText className="text-white text-lg">{hero.homeSubtitle.length > 65 ? hero.homeSubtitle.slice(0, 65) + "..." : hero.homeSubtitle}</AppText>
-          <View className="flex-row items-center gap-2 mt-2">
+          <AppText w="semi" className="text-white text-lg">
+            {hero.homeSubtitle.length > 65 ? hero.homeSubtitle.slice(0, 65) + "..." : hero.homeSubtitle}
+          </AppText>
+          <View className="flex-row items-center gap-2 mt-8">
             <AppText w="semi" className="text-white text-lg mb-1 ">
               Scopri di più
             </AppText>

@@ -45,11 +45,11 @@ export default function HomeSliderCard({ item, index, scrollX }: HomeSliderCardP
         className="bg-primary rounded-3xl p-6 my-2 items-center justify-center shadow-sm"
         style={{ width: 350, height: 200 }}
       >
-        <View className="items-center justify-center shadow-sm">
-          <AppText w="bold" className="text-3xl text-white pt-2 mb-5">
+        <View className="items-center justify-center ">
+          <AppText w="bold" className="text-2xl text-white shadow-sm pt-2 mb-5">
             {item.title}
           </AppText>
-          <AppText w="semi" className="text-lg text-white text-center">
+          <AppText w="semi" className="text-lg text-white shadow-sm text-center">
             {item.description}
           </AppText>
         </View>
