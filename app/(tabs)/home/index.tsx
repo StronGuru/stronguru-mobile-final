@@ -1,5 +1,7 @@
 import { HeroCard } from "@/components/home/HeroCard";
+import MindfulnessCard from "@/components/home/MindfulnessCard";
 import Slider from "@/components/home/Slider";
+import TrainingsCard from "@/components/home/TrainingsCard";
 import AppText from "@/components/ui/AppText";
 import { useUserDataStore } from "@/src/store/userDataStore";
 import { useRouter } from "expo-router";
@@ -52,6 +54,11 @@ const Index = () => {
         <HeroCard />
         {/* Quick Access scrollable Cards */}
         <Slider />
+
+        <View className="mt-8 px-4 flex-row gap-2 justify-around ">
+          <MindfulnessCard />
+          <TrainingsCard />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
