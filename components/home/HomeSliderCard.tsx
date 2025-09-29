@@ -37,12 +37,12 @@ export default function HomeSliderCard({ item, index, scrollX }: HomeSliderCardP
     };
   });
   return (
-    <Animated.View style={[styles.itemContainer, rnAnimatedStyle]} className={"shadow-sm py-3"}>
+    <Animated.View style={[styles.itemContainer, rnAnimatedStyle]}>
       <TouchableOpacity
         onPress={() => {
           router.push(`${item.route}` as any);
         }}
-        className="bg-primary rounded-3xl p-6 my-2 items-center justify-center shadow-lg"
+        className="bg-primary rounded-3xl p-6 my-2 items-center justify-center shadow-sm"
         style={{ width: 350, height: 200 }}
       >
         <View className="items-center justify-center shadow-sm">

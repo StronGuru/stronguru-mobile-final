@@ -4,7 +4,7 @@ import AppText from "../ui/AppText";
 
 export default function MindfulnessCard() {
   return (
-    <TouchableOpacity className="w-[48%] min-h-[150px] bg-teal-400 p-4 rounded-3xl shadow-sm overflow-visible">
+    <TouchableOpacity className="w-[48%] min-h-[150px] bg-violet-400 p-4 rounded-3xl shadow-sm overflow-visible">
       <View className="flex-1 relative items-center justify-end">
         <Image
           source={{ uri: "https://ucarecdn.com/8f613848-68d2-4abb-a01e-c89af8268757/-/preview/1000x1000/" }}

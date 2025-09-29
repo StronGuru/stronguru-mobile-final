@@ -56,8 +56,8 @@ const Index = () => {
         <Slider />
 
         <View className="mt-8 px-4 flex-row gap-2 justify-around ">
-          <MindfulnessCard />
           <TrainingsCard />
+          <MindfulnessCard />
         </View>
       </ScrollView>
     </SafeAreaView>

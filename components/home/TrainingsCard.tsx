@@ -18,7 +18,7 @@ export default function TrainingsCard() {
           }}
         />{" "}
         <AppText w="bold" className="text-white text-2xl shadow-sm">
-          Allenamenti
+          Trainings
         </AppText>
       </View>
     </TouchableOpacity>
