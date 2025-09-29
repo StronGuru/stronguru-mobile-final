@@ -46,6 +46,22 @@ export default function HomeLayout() {
           headerBackTitle: "Home"
         }}
       />
+      <Stack.Screen
+        name="mindfulness/mindfulnessHome"
+        options={{
+          headerShown: true,
+          title: "Mindfulness",
+          headerBackTitle: "Home"
+        }}
+      />
+      <Stack.Screen
+        name="trainings/trainingsHome"
+        options={{
+          headerShown: true,
+          title: "Trainings",
+          headerBackTitle: "Home"
+        }}
+      />
     </Stack>
   );
 }

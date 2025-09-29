@@ -1,5 +1,7 @@
 import { HeroCard } from "@/components/home/HeroCard";
+import MindfulnessCard from "@/components/home/MindfulnessCard";
 import Slider from "@/components/home/Slider";
+import TrainingsCard from "@/components/home/TrainingsCard";
 import AppText from "@/components/ui/AppText";
 import { useUserDataStore } from "@/src/store/userDataStore";
 import { useRouter } from "expo-router";
@@ -7,8 +9,6 @@ import { CircleUser, Settings } from "lucide-react-native";
 import React from "react";
 import { ScrollView, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-// Circular Progress Component
 
 const Index = () => {
   const colorScheme = useColorScheme();
@@ -52,6 +52,11 @@ const Index = () => {
         <HeroCard />
         {/* Quick Access scrollable Cards */}
         <Slider />
+
+        <View className="mt-8 px-4 flex-row gap-2 justify-around ">
+          <TrainingsCard />
+          <MindfulnessCard />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

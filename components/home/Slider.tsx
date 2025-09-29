@@ -36,7 +36,7 @@ export default function Slider() {
 
   const viewabilityConfigCallbackPairs = useRef([{ viewabilityConfig, onViewableItemsChanged }]);
   return (
-    <View className="flex-1 gap-3">
+    <View className="flex-1 ">
       <Animated.FlatList
         data={sliderData}
         renderItem={({ item, index }) => <HomeSliderCard item={item} index={index} scrollX={scrollX} />}

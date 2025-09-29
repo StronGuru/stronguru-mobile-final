@@ -73,15 +73,17 @@ export const HeroCard: React.FC<HeroCardProps> = ({ onPress }) => {
   }
 
   return (
-    <TouchableOpacity className="mx-4" onPress={handlePress}>
+    <TouchableOpacity className="mx-4 mt-8 mb-4" onPress={handlePress}>
       {/* imposta colore default se non presente da db */}
-      <View className=" bg-blue-400 min-h-[170px] shadow-sm  rounded-3xl flex-row items-center gap-4 p-4 mt-8 overflow-visible">
+      <View className=" bg-blue-400 min-h-[170px] shadow-sm  rounded-3xl flex-row items-center gap-4 p-4 overflow-visible">
         <View className="w-2/3 shadow-sm">
           <AppText w="bold" className="text-2xl mb-1 text-white text-wrap">
             {hero.homeTitle}
           </AppText>
-          <AppText className="text-white text-lg">{hero.homeSubtitle.length > 65 ? hero.homeSubtitle.slice(0, 65) + "..." : hero.homeSubtitle}</AppText>
-          <View className="flex-row items-center gap-2 mt-2">
+          <AppText w="semi" className="text-white text-lg">
+            {hero.homeSubtitle.length > 65 ? hero.homeSubtitle.slice(0, 65) + "..." : hero.homeSubtitle}
+          </AppText>
+          <View className="flex-row items-center gap-2 mt-8">
             <AppText w="semi" className="text-white text-lg mb-1 ">
               Scopri di più
             </AppText>
