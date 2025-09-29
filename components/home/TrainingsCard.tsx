@@ -7,14 +7,14 @@ export default function TrainingsCard() {
     <TouchableOpacity className="w-[48%] min-h-[150px] bg-orange-400 p-4 rounded-3xl shadow-sm overflow-visible">
       <View className="flex-1 relative items-center justify-end">
         <Image
-          source={{ uri: "https://ucarecdn.com/f5e1a7da-0216-4b4d-b4aa-4d23d65e072e/-/preview/1000x1000/" }}
+          source={{ uri: "https://ucarecdn.com/c10cd797-d491-4ea9-84ef-6a41b36af7d2/-/preview/1000x1000/" }}
           resizeMode="contain"
           style={{
-            width: 140,
+            width: 135,
             aspectRatio: 3 / 4, // mantiene proporzioni
             position: "absolute",
             bottom: 8, // fa "uscire" la testa sopra la card
-            left: -18 // piccolo offset laterale
+            left: -13 // piccolo offset laterale
           }}
         />{" "}
         <AppText w="bold" className="text-white text-2xl shadow-sm">

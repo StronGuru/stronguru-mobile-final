@@ -42,11 +42,11 @@ export default function HomeSliderCard({ item, index, scrollX }: HomeSliderCardP
         onPress={() => {
           router.push(`${item.route}` as any);
         }}
-        className="bg-primary rounded-3xl p-6 my-2 items-center justify-center shadow-sm"
-        style={{ width: 350, height: 200 }}
+        className="bg-primary rounded-3xl p-4 my-2 items-center justify-center shadow-sm"
+        style={{ width: 350, height: 180 }}
       >
         <View className="items-center justify-center ">
-          <AppText w="bold" className="text-2xl text-white shadow-sm pt-2 mb-5">
+          <AppText w="bold" className="text-2xl text-white shadow-sm mb-5">
             {item.title}
           </AppText>
           <AppText w="semi" className="text-lg text-white shadow-sm text-center">
@@ -63,6 +63,6 @@ const styles = StyleSheet.create({
     width: width,
     justifyContent: "center",
     alignItems: "center",
-    gap: 20
+    marginVertical: 10
   }
 });
