@@ -10,8 +10,6 @@ import React from "react";
 import { ScrollView, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-// Circular Progress Component
-
 const Index = () => {
   const colorScheme = useColorScheme();
   const router = useRouter();
