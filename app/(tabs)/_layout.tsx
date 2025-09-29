@@ -38,6 +38,13 @@ export default function TabsLayout() {
   };
   const currentColors = colors[colorScheme ?? "light"];
 
+  const baseTabBarStyle = {
+    backgroundColor: currentColors.background,
+    borderTopColor: currentColors.border,
+    paddingTop: 3,
+    paddingInline: 10
+  };
+
   const TabIcon = ({ icon: IconComponent, color, focused }: { icon: any; color: string; focused: boolean }) => (
     <View
       style={{
@@ -46,7 +53,7 @@ export default function TabsLayout() {
         width: 60,
         height: 30,
         borderRadius: 15,
-        backgroundColor: focused ? currentColors.activeTint + "20" : "transparent" // 20 = opacità 12.5%
+        backgroundColor: focused ? currentColors.activeTint + "20" : "transparent"
       }}
     >
       <IconComponent size={24} color={focused ? currentColors.activeTint : color} />
@@ -63,17 +70,13 @@ export default function TabsLayout() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, userId, user]);
+
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: currentColors.activeTint,
         tabBarInactiveTintColor: currentColors.inactiveTint,
-        tabBarStyle: {
-          backgroundColor: currentColors.background,
-          borderTopColor: currentColors.border,
-          paddingTop: 3,
-          paddingInline: 10
-        },
+        tabBarStyle: baseTabBarStyle, // Usa lo stesso stile per tutti i tab
         tabBarLabelStyle: {
           fontSize: 14,
           marginTop: 2,
@@ -103,14 +106,8 @@ export default function TabsLayout() {
           title: "Team",
           headerShown: false,
           tabBarIcon: ({ color, focused }) => <TabIcon icon={UsersRound} color={color} focused={focused} />,
-          tabBarStyle: user?.profiles?.length
-            ? {
-                backgroundColor: currentColors.background,
-                borderTopColor: currentColors.border,
-                paddingTop: 3
-              }
-            : { display: "none" }, // Nasconde il tab bar button
-          href: user?.profiles?.length ? undefined : null // Previene la navigazione
+          tabBarButton: user?.profiles?.length ? undefined : () => null, // Nasconde completamente il tab se user non ha profili
+          href: user?.profiles?.length ? undefined : null
         }}
       />
       <Tabs.Screen
