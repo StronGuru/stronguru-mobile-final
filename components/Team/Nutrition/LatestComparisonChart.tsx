@@ -1,3 +1,4 @@
+import AppText from "@/components/ui/AppText";
 import { NutritionType } from "@/lib/zod/userSchemas";
 import React, { useMemo } from "react";
 import { Dimensions, ScrollView, Text, useColorScheme, View } from "react-native";
@@ -79,28 +80,30 @@ export default function LatestComparisonChart({ nutrition }: LatestComparisonCha
 
   if (!comparisonData) {
     return (
-      <View className="bg-muted p-4 rounded-lg">
-        <Text className="text-foreground text-center">Servono almeno 2 misurazioni complete per il grafico di confronto</Text>
+      <View className=" p-4 rounded-lg">
+        <AppText className="text-lg text-muted-foreground text-center">Servono almeno 2 misurazioni complete per il grafico di confronto</AppText>
       </View>
     );
   }
 
   return (
     <View>
-      <Text className="text-xl font-semibold text-primary mb-0 text-center">Confronto Misurazioni</Text>
-      <Text className="text-sm font-medium text-foreground mb-4 text-center">
+      <AppText w="semi" className="text-xl text-primary mb-0 text-center">
+        Confronto Misurazioni
+      </AppText>
+      <AppText className="text-md  mb-4 text-center">
         {comparisonData.previousDate} vs {comparisonData.latestDate}
-      </Text>
+      </AppText>
 
       {/* Legenda */}
       <View className="flex-row justify-center gap-3 ">
         <View className="flex-row items-center">
           <View className="w-4 h-4 bg-[#bbf7d0] rounded mr-2" />
-          <Text className="text-md font-medium text-foreground">Precedente</Text>
+          <AppText className="text-md ">Precedente</AppText>
         </View>
         <View className="flex-row items-center">
           <View className="w-4 h-4 bg-primary rounded mr-2" />
-          <Text className="text-md font-medium text-foreground">Ultima</Text>
+          <AppText className="text-md ">Ultima</AppText>
         </View>
       </View>
 
@@ -132,16 +135,22 @@ export default function LatestComparisonChart({ nutrition }: LatestComparisonCha
       {/* Statistiche riassuntive */}
       <View className="flex-row justify-around mb-2 dark:bg-muted p-1 pb-2 rounded-lg">
         <View className="items-center">
-          <Text className="text-primary font-bold text-2xl">{comparisonData.improvements}</Text>
-          <Text className="text-md font-medium text-foreground">Miglioramenti</Text>
+          <AppText w="semi" className="text-primary text-2xl">
+            {comparisonData.improvements}
+          </AppText>
+          <AppText className="text-md">Miglioramenti</AppText>
         </View>
         <View className="items-center">
-          <Text className="text-muted-foreground font-bold text-2xl">{comparisonData.unchanged}</Text>
-          <Text className="text-md font-medium text-foreground">Stabili</Text>
+          <AppText w="semi" className="text-muted-foreground text-2xl">
+            {comparisonData.unchanged}
+          </AppText>
+          <AppText className="text-md">Stabili</AppText>
         </View>
         <View className="items-center">
-          <Text className="text-destructive font-bold text-2xl">{comparisonData.worsenings}</Text>
-          <Text className="text-md font-medium text-foreground">Peggioramenti</Text>
+          <AppText w="semi" className="text-destructive text-2xl">
+            {comparisonData.worsenings}
+          </AppText>
+          <AppText className="text-md">Peggioramenti</AppText>
         </View>
       </View>
 

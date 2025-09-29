@@ -1,4 +1,5 @@
 import ThemeToggle from "@/components/ThemeToggle";
+import AppText from "@/components/ui/AppText";
 import { useAuthStore } from "@/src/store/authStore";
 import { useOnboardingStore } from "@/src/store/onboardingStore";
 import { useUserDataStore } from "@/src/store/userDataStore";
@@ -6,7 +7,7 @@ import { Feather } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import * as Linking from "expo-linking";
 import React from "react";
-import { Alert, ScrollView, Text, TouchableOpacity, View, useColorScheme } from "react-native";
+import { Alert, ScrollView, TouchableOpacity, View, useColorScheme } from "react-native";
 
 export default function Settings() {
   const logoutUser = useAuthStore((state) => state.logoutUser);
@@ -61,7 +62,9 @@ export default function Settings() {
       <View className="px-6 py-8">
         {/* Appearance Section */}
         <View className="mb-8">
-          <Text className="text-lg font-semibold text-foreground mb-4">Aspetto</Text>
+          <AppText w="semi" className="text-xl  mb-4">
+            Aspetto
+          </AppText>
           <View className="bg-card rounded-xl p-4 border border-border">
             <View className="flex-row items-center justify-between">
               <View className="flex-row items-center flex-1">
@@ -69,8 +72,8 @@ export default function Settings() {
                   <Feather name="sun" size={20} color={colorScheme === "dark" ? "white" : "var(--color-primary)"} />
                 </View>
                 <View className="flex-1">
-                  <Text className="text-base font-medium text-card-foreground">Tema</Text>
-                  <Text className="text-sm text-muted-foreground">Scegli il tuo tema preferito</Text>
+                  <AppText className="text-lg ">Tema</AppText>
+                  <AppText className="text-md text-muted-foreground">Scegli il tuo tema preferito</AppText>
                 </View>
               </View>
               <ThemeToggle />
@@ -80,7 +83,9 @@ export default function Settings() {
 
         {/* Community Section */}
         <View className="mb-8">
-          <Text className="text-lg font-semibold text-foreground mb-4">Community</Text>
+          <AppText w="semi" className="text-xl  mb-4">
+            Community
+          </AppText>
           <View className="bg-card rounded-xl p-4 border border-border">
             <TouchableOpacity
               className="flex-row items-center justify-between py-3 border-b border-border"
@@ -91,8 +96,8 @@ export default function Settings() {
                   <Feather name="instagram" size={24} color={colorScheme === "dark" ? "white" : "black"} />
                 </View>
                 <View className="flex-1">
-                  <Text className="text-base font-medium text-card-foreground">Instagram</Text>
-                  <Text className="text-sm text-muted-foreground">Seguici su Instagram</Text>
+                  <AppText className="text-lg">Instagram</AppText>
+                  <AppText className="text-md text-muted-foreground">Seguici su Instagram</AppText>
                 </View>
               </View>
               <Feather name="external-link" size={20} color={colorScheme === "dark" ? "white" : "var(--color-muted-foreground)"} />
@@ -107,8 +112,8 @@ export default function Settings() {
                   <Feather name="linkedin" size={24} color={colorScheme === "dark" ? "white" : "black"} />
                 </View>
                 <View className="flex-1">
-                  <Text className="text-base font-medium text-card-foreground">LinkedIn</Text>
-                  <Text className="text-sm text-muted-foreground">Connettiti con noi su LinkedIn</Text>
+                  <AppText className="text-lg">LinkedIn</AppText>
+                  <AppText className="text-md text-muted-foreground">Connettiti con noi su LinkedIn</AppText>
                 </View>
               </View>
               <Feather name="external-link" size={20} color={colorScheme === "dark" ? "white" : "var(--color-muted-foreground)"} />
@@ -118,7 +123,9 @@ export default function Settings() {
 
         {/* Contacts Section */}
         <View className="mb-8">
-          <Text className="text-lg font-semibold text-foreground mb-4">Contatti</Text>
+          <AppText w="semi" className="text-xl  mb-4">
+            Contatti
+          </AppText>
           <View className="bg-card rounded-xl p-4 border border-border">
             <TouchableOpacity className="flex-row items-center justify-between py-3" onPress={openEmailClient}>
               <View className="flex-row items-center flex-1">
@@ -126,8 +133,8 @@ export default function Settings() {
                   <Feather name="mail" size={20} color={colorScheme === "dark" ? "white" : "var(--color-accent)"} />
                 </View>
                 <View className="flex-1">
-                  <Text className="text-base font-medium text-card-foreground">Contatta Supporto</Text>
-                  <Text className="text-sm text-muted-foreground">Ottieni aiuto e supporto</Text>
+                  <AppText className="text-lg">Contatta Supporto</AppText>
+                  <AppText className="text-md text-muted-foreground">Ottieni aiuto e supporto</AppText>
                 </View>
               </View>
               <Feather name="chevron-right" size={20} color={colorScheme === "dark" ? "white" : "var(--color-muted-foreground)"} />
@@ -137,7 +144,9 @@ export default function Settings() {
 
         {/* App Management Section */}
         <View className="mb-8">
-          <Text className="text-lg font-semibold text-foreground mb-4">Gestione App</Text>
+          <AppText w="semi" className="text-xl  mb-4">
+            Gestione App
+          </AppText>
           <View className="bg-card rounded-xl p-4 border border-border">
             <TouchableOpacity className="flex-row items-center justify-between py-3" onPress={resetOnboarding}>
               <View className="flex-row items-center flex-1">
@@ -145,8 +154,8 @@ export default function Settings() {
                   <Feather name="refresh-cw" size={20} color={colorScheme === "dark" ? "white" : "var(--color-secondary-foreground)"} />
                 </View>
                 <View className="flex-1">
-                  <Text className="text-base font-medium text-card-foreground">Ripristina Onboarding</Text>
-                  <Text className="text-sm text-muted-foreground">Mostra di nuovo le schermate di benvenuto</Text>
+                  <AppText className="text-lg">Ripristina Onboarding</AppText>
+                  <AppText className="text-md text-muted-foreground">Mostra di nuovo le schermate di benvenuto</AppText>
                 </View>
               </View>
               <Feather name="chevron-right" size={20} color={colorScheme === "dark" ? "white" : "var(--color-muted-foreground)"} />
@@ -156,7 +165,9 @@ export default function Settings() {
 
         {/* Account Section */}
         <View className="mb-8">
-          <Text className="text-lg font-semibold text-foreground mb-4">Account</Text>
+          <AppText w="semi" className="text-xl  mb-4">
+            Account
+          </AppText>
           <View className="bg-card rounded-xl p-4 border border-border">
             <TouchableOpacity className="flex-row items-center justify-between py-3" onPress={handleLogout}>
               <View className="flex-row items-center flex-1">
@@ -164,8 +175,8 @@ export default function Settings() {
                   <Feather name="log-out" size={20} color={colorScheme === "dark" ? "white" : "var(--color-destructive)"} />
                 </View>
                 <View className="flex-1">
-                  <Text className="text-base font-medium text-card-foreground">Logout</Text>
-                  <Text className="text-sm text-muted-foreground">{user?.email || "Esci dal tuo account"}</Text>
+                  <AppText className="text-lg">Logout</AppText>
+                  <AppText className="text-md text-muted-foreground">{user?.email || "Esci dal tuo account"}</AppText>
                 </View>
               </View>
               <Feather name="chevron-right" size={20} color={colorScheme === "dark" ? "white" : "var(--color-muted-foreground)"} />
@@ -175,8 +186,8 @@ export default function Settings() {
 
         {/* App Info */}
         <View className="items-center py-4">
-          <Text className="text-sm text-muted-foreground">Stronguru Mobile</Text>
-          <Text className="text-xs text-muted-foreground mt-1">Versione {Constants.expoConfig?.version || "1.0.0"}</Text>
+          <AppText className="text-md text-muted-foreground">Stronguru Mobile</AppText>
+          <AppText className="text-sm text-muted-foreground mt-1">Versione {Constants.expoConfig?.version || "1.0.0"}</AppText>
         </View>
       </View>
     </ScrollView>

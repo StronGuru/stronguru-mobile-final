@@ -1,6 +1,7 @@
+import AppText from "@/components/ui/AppText";
 import { DietType } from "@/lib/zod/userSchemas";
 import { useMemo } from "react";
-import { FlatList, Text, View } from "react-native";
+import { FlatList, View } from "react-native";
 import DietElementCard from "./DietElementCard";
 
 interface AllDietsCardProps {
@@ -34,7 +35,9 @@ export default function AllDietsCard({ diets, profileId }: AllDietsCardProps) {
 
   return (
     <View className="bg-card shadow-sm p-4 rounded-lg my-4 border border-card dark:border-secondary">
-      <Text className="text-xl font-semibold text-primary mb-2">Altre Diete • {sortedDiets.length}</Text>
+      <AppText w="semi" className="text-xl text-primary mb-2">
+        Altre Diete • {sortedDiets.length}
+      </AppText>
       <FlatList data={sortedDiets} renderItem={renderDietItem} keyExtractor={(item) => item._id} scrollEnabled={false} showsVerticalScrollIndicator={false} />
     </View>
   );

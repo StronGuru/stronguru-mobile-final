@@ -23,7 +23,13 @@
       },
       "edgeToEdgeEnabled": true,
       "versionCode": 2,
-      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION", "RECEIVE_BOOT_COMPLETED", "VIBRATE", "WAKE_LOCK"]
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE",
+        "WAKE_LOCK"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -54,7 +60,8 @@
         {
           "locationWhenInUsePermission": "Stronguru usa la posizione per trovare personal trainer e nutrizionisti nella tua zona."
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true

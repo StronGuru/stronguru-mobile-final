@@ -1,5 +1,6 @@
 // app/ProfessionalDetails.tsx
 import apiClient from "@/api/apiClient";
+import AppText from "@/components/ui/AppText";
 import { getOrCreateRoom } from "@/src/services/chatService.native";
 import { useUserDataStore } from "@/src/store/userDataStore";
 import { router, useLocalSearchParams } from "expo-router";
@@ -123,7 +124,7 @@ export default function ProfessionalDetails() {
       <SafeAreaView className="flex-1 bg-background">
         <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" color="#10b981" />
-          <Text className="text-foreground mt-2">Caricamento...</Text>
+          <AppText className=" mt-2">Caricamento...</AppText>
         </View>
       </SafeAreaView>
     );
@@ -133,14 +134,13 @@ export default function ProfessionalDetails() {
     return (
       <SafeAreaView className="flex-1 bg-background">
         <View className="flex-1 justify-center items-center">
-          <Text className="text-foreground">Professionista non trovato</Text>
+          <AppText className="text-lg">Professionista non trovato</AppText>
         </View>
       </SafeAreaView>
     );
   }
 
   const badges = getBadgesFromSpecializations(professional.specializations);
-
 
   // Handler per il click su "Chatta con il professionista"
   const handleChatPress = async () => {
@@ -165,7 +165,7 @@ export default function ProfessionalDetails() {
     <SafeAreaView className="flex-1 bg-background ">
       <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
         {/* Header verde con immagine e nome */}
-        <View className="bg-primary rounded-2xl p-6 mb-6 items-center">
+        <View className="bg-primary shadow-sm rounded-2xl p-6 mb-6 items-center">
           {/* Avatar */}
           <View className="w-24 h-24 rounded-full items-center justify-center mb-4 bg-muted-foreground overflow-hidden">
             {professional.profileImg ? (
@@ -176,9 +176,9 @@ export default function ProfessionalDetails() {
           </View>
 
           {/* Nome e Cognome */}
-          <Text className="text-2xl font-bold text-primary-foreground text-center mb-4">
+          <AppText w="bold" className="text-3xl font-bold text-white text-center mb-4">
             {professional.firstName} {professional.lastName}
-          </Text>
+          </AppText>
 
           {/* Badges Specializzazioni */}
           <View className="flex-row gap-3">
@@ -189,58 +189,63 @@ export default function ProfessionalDetails() {
             ))}
           </View>
           <View className="mt-4">
-            <TouchableOpacity
-              onPress={handleChatPress}
-              className="bg-muted px-4 py-2 rounded-xl"
-              disabled={chatLoading}
-            >
+            <TouchableOpacity onPress={handleChatPress} className="bg-secondary px-4 py-2 rounded-xl" disabled={chatLoading}>
               {chatLoading ? (
                 <ActivityIndicator size="small" color="#fff" />
               ) : (
-                <Text className="text-white text-center">Chatta con il professionista</Text>
+                <AppText w="semi" className=" text-center">
+                  Chatta con il professionista
+                </AppText>
               )}
             </TouchableOpacity>
           </View>
           {professional.ambassador === true && (
-            <View className="absolute top-4 left-4 w-10 h-10 rounded-full items-center justify-center bg-orange-400">
-              <Rocket size={20} color="white" />
+            <View className="absolute top-4 left-4 w-[120px] h-10 rounded-full items-center justify-center bg-orange-400">
+              <View className="flex-row items-center">
+                <Rocket size={20} color="white" />
+                <AppText w="bold" className="text-white text-md">
+                  Ambassador
+                </AppText>
+              </View>
             </View>
           )}
         </View>
 
         {/* Informazioni personali */}
         <View className="bg-card rounded-2xl p-6 mb-4 shadow-sm">
-          <Text className="text-xl font-semibold text-accent mb-4">Informazioni</Text>
+          <AppText w="semi" className="text-2xl text-primary mb-4">
+            Informazioni
+          </AppText>
 
           <View className="space-y-3">
             <View className="flex-row justify-between items-center py-2">
-              <Text className="text-muted-foreground">Data di nascita</Text>
-              <Text className="text-card-foreground font-medium">{formatDate(professional.dateOfBirth)}</Text>
+              <AppText className="text-muted-foreground">Data di nascita</AppText>
+              <AppText>{formatDate(professional.dateOfBirth)}</AppText>
             </View>
 
             <View className="h-px bg-border" />
 
             <View className="flex-row justify-between items-center py-2">
-              <Text className="text-muted-foreground">Genere</Text>
-              <Text className="text-card-foreground font-medium">
-                {professional.gender === "male" ? "Uomo" : professional.gender === "female" ? "Donna" : "Non specificato"}
-              </Text>
+              <AppText className="text-muted-foreground">Genere</AppText>
+              <AppText>{professional.gender === "male" ? "Uomo" : professional.gender === "female" ? "Donna" : "Non specificato"}</AppText>
             </View>
 
             <View className="h-px bg-border " />
 
             <View className="flex-row justify-between items-center py-2 ">
-              <Text className="text-muted-foreground">Posizione</Text>
-              <Text className="text-card-foreground font-medium">
+              <AppText className="text-muted-foreground">Posizione</AppText>
+              <AppText>
                 {professional.address?.city || "N/A"}, {professional.address?.province || "N/A"}
-              </Text>
+              </AppText>
             </View>
           </View>
         </View>
 
         {/* Contatti */}
         <View className="bg-card rounded-2xl p-6 shadow-sm">
-          <Text className="text-xl font-semibold text-accent mb-4">Contatti</Text>
+          <AppText w="semi" className="text-2xl text-primary mb-4">
+            Contatti
+          </AppText>
 
           <View className="space-y-4">
             {/* Email */}
@@ -249,8 +254,8 @@ export default function ProfessionalDetails() {
                 <Mail size={20} color="#10b981" />
               </View>
               <View className="flex-1">
-                <Text className="text-muted-foreground text-sm">Email</Text>
-                <Text className="text-card-foreground font-medium">{professional.email}</Text>
+                <AppText className="text-muted-foreground text-sm">Email</AppText>
+                <AppText>{professional.email}</AppText>
               </View>
             </View>
 
@@ -262,8 +267,8 @@ export default function ProfessionalDetails() {
                 <Phone size={20} color="#10b981" />
               </View>
               <View className="flex-1">
-                <Text className="text-muted-foreground text-sm">Cellulare</Text>
-                <Text className="text-card-foreground font-medium">{professional.phone}</Text>
+                <AppText className="text-muted-foreground text-sm">Cellulare</AppText>
+                <AppText>{professional.phone}</AppText>
               </View>
             </View>
           </View>
@@ -273,50 +278,52 @@ export default function ProfessionalDetails() {
           <View className="bg-card rounded-2xl p-6 shadow-sm mt-4">
             <View className="flex-row items-center mb-4">
               <Award size={24} color="#10b981" />
-              <Text className="text-xl font-semibold text-card-foreground ml-2">Certificazioni</Text>
+              <AppText w="semi" className="text-2xl text-primary ml-2">
+                Certificazioni
+              </AppText>
             </View>
 
             <View className="space-y-4">
               {professional.certifications.map((cert: Certification, index: number) => (
                 <View key={`${cert.certificationId}-${index}`} className="border border-border my-3 rounded-xl p-4">
                   {/* Nome certificazione */}
-                  <Text className="text-lg font-semibold text-card-foreground mb-2">{cert.certificationName}</Text>
+                  <AppText className="text-lg  mb-2">{cert.certificationName}</AppText>
 
                   {/* Organizzazione */}
                   <View className="flex-row items-center mb-3">
                     <Building2 size={16} color="#64748b" />
-                    <Text className="text-muted-foreground ml-2">{cert.issuingOrganization}</Text>
+                    <AppText className="text-muted-foreground ml-2">{cert.issuingOrganization}</AppText>
                   </View>
 
                   <View className="space-y-2">
                     {/* Livello */}
                     <View className="flex-row justify-between items-center py-1">
-                      <Text className="text-muted-foreground">Livello</Text>
-                      <Text className="text-card-foreground font-medium">{cert.level}</Text>
+                      <AppText className="text-muted-foreground">Livello</AppText>
+                      <AppText>{cert.level}</AppText>
                     </View>
 
                     <View className="h-px bg-border" />
 
                     {/* Data rilascio */}
                     <View className="flex-row justify-between items-center py-1">
-                      <Text className="text-muted-foreground">Data rilascio</Text>
-                      <Text className="text-card-foreground font-medium">{formatDate(cert.issueDate)}</Text>
+                      <AppText className="text-muted-foreground">Data rilascio</AppText>
+                      <AppText>{formatDate(cert.issueDate)}</AppText>
                     </View>
 
                     <View className="h-px bg-border" />
 
                     {/* Data scadenza */}
                     <View className="flex-row justify-between items-center py-1">
-                      <Text className="text-muted-foreground">Data scadenza</Text>
-                      <Text className="text-card-foreground font-medium">{formatDate(cert.expirationDate)}</Text>
+                      <AppText className="text-muted-foreground">Data scadenza</AppText>
+                      <AppText>{formatDate(cert.expirationDate)}</AppText>
                     </View>
 
                     <View className="h-px bg-border" />
 
                     {/* ID Certificazione */}
                     <View className="flex-row justify-between items-center py-1">
-                      <Text className="text-muted-foreground">ID Certificazione</Text>
-                      <Text className="text-card-foreground font-medium">{cert.certificationId}</Text>
+                      <AppText className="text-muted-foreground">ID Certificazione</AppText>
+                      <AppText>{cert.certificationId}</AppText>
                     </View>
 
                     {/* URL se presente */}
@@ -324,10 +331,10 @@ export default function ProfessionalDetails() {
                       <>
                         <View className="h-px bg-border" />
                         <View className="flex-row justify-between items-center py-1">
-                          <Text className="text-muted-foreground">URL</Text>
-                          <Text className=" font-medium text-accent underline" numberOfLines={1}>
+                          <AppText className="text-muted-foreground">URL</AppText>
+                          <AppText className=" text-primary underline" numberOfLines={1}>
                             {cert.certificationUrl}
-                          </Text>
+                          </AppText>
                         </View>
                       </>
                     )}
@@ -343,36 +350,38 @@ export default function ProfessionalDetails() {
           <View className="bg-card rounded-2xl p-6 shadow-sm mt-4">
             <View className="flex-row items-center mb-4">
               <Book size={24} color="#10b981" />
-              <Text className="text-xl font-semibold text-card-foreground ml-2">Titoli di studio</Text>
+              <AppText w="semi" className="text-2xl text-primary ml-2">
+                Titoli di studio
+              </AppText>
             </View>
 
             <View className="space-y-4">
               {professional.qualifications.map((qual: Qualification, index: number) => (
                 <View key={`qualifica-${index}`} className="border border-border my-3 rounded-xl p-4">
                   {/* titolo di studio e campo  */}
-                  <Text className="text-lg font-semibold text-card-foreground mb-2">
+                  <AppText className="text-lg font-semibold text-card-foreground mb-2">
                     {qual.degreeTitle} in {qual.fieldOfStudy}
-                  </Text>
+                  </AppText>
 
                   {/* istituzione  */}
                   <View className="flex-row items-center mb-3">
                     <Building2 size={16} color="#64748b" />
-                    <Text className="text-muted-foreground ml-2">{qual.institution}</Text>
+                    <AppText className="text-muted-foreground ml-2">{qual.institution}</AppText>
                   </View>
 
                   <View className="space-y-2">
                     {/* Data rilascio */}
                     <View className="flex-row justify-between items-center py-1">
-                      <Text className="text-muted-foreground">Data inizio</Text>
-                      <Text className="text-card-foreground font-medium">{formatDate(qual.startDate)}</Text>
+                      <AppText className="text-muted-foreground">Data inizio</AppText>
+                      <AppText>{formatDate(qual.startDate)}</AppText>
                     </View>
 
                     <View className="h-px bg-border" />
 
                     {/* Data scadenza */}
                     <View className="flex-row justify-between items-center py-1">
-                      <Text className="text-muted-foreground">Data fine</Text>
-                      <Text className="text-card-foreground font-medium">{formatDate(qual.completionDate)}</Text>
+                      <AppText className="text-muted-foreground">Data fine</AppText>
+                      <AppText>{formatDate(qual.completionDate)}</AppText>
                     </View>
                   </View>
                 </View>

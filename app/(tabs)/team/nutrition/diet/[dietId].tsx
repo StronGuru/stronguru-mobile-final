@@ -1,8 +1,9 @@
 import DietDetail from "@/components/Team/Nutrition/DietDetail";
+import AppText from "@/components/ui/AppText";
 import { useUserDataStore } from "@/src/store/userDataStore";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useMemo } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 export default function DietDetailPage() {
   const { dietId, profileId } = useLocalSearchParams<{ dietId: string; profileId?: string }>();
@@ -31,9 +32,11 @@ export default function DietDetailPage() {
   if (!diet || !profile) {
     return (
       <View className="flex-1 bg-background p-4 justify-center items-center">
-        <Text className="text-xl text-foreground">Dieta non trovata</Text>
+        <AppText w="semi" className="text-xl">
+          Dieta non trovata
+        </AppText>
         <TouchableOpacity onPress={() => router.back()} className="mt-4 bg-primary px-4 py-2 rounded-lg">
-          <Text className="text-primary-foreground">Torna indietro</Text>
+          <AppText className="text-primary-foreground">Torna indietro</AppText>
         </TouchableOpacity>
       </View>
     );

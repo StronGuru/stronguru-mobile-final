@@ -15,16 +15,18 @@ export default function HomeLayout() {
         headerTintColor: "#ffffff",
         headerTitleStyle: {
           fontWeight: "bold",
-          fontSize: 20
-        }
+          fontSize: 20,
+          fontFamily: "Kanit_400Regular"
+        },
+        headerBackTitleStyle: { fontFamily: "Kanit_400Regular" }
       }}
     >
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen
-        name="targets"
+        name="hero-details"
         options={{
           headerShown: true,
-          title: "I Miei Obiettivi",
+          title: "Dettagli",
           headerBackTitle: "Home"
         }}
       />
@@ -33,6 +35,30 @@ export default function HomeLayout() {
         options={{
           headerShown: true,
           title: "Impostazioni",
+          headerBackTitle: "Home"
+        }}
+      />
+      <Stack.Screen
+        name="profile-page"
+        options={{
+          headerShown: true,
+          title: "Il tuo Profilo",
+          headerBackTitle: "Home"
+        }}
+      />
+      <Stack.Screen
+        name="mindfulness/mindfulnessHome"
+        options={{
+          headerShown: true,
+          title: "Mindfulness",
+          headerBackTitle: "Home"
+        }}
+      />
+      <Stack.Screen
+        name="trainings/trainingsHome"
+        options={{
+          headerShown: true,
+          title: "Trainings",
           headerBackTitle: "Home"
         }}
       />

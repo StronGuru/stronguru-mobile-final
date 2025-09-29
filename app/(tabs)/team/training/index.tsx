@@ -1,10 +1,11 @@
 import AllTrainingPlansCard from "@/components/Team/Training/AllTrainingPlansCard";
 import LatestTrainingPlanCard from "@/components/Team/Training/LatestTrainingPlanCard";
+import AppText from "@/components/ui/AppText";
 import { useUserDataStore } from "@/src/store/userDataStore";
 import { useLocalSearchParams } from "expo-router";
 import { Dumbbell } from "lucide-react-native";
 import { useMemo, useState } from "react";
-import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView, ScrollView, TouchableOpacity, View } from "react-native";
 
 type TrainingTabType = "trainingPlans" | "charts";
 
@@ -51,8 +52,10 @@ export default function Training() {
     return (
       <View className="flex-1 bg-background p-4 justify-center items-center">
         <Dumbbell size={64} color="#10b981" />
-        <Text className="text-xl font-semibold text-foreground text-center mt-4 mb-2">I tuoi piani di allenamento appariranno qui</Text>
-        <Text className="text-foreground text-center">Quando il tuo trainer creerà una scheda di allenamento la vedrai in questa sezione</Text>
+        <AppText w="semi" className="text-2xl  text-center mt-4 mb-2">
+          I tuoi piani di allenamento appariranno qui
+        </AppText>
+        <AppText className="text-center">Quando il tuo trainer creerà una scheda di allenamento la vedrai in questa sezione</AppText>
       </View>
     );
   }
@@ -87,7 +90,7 @@ export default function Training() {
   return (
     <SafeAreaView className="flex-1 bg-background">
       {/* Tab Selector */}
-      <View className="px-4 pt-4">
+      <View className="px-4 pt-4 pb-1">
         <View className="flex-row bg-muted shadow-sm rounded-lg p-1">
           {trainingTabOptions.map((option) => (
             <TouchableOpacity
@@ -95,9 +98,9 @@ export default function Training() {
               onPress={() => setSelectedTab(option.key)}
               className={`flex-1 py-3 px-4 rounded-md ${selectedTab === option.key ? "bg-primary" : "bg-transparent"}`}
             >
-              <Text className={`text-center font-medium ${selectedTab === option.key ? "text-primary-foreground" : "text-muted-foreground"}`}>
+              <AppText w="semi" className={`text-center text-xl ${selectedTab === option.key ? "text-primary-foreground" : "text-muted-foreground"}`}>
                 {option.label}
-              </Text>
+              </AppText>
             </TouchableOpacity>
           ))}
         </View>

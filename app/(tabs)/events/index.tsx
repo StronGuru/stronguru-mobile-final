@@ -1,17 +1,9 @@
 import apiClient from "@/api/apiClient";
+import AppText from "@/components/ui/AppText";
 import { useRouter } from "expo-router";
 import { Filter, X } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Modal,
-  SafeAreaView,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View
-} from "react-native";
+import { ActivityIndicator, Modal, SafeAreaView, ScrollView, TextInput, TouchableOpacity, View } from "react-native";
 
 type EventsType = {
   _id: string;
@@ -41,9 +33,7 @@ export default function EventsScreen() {
 
   // Aggiorna i filtri di prezzo ogni volta che cambiano minPrice o maxPrice
   useEffect(() => {
-    let newFilters = selectedFilters.filter(
-      (f) => !f.startsWith("min_price_") && !f.startsWith("max_price_")
-    );
+    let newFilters = selectedFilters.filter((f) => !f.startsWith("min_price_") && !f.startsWith("max_price_"));
     if (minPrice) {
       newFilters.push(`min_price_${minPrice}`);
     }
@@ -62,12 +52,8 @@ export default function EventsScreen() {
 
       const hasPaidFilter = selectedFilters.includes("paid");
       const hasFreeFilter = selectedFilters.includes("free");
-      const hasMinPrice = selectedFilters.some((f) =>
-        f.startsWith("min_price_")
-      );
-      const hasMaxPrice = selectedFilters.some((f) =>
-        f.startsWith("max_price_")
-      );
+      const hasMinPrice = selectedFilters.some((f) => f.startsWith("min_price_"));
+      const hasMaxPrice = selectedFilters.some((f) => f.startsWith("max_price_"));
 
       let passesTypeFilter = true;
       let passesPriceRangeFilter = true;
@@ -81,30 +67,19 @@ export default function EventsScreen() {
       }
 
       if (hasMinPrice || hasMaxPrice) {
-        const minPriceFilter = selectedFilters.find((f) =>
-          f.startsWith("min_price_")
-        );
-        const maxPriceFilter = selectedFilters.find((f) =>
-          f.startsWith("max_price_")
-        );
+        const minPriceFilter = selectedFilters.find((f) => f.startsWith("min_price_"));
+        const maxPriceFilter = selectedFilters.find((f) => f.startsWith("max_price_"));
 
-        const minValue = minPriceFilter
-          ? parseInt(minPriceFilter.split("_")[2])
-          : 0;
-        const maxValue = maxPriceFilter
-          ? parseInt(maxPriceFilter.split("_")[2])
-          : Infinity;
+        const minValue = minPriceFilter ? parseInt(minPriceFilter.split("_")[2]) : 0;
+        const maxValue = maxPriceFilter ? parseInt(maxPriceFilter.split("_")[2]) : Infinity;
 
-        passesPriceRangeFilter =
-          event.prezzo >= minValue && event.prezzo <= maxValue;
+        passesPriceRangeFilter = event.prezzo >= minValue && event.prezzo <= maxValue;
       }
 
       return passesTypeFilter && passesPriceRangeFilter;
     })
     .filter(
-      (event) =>
-        event.titolo.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
-        event.luogo.toLowerCase().includes(searchQuery.trim().toLowerCase())
+      (event) => event.titolo.toLowerCase().includes(searchQuery.trim().toLowerCase()) || event.luogo.toLowerCase().includes(searchQuery.trim().toLowerCase())
     );
 
   const handleFilterSelect = (option: FilterOption) => {
@@ -118,16 +93,10 @@ export default function EventsScreen() {
   };
 
   const removeFilter = (filterValue: string) => {
-    setSelectedFilters((prev) =>
-      prev.filter((filter) => filter !== filterValue)
-    );
+    setSelectedFilters((prev) => prev.filter((filter) => filter !== filterValue));
 
     if (filterValue === "paid") {
-      setSelectedFilters((prev) =>
-        prev.filter(
-          (f) => !f.startsWith("min_price_") && !f.startsWith("max_price_")
-        )
-      );
+      setSelectedFilters((prev) => prev.filter((f) => !f.startsWith("min_price_") && !f.startsWith("max_price_")));
       setMinPrice("");
       setMaxPrice("");
     }
@@ -161,16 +130,16 @@ export default function EventsScreen() {
         onPress={() => {
           router.push(`/events/${event._id}`);
         }}
-        className="bg-card rounded-xl mb-4 shadow-sm p-4"
+        className="bg-card rounded-xl dark:border dark:border-secondary mb-4 shadow-sm p-4"
       >
-        <Text className="text-lg font-bold text-card-foreground mb-2">
+        <AppText w="semi" className="text-xl text-primary mb-2">
           {event.titolo}
-        </Text>
-        <Text className="text-muted-foreground mb-1">{event.luogo}</Text>
-        <Text className="text-muted-foreground mb-1">{event.descrizione}</Text>
-        <Text className="text-primary font-semibold">
+        </AppText>
+        <AppText className="text-muted-foreground mb-1">{event.luogo}</AppText>
+        <AppText className=" mb-1">{event.descrizione}</AppText>
+        <AppText w="semi" className="text-primary text-lg">
           {event.prezzo === 0 ? "Gratuito" : `€${event.prezzo}`}
-        </Text>
+        </AppText>
       </TouchableOpacity>
     );
   };
@@ -185,7 +154,8 @@ export default function EventsScreen() {
               className="flex-1 ml-2 text-card-foreground"
               style={{
                 minHeight: 40,
-                fontSize: 16
+                fontSize: 16,
+                fontFamily: "Kanit_400Regular"
               }}
               placeholder="Cerca eventi..."
               value={searchQuery}
@@ -204,25 +174,13 @@ export default function EventsScreen() {
       </View>
 
       {/* Filter Modal */}
-      <Modal
-        visible={openFilter}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setOpenFilter(false)}
-      >
-        <TouchableOpacity
-          className="flex-1 bg-white/50 dark:bg-black/50 justify-center items-center"
-          activeOpacity={1}
-          onPress={() => setOpenFilter(false)}
-        >
-          <TouchableOpacity
-            className="bg-popover rounded-xl p-4 shadow-lg mx-8 w-[75vw]"
-            activeOpacity={1}
-          >
+      <Modal visible={openFilter} transparent={true} animationType="fade" onRequestClose={() => setOpenFilter(false)}>
+        <TouchableOpacity className="flex-1 bg-white/50 dark:bg-black/50 justify-center items-center" activeOpacity={1} onPress={() => setOpenFilter(false)}>
+          <TouchableOpacity className="bg-popover rounded-xl p-4 shadow-sm mx-8 w-[75vw]" activeOpacity={1}>
             <View className="flex-row justify-between items-center mb-4">
-              <Text className="text-lg font-semibold text-popover-foreground">
+              <AppText w="semi" className="text-lg  text-popover-foreground">
                 Filtra Eventi
-              </Text>
+              </AppText>
               <TouchableOpacity onPress={() => setOpenFilter(false)}>
                 <X size={24} color="#64748b" />
               </TouchableOpacity>
@@ -233,44 +191,38 @@ export default function EventsScreen() {
                 <TouchableOpacity
                   key={option.value}
                   className={`px-4 py-2 w-[50%] rounded-lg border ${
-                    selectedFilters.includes(option.value)
-                      ? "bg-green-100 border-primary"
-                      : "bg-transparent border-border"
+                    selectedFilters.includes(option.value) ? "bg-green-100 border-primary" : "bg-transparent border-border"
                   }`}
                   onPress={() => handleFilterSelect(option)}
                 >
-                  <Text
-                    className={`text-lg ${
-                      selectedFilters.includes(option.value)
-                        ? "text-primary font-medium"
-                        : "text-popover-foreground"
-                    }`}
-                  >
+                  <AppText w="semi" className={`text-lg ${selectedFilters.includes(option.value) ? "text-primary " : "text-popover-foreground"}`}>
                     {option.label}
-                  </Text>
+                  </AppText>
                 </TouchableOpacity>
               ))}
             </View>
             {/* Range di prezzo */}
             {selectedFilters.includes("paid") && (
-              <View className="mt-6">
-                <Text className="text-base font-semibold mb-2 text-popover-foreground">
+              <View className="mt-">
+                <AppText w="semi" className="text-lg mb-2 text-popover-foreground">
                   Range di prezzo
-                </Text>
+                </AppText>
                 <View className="flex-row gap-2">
                   <TextInput
-                    className="bg-input rounded-lg px-3 py-2 w-[40%] text-card-foreground"
+                    className="bg-input border border-border rounded-lg px-3 py-2 w-[40%] text-card-foreground"
                     keyboardType="numeric"
                     placeholder="Min €"
                     value={minPrice}
                     onChangeText={setMinPrice}
+                    style={{ fontFamily: "Kanit_400Regular" }}
                   />
                   <TextInput
-                    className="bg-input rounded-lg px-3 py-2 w-[40%] text-card-foreground"
+                    className="bg-input border border-border  rounded-lg px-3 py-2 w-[40%] text-card-foreground"
                     keyboardType="numeric"
                     placeholder="Max €"
                     value={maxPrice}
                     onChangeText={setMaxPrice}
+                    style={{ fontFamily: "Kanit_400Regular" }}
                   />
                 </View>
               </View>
@@ -284,9 +236,7 @@ export default function EventsScreen() {
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View className="flex-row gap-2">
               {selectedFilters.map((filterValue, index) => {
-                let label = filterOptions.find(
-                  (opt) => opt.value === filterValue
-                )?.label;
+                let label = filterOptions.find((opt) => opt.value === filterValue)?.label;
                 if (filterValue.startsWith("min_price_")) {
                   label = `Min €${filterValue.split("_")[2]}`;
                 }
@@ -294,13 +244,10 @@ export default function EventsScreen() {
                   label = `Max €${filterValue.split("_")[2]}`;
                 }
                 return (
-                  <View
-                    key={`filter-${filterValue}-${index}`}
-                    className="flex-row items-center bg-secondary border border-border rounded-full px-3 py-1"
-                  >
-                    <Text className="text-secondary-foreground text-sm mr-2">
+                  <View key={`filter-${filterValue}-${index}`} className="flex-row items-center bg-secondary border border-border rounded-full px-3 py-1">
+                    <AppText w="semi" className="text-secondary-foreground text-md mr-2">
                       {label}
-                    </Text>
+                    </AppText>
                     <TouchableOpacity onPress={() => removeFilter(filterValue)}>
                       <X size={16} color="#10b981" />
                     </TouchableOpacity>
@@ -315,10 +262,12 @@ export default function EventsScreen() {
       {loading ? (
         <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" color="#10b981" />
-          <Text className="text-foreground mt-2">Caricamento eventi...</Text>
+          <AppText w="semi" className="text-lg mt-2">
+            Caricamento eventi...
+          </AppText>
         </View>
       ) : (
-        <ScrollView className="flex-1 px-4 py-4 bg-background">
+        <ScrollView className="flex-1 px-4 py-4 bg-background" showsVerticalScrollIndicator={false}>
           <View>
             {filteredEvents.map((event: EventsType) => (
               <EventCard key={event._id} event={event} />

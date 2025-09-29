@@ -1,3 +1,4 @@
+import AppText from "@/components/ui/AppText";
 import { FoodItemType, MealType, SupplementationType } from "@/lib/zod/userSchemas";
 import { Text, View } from "react-native";
 
@@ -9,7 +10,7 @@ interface MealSectionProps {
 export default function MealSection({ meal, isSupplementation = false }: MealSectionProps) {
   const renderFoodItem = (item: FoodItemType, index: number) => (
     <View key={`${item._id}-${index}`} className="flex-row justify-between border-b border-secondary last:border-b-0">
-      <Text className="text-foreground font-medium flex-1 mr-2">{item.name}</Text>
+      <AppText className="text-lg flex-1 mr-2">• {item.name}</AppText>
       <Text className="text-foreground dark:text-accent font-medium">
         {item.quantity} {item.unit}
       </Text>
@@ -21,7 +22,7 @@ export default function MealSection({ meal, isSupplementation = false }: MealSec
 
     return (
       <View className="mb-4">
-        <Text className="text-base font-semibold text-foreground mb-2">{title} :</Text>
+        <AppText className="text-lg mb-2">{title} :</AppText>
         <View className="bg-secondary dark:bg-muted rounded-lg p-3 ">{items.map((item, index) => renderFoodItem(item, index))}</View>
       </View>
     );

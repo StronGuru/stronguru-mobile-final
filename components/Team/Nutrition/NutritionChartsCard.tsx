@@ -1,6 +1,7 @@
+import AppText from "@/components/ui/AppText";
 import { useUserDataStore } from "@/src/store/userDataStore";
 import React, { useMemo, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import LatestComparisonChart from "./LatestComparisonChart";
 import ProgressLineChart from "./ProgressLineChart";
 
@@ -32,8 +33,10 @@ export default function NutritionChartsCard({ profileId }: NutritionChartsCardPr
   if (!profileWithNutrition?.nutrition) {
     return (
       <View className="bg-card p-4 rounded-lg my-6 border border-secondary">
-        <Text className="text-xl font-semibold text-foreground">Grafici Nutrizione</Text>
-        <Text className="text-sm text-foreground/70 mt-1">Nessun dato disponibile.</Text>
+        <AppText w="semi" className="text-xl ">
+          Grafici Nutrizione
+        </AppText>
+        <AppText className="text-sm mt-1">Nessun dato disponibile.</AppText>
       </View>
     );
   }
@@ -61,7 +64,9 @@ export default function NutritionChartsCard({ profileId }: NutritionChartsCardPr
             onPress={() => setSelectedChart(option.key)}
             className={`flex-1 flex-row items-center justify-center py-2 px-3 rounded-md ${selectedChart === option.key ? "bg-primary" : "bg-transparent"}`}
           >
-            <Text className={`text-md font-medium ${selectedChart === option.key ? "text-primary-foreground" : "text-foreground"}`}>{option.label}</Text>
+            <AppText w="semi" className={`text-lg  ${selectedChart === option.key ? "text-primary-foreground" : "text-foreground"}`}>
+              {option.label}
+            </AppText>
           </TouchableOpacity>
         ))}
       </View>

@@ -2,11 +2,12 @@ import AllDietsCard from "@/components/Team/Nutrition/AllDietsCard";
 import LatestDietCard from "@/components/Team/Nutrition/LatestDietCard";
 import LatestMeasuresCard from "@/components/Team/Nutrition/LatestMeasuresCard";
 import NutritionChartsCard from "@/components/Team/Nutrition/NutritionChartsCard";
+import AppText from "@/components/ui/AppText";
 import { useUserDataStore } from "@/src/store/userDataStore";
 import { useLocalSearchParams } from "expo-router";
 import { Ruler, UtensilsCrossed } from "lucide-react-native";
 import { useMemo, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, TouchableOpacity, View } from "react-native";
 
 type TabType = "measurements" | "diets";
 
@@ -52,7 +53,7 @@ export default function Nutrition() {
   if (!selectedProfile?.nutrition) {
     return (
       <View className="flex-1 bg-background p-4 justify-center items-center">
-        <Text className="text-xl text-foreground">Nessun dato nutrizionale disponibile</Text>
+        <AppText className="text-xl ">Nessun dato nutrizionale disponibile</AppText>
       </View>
     );
   }
@@ -74,8 +75,10 @@ export default function Nutrition() {
             <View className="bg-card p-6 shadow-sm rounded-lg my-6 border border-secondary">
               <View className="items-center">
                 <UtensilsCrossed size={64} color="#10b981" />
-                <Text className="text-xl font-semibold text-foreground text-center mt-4 mb-2">Le tue diete appariranno qui</Text>
-                <Text className="text-foreground text-center">Quando il tuo nutrizionista creerà un piano alimentare lo vedrai in questa sezione</Text>
+                <AppText w="semi" className="text-2xl text-center mt-4 mb-2">
+                  Le tue diete appariranno qui
+                </AppText>
+                <AppText className="text-foreground text-center">Quando il tuo nutrizionista creerà un piano alimentare lo vedrai in questa sezione</AppText>
               </View>
             </View>
           );
@@ -102,15 +105,17 @@ export default function Nutrition() {
   return (
     <View className="flex-1 bg-background">
       {/* Tab Selector */}
-      <View className="px-4 pt-4">
+      <View className="px-4 pt-4 pb-1">
         <View className="flex-row bg-secondary dark:bg-input shadow-sm rounded-lg p-1 ">
           {tabOptions.map((option) => (
             <TouchableOpacity
               key={option.key}
               onPress={() => setSelectedTab(option.key)}
-              className={`flex-1 flex-row items-center justify-center py-3 px-3 rounded-md ${selectedTab === option.key ? "bg-primary" : "bg-transparent"}`}
+              className={`flex-1 flex-row items-center justify-center py-2 px-3 rounded-md ${selectedTab === option.key ? "bg-primary" : "bg-transparent"}`}
             >
-              <Text className={`text-md font-medium ms-3 ${selectedTab === option.key ? "text-primary-foreground" : "text-foreground"}`}>{option.label}</Text>
+              <AppText w="semi" className={`text-lg  ${selectedTab === option.key ? "text-primary-foreground" : "text-foreground"}`}>
+                {option.label}
+              </AppText>
             </TouchableOpacity>
           ))}
         </View>
