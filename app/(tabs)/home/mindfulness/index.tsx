@@ -1,11 +1,13 @@
 import AppText from "@/components/ui/AppText";
 import Card from "@/components/ui/Card";
 import { breathingPresets, buildConfigFromCustom } from "@/utils/breathingUtils";
-import { Check, ChevronDown, ChevronUp } from "lucide-react-native";
+import { ChevronDown, ChevronUp, Info } from "lucide-react-native";
 import React, { useState } from "react";
-import { ImageBackground, ScrollView, TextInput, TouchableOpacity, View } from "react-native";
+import { ImageBackground, Modal, Pressable, ScrollView, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function MindfulnessHomeScreen() {
+  const [infoModalVisible, setInfoModalVisible] = useState<boolean>(false);
+  const [infoText, setInfoText] = useState<string | null>(null);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const [selectedPattern, setSelectedPattern] = useState<number | null>(null);
 
@@ -107,7 +109,7 @@ export default function MindfulnessHomeScreen() {
                         }
                       }}
                       className={`flex-row items-center justify-between p-3 rounded-md mb-2 border ${
-                        selectedPattern === idx ? "border-primary bg-primary/10" : "border-border bg-card"
+                        selectedPattern === idx ? "border-primary bg-secondary" : "border-border bg-card"
                       }`}
                     >
                       <View className="w-80">
@@ -116,9 +118,19 @@ export default function MindfulnessHomeScreen() {
                         </AppText>
                         <AppText w="semi" className="text-md text-primary">{`${p.inhale} - ${p.holdIn} - ${p.exhale} - ${p.holdOut}`}</AppText>
                         <AppText className="text-md">Durata: {p.duration} min</AppText>
-                        <AppText className="text-md">{p.description}</AppText>
                       </View>
-                      <AppText className="text-sm text-muted-foreground">{selectedPattern === idx ? <Check size={20} color="#10b981" /> : ""}</AppText>
+                      <View className="flex-row items-center">
+                        <TouchableOpacity
+                          onPress={() => {
+                            setInfoText(p.description ?? "Nessuna descrizione disponibile");
+                            setInfoModalVisible(true);
+                          }}
+                          className="mr-3"
+                          accessibilityLabel={`Più info su ${p.label}`}
+                        >
+                          <Info size={22} color="#6b7280" />
+                        </TouchableOpacity>
+                      </View>
                     </TouchableOpacity>
                   ))}
                 </View>
@@ -280,6 +292,23 @@ export default function MindfulnessHomeScreen() {
           </View>
         </View>
       </Card>
+
+      {/* Info modal */}
+      <Modal visible={infoModalVisible} transparent animationType="fade" onRequestClose={() => setInfoModalVisible(false)}>
+        <Pressable className="flex-1 justify-center items-center bg-black/40" onPress={() => setInfoModalVisible(false)}>
+          <Pressable className="w-[90%] bg-white p-4 rounded-lg" onPress={(e) => e.stopPropagation()}>
+            <AppText w="semi" className="text-lg mb-2">
+              Descrizione
+            </AppText>
+            <AppText className="text-md mb-4">{infoText}</AppText>
+            <View className="flex-row justify-end">
+              <TouchableOpacity onPress={() => setInfoModalVisible(false)} className="px-4 py-2 bg-primary rounded-md">
+                <AppText className="text-white">Chiudi</AppText>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
 
       {/* <TouchableOpacity
         onPress={() => {

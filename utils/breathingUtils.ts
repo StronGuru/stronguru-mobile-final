@@ -31,18 +31,9 @@ export const breathingPresets: BreathingConfig[] = [
     label: "Relax Breathing",
     description: "Favorisce il rilassamento grazie a trattenute più lunghe. Rallenta il ritmo cardiaco e aiuta a sciogliere tensione fisica e mentale."
   },
+
   {
     id: 3,
-    inhale: 5,
-    holdIn: 5,
-    exhale: 5,
-    holdOut: 5,
-    duration: 2,
-    label: "Equal Breaths",
-    description: "Mantiene un ritmo costante e bilanciato. Utile per stabilizzare il respiro, migliorare la consapevolezza e ritrovare equilibrio interiore."
-  },
-  {
-    id: 4,
     inhale: 3,
     holdIn: 6,
     exhale: 3,
@@ -53,7 +44,7 @@ export const breathingPresets: BreathingConfig[] = [
       "Enfatizza il rilascio con espirazioni e pause più lunghe. Aiuta a scaricare la tensione accumulata, utile per ridurre stress e favorire il sonno."
   },
   {
-    id: 5,
+    id: 4,
     inhale: 4,
     holdIn: 0,
     exhale: 6,
@@ -63,7 +54,7 @@ export const breathingPresets: BreathingConfig[] = [
     description: "L’espirazione prolungata stimola il sistema parasimpatico, favorendo rilassamento profondo e facilitando l’addormentamento."
   },
   {
-    id: 6,
+    id: 5,
     inhale: 6,
     holdIn: 2,
     exhale: 6,
@@ -73,7 +64,7 @@ export const breathingPresets: BreathingConfig[] = [
     description: "Indicato dopo sforzi fisici. Ristabilisce ossigenazione e favorisce il recupero grazie a un ritmo lento e regolare."
   },
   {
-    id: 7,
+    id: 6,
     inhale: 4,
     holdIn: 7,
     exhale: 8,
