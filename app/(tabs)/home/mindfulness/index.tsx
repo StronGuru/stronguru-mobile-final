@@ -8,7 +8,10 @@ import { ImageBackground, ScrollView, TextInput, TouchableOpacity, View } from "
 export default function MindfulnessHomeScreen() {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const [selectedPattern, setSelectedPattern] = useState<number | null>(null);
+
+  // pattern duration string + flag per rilevare modifica utente
   const [patternDuration, setPatternDuration] = useState<string>("1"); // minuti interi
+  const [patternDurationEdited, setPatternDurationEdited] = useState<boolean>(false);
 
   const [customInspire, setCustomInspire] = useState<string>("4");
   const [customHold1, setCustomHold1] = useState<string>("4");
@@ -29,13 +32,17 @@ export default function MindfulnessHomeScreen() {
   const incrementPatternDuration = () => {
     setPatternDuration((prev) => {
       const n = Number(prev) || 0;
-      return String(Math.max(1, Math.round(n + 1)));
+      const next = String(Math.max(1, Math.round(n + 1)));
+      setPatternDurationEdited(true);
+      return next;
     });
   };
   const decrementPatternDuration = () => {
     setPatternDuration((prev) => {
       const n = Number(prev) || 0;
-      return String(Math.max(1, Math.round(n - 1)));
+      const next = String(Math.max(1, Math.round(n - 1)));
+      setPatternDurationEdited(true);
+      return next;
     });
   };
 
@@ -87,7 +94,13 @@ export default function MindfulnessHomeScreen() {
                   {patterns.map((p, idx) => (
                     <TouchableOpacity
                       key={p.id}
-                      onPress={() => setSelectedPattern(idx)}
+                      onPress={() => {
+                        setSelectedPattern(idx);
+                        // imposta il valore di default del preset solo alla selezione (non se l'utente ha già modificato)
+                        const preset = patterns[idx];
+                        setPatternDuration(String(preset.duration ?? 1));
+                        setPatternDurationEdited(false);
+                      }}
                       className={`flex-row items-center justify-between p-3 rounded-md mb-2 border ${
                         selectedPattern === idx ? "border-primary bg-primary/10" : "border-border bg-card"
                       }`}
@@ -115,7 +128,10 @@ export default function MindfulnessHomeScreen() {
 
                     <TextInput
                       value={patternDuration}
-                      onChangeText={(t) => setPatternDuration(t.replace(/[^0-9]/g, ""))}
+                      onChangeText={(t) => {
+                        setPatternDuration(t.replace(/[^0-9]/g, ""));
+                        setPatternDurationEdited(true);
+                      }}
                       placeholder="es. 1"
                       keyboardType="numeric"
                       className="flex-1  px-2 text-center bg-white"
