@@ -1,6 +1,7 @@
 import AppText from "@/components/ui/AppText";
 import Card from "@/components/ui/Card";
 import { breathingPresets, buildConfigFromCustom } from "@/utils/breathingUtils";
+import { router } from "expo-router";
 import { ChevronDown, ChevronUp, Info } from "lucide-react-native";
 import React, { useState } from "react";
 import { ImageBackground, Modal, Pressable, ScrollView, TextInput, TouchableOpacity, View } from "react-native";
@@ -191,7 +192,11 @@ export default function MindfulnessHomeScreen() {
                                     duration: Number.isFinite(parsedMinutes) && parsedMinutes > 0 ? Math.round(parsedMinutes) : preset.duration
                                   };
                                   console.log("Breathing config (preset):", config);
-                                  // in seguito: passare `config` al router / schermata animazione
+                                  // invia config alla pagina di animazione (serializzato)
+                                  router.push({
+                                    pathname: "/(tabs)/home/mindfulness/breathing/breathingAnimation",
+                                    params: { config: JSON.stringify(config) }
+                                  });
                                 }}
                               >
                                 <AppText w="semi" className="text-white text-lg">
@@ -307,7 +312,11 @@ export default function MindfulnessHomeScreen() {
                     onPress={() => {
                       const config = buildConfigFromCustom(customInspire, customHold1, customExpire, customHold2, customDuration, "Custom");
                       console.log("Breathing config (custom):", config);
-                      // in seguito: passare `config` al router / schermata animazione
+                      // invia config alla pagina di animazione (serializzato)
+                      router.push({
+                        pathname: "/(tabs)/home/mindfulness/breathing/breathingAnimation",
+                        params: { config: JSON.stringify(config) }
+                      });
                     }}
                   >
                     <AppText w="semi" className="text-white text-lg">
