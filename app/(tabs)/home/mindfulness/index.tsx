@@ -92,92 +92,98 @@ export default function MindfulnessHomeScreen() {
             </TouchableOpacity>
 
             {expandedSections.has("patterns") && (
-              <View className="mt-3 mb-8">
+              <View className="mt-3 mb-8 px-2">
                 <View>
                   {patterns.map((p, idx) => (
-                    <TouchableOpacity
-                      key={p.id}
-                      onPress={() => {
-                        // se cambio selezione verso un pattern diverso, ripristina la durata di default del preset
-                        const preset = patterns[idx];
-                        if (idx !== selectedPattern) {
-                          setSelectedPattern(idx);
-                          setPatternDuration(String(preset.duration ?? 1));
-                        } else {
-                          // se riclicco lo stesso pattern, lo lascio com'è (non sovrascrivere un edit in corso)
-                          setSelectedPattern(idx);
-                        }
-                      }}
-                      className={`flex-row items-center justify-between p-3 rounded-md mb-2 border ${
-                        selectedPattern === idx ? "border-primary bg-secondary" : "border-border bg-card"
-                      }`}
-                    >
-                      <View className="w-80">
-                        <AppText w="semi" className="text-md">
-                          {p.label}
-                        </AppText>
-                        <AppText w="semi" className="text-md text-primary">{`${p.inhale} - ${p.holdIn} - ${p.exhale} - ${p.holdOut}`}</AppText>
-                        <AppText className="text-md">Durata: {p.duration} min</AppText>
-                      </View>
-                      <View className="flex-row items-center">
-                        <TouchableOpacity
-                          onPress={() => {
-                            setInfoText(p.description ?? "Nessuna descrizione disponibile");
-                            setInfoModalVisible(true);
-                          }}
-                          className="mr-3"
-                          accessibilityLabel={`Più info su ${p.label}`}
-                        >
-                          <Info size={22} color="#6b7280" />
-                        </TouchableOpacity>
-                      </View>
-                    </TouchableOpacity>
+                    <View key={p.id} className="mb-2">
+                      <TouchableOpacity
+                        onPress={() => {
+                          const preset = patterns[idx];
+                          if (idx !== selectedPattern) {
+                            setSelectedPattern(idx);
+                            setPatternDuration(String(preset.duration ?? 1));
+                          } else {
+                            setSelectedPattern(idx);
+                          }
+                        }}
+                        className={` p-3 rounded-md border ${selectedPattern === idx ? "border-primary bg-secondary dark:bg-muted" : "border-border bg-card"}`}
+                      >
+                        <View className="flex-row items-center justify-between flex-1">
+                          <View>
+                            <View className="flex-row gap-3">
+                              <AppText w="semi" className="text-lg">
+                                {p.label}
+                              </AppText>
+                              <AppText w="semi" className="text-lg text-primary">{`${p.inhale} - ${p.holdIn} - ${p.exhale} - ${p.holdOut}`}</AppText>
+                            </View>
+                            <AppText className="text-md">Durata: {p.duration} min</AppText>
+                          </View>
+
+                          <View className="flex-row items-center">
+                            <TouchableOpacity
+                              onPress={() => {
+                                setInfoText(p.description ?? "Nessuna descrizione disponibile");
+                                setInfoModalVisible(true);
+                              }}
+                              className="mr-3"
+                              accessibilityLabel={`Più info su ${p.label}`}
+                            >
+                              <Info size={22} color="#6b7280" />
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+
+                        {selectedPattern === idx && (
+                          <View className="mt-3 gap-3 border-t border-primary pt-5">
+                            <View className="flex-row items-center mb-3">
+                              <AppText className="text-md mr-3">Durata custom (min)</AppText>
+                              <View className="flex-row items-center shadow-sm flex-1 mr-3">
+                                <TouchableOpacity onPress={decrementPatternDuration} className="px-6 py-1 bg-gray-200 dark:bg-muted-foreground rounded-l-md">
+                                  <AppText className="text-3xl mt-1">-</AppText>
+                                </TouchableOpacity>
+
+                                <TextInput
+                                  value={patternDuration}
+                                  onChangeText={(t) => setPatternDuration(t.replace(/[^0-9]/g, ""))}
+                                  placeholder="es. 1"
+                                  keyboardType="numeric"
+                                  className="flex-1 px-2 text-center bg-white"
+                                  style={{ height: 42 }}
+                                />
+
+                                <TouchableOpacity onPress={incrementPatternDuration} className="px-6 py-1 bg-gray-200  dark:bg-muted-foreground rounded-r-md">
+                                  <AppText className="text-3xl mt-1">+</AppText>
+                                </TouchableOpacity>
+                              </View>
+                            </View>
+
+                            <View className="flex-row justify-center flex-1">
+                              <TouchableOpacity
+                                className="bg-primary px-4 py-3 rounded-md w-full items-center"
+                                onPress={() => {
+                                  // preset è già un BreathingConfig; sovrascrivo solo duration se l'utente l'ha inserita
+                                  const preset = patterns[selectedPattern];
+                                  const parsedMinutes = Number(patternDuration);
+                                  const config = {
+                                    ...preset,
+                                    duration: Number.isFinite(parsedMinutes) && parsedMinutes > 0 ? Math.round(parsedMinutes) : preset.duration
+                                  };
+                                  console.log("Breathing config (preset):", config);
+                                  // in seguito: passare `config` al router / schermata animazione
+                                }}
+                              >
+                                <AppText w="semi" className="text-white text-lg">
+                                  Inizia
+                                </AppText>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        )}
+                      </TouchableOpacity>
+
+                      {/* Expanded controls: mostrati solo per il pattern selezionato */}
+                    </View>
                   ))}
-                </View>
-
-                <View className="mt-3 flex-row items-center">
-                  <AppText className="text-sm mr-2">Durata (min)</AppText>
-
-                  <View className="flex-row items-center shadow-sm flex-1 mr-3">
-                    <TouchableOpacity onPress={decrementPatternDuration} className="px-6 py-1 bg-gray-200 dark:bg-muted-foreground rounded-l-md">
-                      <AppText className="text-3xl mt-1">-</AppText>
-                    </TouchableOpacity>
-
-                    <TextInput
-                      value={patternDuration}
-                      onChangeText={(t) => {
-                        setPatternDuration(t.replace(/[^0-9]/g, ""));
-                      }}
-                      placeholder="es. 1"
-                      keyboardType="numeric"
-                      className="flex-1  px-2 text-center bg-white"
-                      style={{ height: 42 }}
-                    />
-
-                    <TouchableOpacity onPress={incrementPatternDuration} className="px-6 py-1 bg-gray-200  dark:bg-muted-foreground rounded-r-md">
-                      <AppText className="text-3xl mt-1">+</AppText>
-                    </TouchableOpacity>
-                  </View>
-
-                  <TouchableOpacity
-                    className="bg-primary px-4 py-3 rounded-md"
-                    onPress={() => {
-                      if (selectedPattern === null) return;
-                      // preset è già un BreathingConfig; sovrascrivo solo duration se l'utente l'ha inserita
-                      const preset = patterns[selectedPattern];
-                      const parsedMinutes = Number(patternDuration);
-                      const config = {
-                        ...preset,
-                        duration: Number.isFinite(parsedMinutes) && parsedMinutes > 0 ? Math.round(parsedMinutes) : preset.duration
-                      };
-                      console.log("Breathing config (preset):", config);
-                      // in seguito: passare `config` al router / schermata animazione
-                    }}
-                  >
-                    <AppText w="semi" className="text-white">
-                      Inizia
-                    </AppText>
-                  </TouchableOpacity>
                 </View>
               </View>
             )}
@@ -196,7 +202,7 @@ export default function MindfulnessHomeScreen() {
             </TouchableOpacity>
 
             {expandedSections.has("custom") && (
-              <View className="mt-3 ">
+              <View className="mt-3 px-2 gap-3 ">
                 <View className="flex-row justify-between my-3">
                   <View className="flex-1 mr-2">
                     <AppText w="semi" className="text-md text-center mb-1">
@@ -282,7 +288,7 @@ export default function MindfulnessHomeScreen() {
                       // in seguito: passare `config` al router / schermata animazione
                     }}
                   >
-                    <AppText w="semi" className="text-white">
+                    <AppText w="semi" className="text-white text-lg">
                       Inizia
                     </AppText>
                   </TouchableOpacity>
@@ -296,14 +302,16 @@ export default function MindfulnessHomeScreen() {
       {/* Info modal */}
       <Modal visible={infoModalVisible} transparent animationType="fade" onRequestClose={() => setInfoModalVisible(false)}>
         <Pressable className="flex-1 justify-center items-center bg-black/40" onPress={() => setInfoModalVisible(false)}>
-          <Pressable className="w-[90%] bg-white p-4 rounded-lg" onPress={(e) => e.stopPropagation()}>
+          <Pressable className="w-[90%] bg-white dark:bg-muted p-4 rounded-lg" onPress={(e) => e.stopPropagation()}>
             <AppText w="semi" className="text-lg mb-2">
               Descrizione
             </AppText>
             <AppText className="text-md mb-4">{infoText}</AppText>
             <View className="flex-row justify-end">
               <TouchableOpacity onPress={() => setInfoModalVisible(false)} className="px-4 py-2 bg-primary rounded-md">
-                <AppText className="text-white">Chiudi</AppText>
+                <AppText w="semi" className="text-white text-lg">
+                  Chiudi
+                </AppText>
               </TouchableOpacity>
             </View>
           </Pressable>
