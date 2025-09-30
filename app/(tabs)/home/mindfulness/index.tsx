@@ -26,12 +26,20 @@ export default function MindfulnessHomeScreen() {
     setExpandedSections((prev) => {
       const next = new Set(prev);
       if (next.has(key)) {
-        // close if already open
+        // closing this section
         next.delete(key);
+        // if closing patterns, reset selected pattern
+        if (key === "patterns") {
+          setSelectedPattern(null);
+        }
       } else {
         // open only this section (close others)
         next.clear();
         next.add(key);
+        // if opening custom, ensure selected pattern is cleared
+        if (key === "custom") {
+          setSelectedPattern(null);
+        }
       }
       return next;
     });
