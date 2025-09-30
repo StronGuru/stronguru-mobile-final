@@ -11,7 +11,6 @@ export default function MindfulnessHomeScreen() {
 
   // pattern duration string + flag per rilevare modifica utente
   const [patternDuration, setPatternDuration] = useState<string>("1"); // minuti interi
-  const [patternDurationEdited, setPatternDurationEdited] = useState<boolean>(false);
 
   const [customInspire, setCustomInspire] = useState<string>("4");
   const [customHold1, setCustomHold1] = useState<string>("4");
@@ -33,7 +32,7 @@ export default function MindfulnessHomeScreen() {
     setPatternDuration((prev) => {
       const n = Number(prev) || 0;
       const next = String(Math.max(1, Math.round(n + 1)));
-      setPatternDurationEdited(true);
+
       return next;
     });
   };
@@ -41,7 +40,7 @@ export default function MindfulnessHomeScreen() {
     setPatternDuration((prev) => {
       const n = Number(prev) || 0;
       const next = String(Math.max(1, Math.round(n - 1)));
-      setPatternDurationEdited(true);
+
       return next;
     });
   };
@@ -60,22 +59,24 @@ export default function MindfulnessHomeScreen() {
   };
 
   return (
-    <ScrollView className="flex-1 p-4 bg-background" showsVerticalScrollIndicator={false}>
-      <Card className="mb-5">
+    <ScrollView className="flex-1 px-4 py-6 bg-background" showsVerticalScrollIndicator={false}>
+      <Card className="mb-5 p-0 ">
         <ImageBackground
-          source={require("../../../../assets/images/mindfulness/breathingCard.png")}
-          className="h-60 justify-center items-center p-5 rounded-3xl overflow-hidden "
+          source={require("../../../../assets/images/mindfulness/breathingCard.jpeg")}
+          className="h-60 justify-center items-center p-5"
+          resizeMode="cover"
+          imageStyle={{ borderRadius: 10 }}
         >
-          <AppText w="bold" className="text-5xl text-black self-center">
+          <AppText w="bold" className="text-5xl text-white self-center">
             Breathing
           </AppText>
-          <AppText w="semi" className="text-center text-black text-lg ">
+          <AppText w="semi" className="text-center text-white text-lg ">
             Esercizi di respirazione per rilassare la mente e il corpo
           </AppText>
         </ImageBackground>
 
         {/* Expandable Sections */}
-        <View className="px-2 py-4">
+        <View className=" py-4">
           {/* Patterns Section */}
           <View className="mb-3">
             <TouchableOpacity
@@ -83,7 +84,7 @@ export default function MindfulnessHomeScreen() {
               className="bg-card border border-border shadow-sm rounded-lg p-4 flex-row justify-between items-center"
             >
               <AppText w="semi" className="text-lg">
-                Patterns
+                Patterns predefiniti
               </AppText>
               {expandedSections.has("patterns") ? <ChevronUp size={20} color="#6b7280" /> : <ChevronDown size={20} color="#10b981" />}
             </TouchableOpacity>
@@ -95,11 +96,15 @@ export default function MindfulnessHomeScreen() {
                     <TouchableOpacity
                       key={p.id}
                       onPress={() => {
-                        setSelectedPattern(idx);
-                        // imposta il valore di default del preset solo alla selezione (non se l'utente ha già modificato)
+                        // se cambio selezione verso un pattern diverso, ripristina la durata di default del preset
                         const preset = patterns[idx];
-                        setPatternDuration(String(preset.duration ?? 1));
-                        setPatternDurationEdited(false);
+                        if (idx !== selectedPattern) {
+                          setSelectedPattern(idx);
+                          setPatternDuration(String(preset.duration ?? 1));
+                        } else {
+                          // se riclicco lo stesso pattern, lo lascio com'è (non sovrascrivere un edit in corso)
+                          setSelectedPattern(idx);
+                        }
                       }}
                       className={`flex-row items-center justify-between p-3 rounded-md mb-2 border ${
                         selectedPattern === idx ? "border-primary bg-primary/10" : "border-border bg-card"
@@ -130,7 +135,6 @@ export default function MindfulnessHomeScreen() {
                       value={patternDuration}
                       onChangeText={(t) => {
                         setPatternDuration(t.replace(/[^0-9]/g, ""));
-                        setPatternDurationEdited(true);
                       }}
                       placeholder="es. 1"
                       keyboardType="numeric"
@@ -174,7 +178,7 @@ export default function MindfulnessHomeScreen() {
               className="bg-card border border-border shadow-sm rounded-lg p-4 flex-row justify-between items-center"
             >
               <AppText w="semi" className="text-lg">
-                Custom
+                Pattern custom
               </AppText>
               {expandedSections.has("custom") ? <ChevronUp size={20} color="#6b7280" /> : <ChevronDown size={20} color="#10b981" />}
             </TouchableOpacity>
