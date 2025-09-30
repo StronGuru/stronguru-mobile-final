@@ -23,10 +23,18 @@ export default function MindfulnessHomeScreen() {
   const patterns = breathingPresets;
 
   const toggleSection = (key: string) => {
-    const next = new Set(expandedSections);
-    if (next.has(key)) next.delete(key);
-    else next.add(key);
-    setExpandedSections(next);
+    setExpandedSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        // close if already open
+        next.delete(key);
+      } else {
+        // open only this section (close others)
+        next.clear();
+        next.add(key);
+      }
+      return next;
+    });
   };
 
   // new helpers: increment / decrement minutes (min 1)
@@ -105,6 +113,12 @@ export default function MindfulnessHomeScreen() {
                           } else {
                             setSelectedPattern(idx);
                           }
+                          // ensure custom section is closed when selecting a preset
+                          setExpandedSections((prev) => {
+                            const next = new Set(prev);
+                            next.delete("custom");
+                            return next;
+                          });
                         }}
                         className={` p-3 rounded-md border ${selectedPattern === idx ? "border-primary bg-secondary dark:bg-muted" : "border-border bg-card"}`}
                       >
