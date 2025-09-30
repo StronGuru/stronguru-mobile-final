@@ -47,11 +47,19 @@ export default function HomeLayout() {
         }}
       />
       <Stack.Screen
-        name="mindfulness/mindfulnessHome"
+        name="mindfulness/index"
         options={{
           headerShown: true,
           title: "Mindfulness",
           headerBackTitle: "Home"
+        }}
+      />
+      <Stack.Screen
+        name="mindfulness/breathing/breathingAnimation"
+        options={{
+          headerShown: true,
+          title: "Esercizio di Respirazione",
+          headerBackTitle: "Indietro"
         }}
       />
       <Stack.Screen

@@ -9,7 +9,7 @@ export default function MindfulnessCard() {
       className="w-[48%] min-h-[150px] bg-violet-400 p-4 rounded-3xl shadow-sm overflow-visible"
       onPress={() => {
         // naviga a mindfulnessHome
-        router.push("/(tabs)/home/mindfulness/mindfulnessHome");
+        router.push("/(tabs)/home/mindfulness");
       }}
     >
       <View className="flex-1 relative items-center justify-end">
