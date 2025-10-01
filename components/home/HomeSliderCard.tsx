@@ -1,7 +1,6 @@
 import { router } from "expo-router";
 import React from "react";
-import { Dimensions, StyleSheet, TouchableOpacity, View } from "react-native";
-import Animated, { Extrapolation, interpolate, SharedValue, useAnimatedStyle } from "react-native-reanimated";
+import { TouchableOpacity, View } from "react-native";
 import AppText from "../ui/AppText";
 
 export type SliderDataItem = {
@@ -13,37 +12,17 @@ export type SliderDataItem = {
 interface HomeSliderCardProps {
   item: SliderDataItem;
   index: number;
-  scrollX?: SharedValue<number>;
+  scrollX?: any; // removed reanimated usage
 }
 
-const { width } = Dimensions.get("screen");
-
-export default function HomeSliderCard({ item, index, scrollX }: HomeSliderCardProps) {
-  const rnAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          translateX: interpolate(
-            scrollX?.value ?? 0,
-            [(index - 1) * width, index * width, (index + 1) * width],
-            [-width * 0.2, 0, width * 0.2],
-            Extrapolation.CLAMP
-          )
-        },
-        {
-          scale: interpolate(scrollX?.value ?? 0, [(index - 1) * width, index * width, (index + 1) * width], [0.8, 1, 0.8], Extrapolation.CLAMP)
-        }
-      ]
-    };
-  });
+export default function HomeSliderCard({ item }: HomeSliderCardProps) {
   return (
-    <Animated.View style={[styles.itemContainer, rnAnimatedStyle]}>
+    <View className=" flex-1 mr-3 items-center justify-center">
       <TouchableOpacity
         onPress={() => {
           router.push(`${item.route}` as any);
         }}
-        className="bg-primary rounded-3xl p-4 my-2 items-center justify-center shadow-sm"
-        style={{ width: 350, height: 180 }}
+        className="bg-primary w-[345px] h-[170px] rounded-3xl p-4 my-4 items-center justify-center shadow-sm"
       >
         <View className="items-center justify-center ">
           <AppText w="bold" className="text-2xl text-white shadow-sm mb-5">
@@ -54,15 +33,6 @@ export default function HomeSliderCard({ item, index, scrollX }: HomeSliderCardP
           </AppText>
         </View>
       </TouchableOpacity>
-    </Animated.View>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  itemContainer: {
-    width: width,
-    justifyContent: "center",
-    alignItems: "center",
-    marginVertical: 10
-  }
-});

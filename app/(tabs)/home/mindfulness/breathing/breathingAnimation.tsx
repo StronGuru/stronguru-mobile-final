@@ -333,16 +333,18 @@ export default function BreathingAnimationScreen() {
       >
         <View className=" flex-row gap-3 items-center mb-5">
           <AppText className="text-2xl text-center">{config.label !== "Custom" ? config.label : "Esercizio Custom"}</AppText>
-          <TouchableOpacity
-            onPress={() => {
-              setInfoText(config.description ?? "Nessuna descrizione disponibile");
-              setInfoModalVisible(true);
-            }}
-            className="mr-3"
-            accessibilityLabel={`Più info su ${config.label}`}
-          >
-            <Info size={22} color="#6b7280" />
-          </TouchableOpacity>
+          {config.label !== "Custom" && (
+            <TouchableOpacity
+              onPress={() => {
+                setInfoText(config.description ?? "Nessuna descrizione disponibile");
+                setInfoModalVisible(true);
+              }}
+              className="mr-3"
+              accessibilityLabel={`Più info su ${config.label}`}
+            >
+              <Info size={22} color="#6b7280" />
+            </TouchableOpacity>
+          )}
         </View>
 
         <View className="mb-4 items-center">
@@ -399,8 +401,8 @@ export default function BreathingAnimationScreen() {
             </AppText>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => router.back()} className="px-4 py-3 bg-card rounded-2xl">
-            <AppText className="text-3xl text-black ">Fine</AppText>
+          <TouchableOpacity onPress={() => router.back()} className="px-4 py-3 bg-card dark:bg-input rounded-2xl">
+            <AppText className="text-3xl text-black dark:text-white ">Fine</AppText>
           </TouchableOpacity>
         </View>
 
@@ -422,14 +424,6 @@ export default function BreathingAnimationScreen() {
             </Pressable>
           </Pressable>
         </Modal>
-
-        {/* debug: show parsed config */}
-        {/*  <View className="mt-6 p-4 bg-card rounded-lg w-full">
-        <AppText w="semi" className="mb-2">
-          Debug config
-        </AppText>
-        <AppText style={{ fontFamily: "monospace" }}>{JSON.stringify(config, null, 2)}</AppText>
-      </View> */}
       </ScrollView>
     </SafeAreaView>
   );

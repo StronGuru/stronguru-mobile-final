@@ -1,5 +1,5 @@
 import { HeroCard } from "@/components/home/HeroCard";
-import MindfulnessCard from "@/components/home/MindfulnessCard";
+import MindfulnessHomeCard from "@/components/home/MindfulnessHomeCard";
 import Slider from "@/components/home/Slider";
 import TrainingsCard from "@/components/home/TrainingsCard";
 import AppText from "@/components/ui/AppText";
@@ -28,7 +28,7 @@ const Index = () => {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       {/* Header Name, Profile, Settings - sticky top */}
-      <View className="px-4 pb-1 mb-2">
+      <View className="px-4 pb-1 mb-2 mt-3">
         <View className="flex-row items-center justify-between mt-2 gap-6">
           <TouchableOpacity onPress={() => router.push("/home/profile-page")}>
             <CircleUser size={32} color={colorScheme === "dark" ? "white" : "black"} />
@@ -47,15 +47,16 @@ const Index = () => {
           {/* <Image source={{ uri: `${user?.}` }} className="w-10 h-10 rounded-full border border-white" /> */}
         </View>
       </View>
+
       <ScrollView className="flex-1 ">
         {/* Hero Card */}
         <HeroCard />
         {/* Quick Access scrollable Cards */}
         <Slider />
-
+        {/* Card Trainings e Mindfulness */}
         <View className="mt-8 px-4 flex-row gap-2 justify-around ">
           <TrainingsCard />
-          <MindfulnessCard />
+          <MindfulnessHomeCard />
         </View>
       </ScrollView>
     </SafeAreaView>
