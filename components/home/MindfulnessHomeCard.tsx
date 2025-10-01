@@ -3,13 +3,13 @@ import React from "react";
 import { Image, TouchableOpacity, View } from "react-native";
 import AppText from "../ui/AppText";
 
-export default function MindfulnessCard() {
+export default function MindfulnessHomeCard() {
   return (
     <TouchableOpacity
-      className="w-[48%] min-h-[150px] bg-violet-400 p-4 rounded-3xl shadow-sm overflow-visible"
+      className="w-[48%] min-h-[160px] bg-violet-400 p-4 rounded-3xl shadow-sm overflow-visible"
       onPress={() => {
         // naviga a mindfulnessHome
-        router.push("/(tabs)/home/mindfulness/mindfulnessHome");
+        router.push("/(tabs)/home/mindfulness");
       }}
     >
       <View className="flex-1 relative items-center justify-end">
@@ -21,7 +21,7 @@ export default function MindfulnessCard() {
             aspectRatio: 3 / 4, // mantiene proporzioni
             position: "absolute",
             bottom: -20, // fa "uscire" la testa sopra la card
-            right: 20 // piccolo offset laterale
+            right: 17 // piccolo offset laterale
           }}
         />
         <AppText w="bold" className="text-white text-2xl shadow-sm">
