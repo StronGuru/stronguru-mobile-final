@@ -25,8 +25,8 @@ export default function TrainingsCard() {
         <AppText w="bold" className="text-white text-2xl shadow-sm">
           Trainings
         </AppText>
-        <AppText w="semi" className="absolute bottom-[-12] text-black ">
-          Coming Soon !
+        <AppText w="semi" className="absolute bottom-[-12] text-gray-100 ">
+          Coming Soon!
         </AppText>
       </View>
     </TouchableOpacity>
