@@ -24,8 +24,15 @@ export default function BreathingAnimationScreen() {
     }
   }, [configJson]);
 
-  // timeline
-  const totalSeconds = config?.duration ? Math.max(1, Math.round(config.duration * 60)) : undefined;
+  // timeline: preferisci cycles (numero di cicli) per terminare sempre ad un ciclo completo.
+  const cycleLengthSec = config ? config.inhale + config.holdIn + config.exhale + config.holdOut : 0;
+  const totalSeconds =
+    config?.cycles && cycleLengthSec > 0
+      ? Math.max(1, config.cycles * cycleLengthSec)
+      : config?.duration
+        ? Math.max(1, Math.round(config.duration * 60))
+        : undefined;
+
   const phases = useMemo(() => {
     if (!config) return [];
     return [

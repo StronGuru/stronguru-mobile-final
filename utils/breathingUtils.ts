@@ -5,6 +5,7 @@ export interface BreathingConfig {
   exhale: number; // durata in secondi dell’espirazione
   holdOut: number; // durata in secondi della pausa a polmoni vuoti
   duration?: number; // durata totale in minuti (opzionale)
+  cycles?: number; // numero di cicli (ogni ciclo = inhale + holdIn + exhale + holdOut)
   label?: string; // nome del preset
   description?: string; // descrizione
 }
@@ -17,6 +18,7 @@ export const breathingPresets: BreathingConfig[] = [
     exhale: 4,
     holdOut: 4,
     duration: 2, // minuti
+    cycles: 8,
     label: "Box Breathing",
     description:
       "Tecnica semplice e potente: inspira, trattieni, espira e trattieni per intervalli uguali. Usata anche da atleti e militari per dominare lo stress, calma il sistema nervoso e favorisce concentrazione. Ottima in momenti di tensione o prima di affrontare compiti impegnativi."
@@ -28,6 +30,7 @@ export const breathingPresets: BreathingConfig[] = [
     exhale: 4,
     holdOut: 6,
     duration: 3,
+    cycles: 9,
     label: "Relax",
     description:
       "Una respirazione rallentata con pause più lunghe, pensata per sciogliere le tensioni. Rallenta il battito, favorisce un rilassamento profondo e aiuta a liberare lo stress accumulato dopo una giornata intensa."
@@ -39,6 +42,7 @@ export const breathingPresets: BreathingConfig[] = [
     exhale: 3,
     holdOut: 6,
     duration: 3,
+    cycles: 10,
     label: "2:1 Ratio",
     description:
       "Questo pattern dà priorità all’espirazione e alle pause: utile per scaricare emozioni, ridurre tensioni e favorire uno stato di calma profonda. Ottimo da usare in momenti in cui senti la mente “overload”."
@@ -50,6 +54,7 @@ export const breathingPresets: BreathingConfig[] = [
     exhale: 6,
     holdOut: 0,
     duration: 3,
+    cycles: 18,
     label: "Calm",
     description:
       "Respirazione semplice con espirazione estesa, senza pause. Stimola la risposta parasimpatica del corpo, favorisce rilassamento profondo e può essere utile per addormentarsi o calmarsi durante momenti di agitazione."
@@ -61,6 +66,7 @@ export const breathingPresets: BreathingConfig[] = [
     exhale: 6,
     holdOut: 2,
     duration: 3,
+    cycles: 11,
     label: "Post-Workout",
     description:
       "Ideale dopo lo sforzo fisico, questo pattern favorisce un recupero più rapido, ossigena i muscoli e rallenta il battito in modo dolce. Ottimo subito dopo l’allenamento o una sessione intensa."
@@ -72,6 +78,7 @@ export const breathingPresets: BreathingConfig[] = [
     exhale: 8,
     holdOut: 0,
     duration: 4,
+    cycles: 13,
     label: "Deep Calm",
     description:
       "Una respirazione profonda e rallentata pensata per liberare la mente dallo stress accumulato. Perfetta in momenti di forte tensione, prima di dormire o per recuperare lucidità dopo una giornata impegnativa."
@@ -83,6 +90,7 @@ export const breathingPresets: BreathingConfig[] = [
     exhale: 2,
     holdOut: 0,
     duration: 2,
+    cycles: 15,
     label: "Awake",
     description:
       "Respirazione breve e incisiva da praticare al risveglio: stimola energia, chiarezza mentale e attiva il sistema nervoso in modo delicato. Ottima al mattino o prima di iniziare una giornata impegnativa."
@@ -94,6 +102,7 @@ export const breathingPresets: BreathingConfig[] = [
     exhale: 8,
     holdOut: 4,
     duration: 4,
+    cycles: 10,
     label: "Pranayama",
     description:
       "Pratica yogica antica, il Pranayama è il respiro consapevole del “prana” (energia vitale). Migliora la capacità polmonare, riduce ansia e pressione, e favorisce equilibrio mentale. Ideale in momenti meditativi o per integrare yoga e mindfulness."
@@ -105,6 +114,7 @@ export const breathingPresets: BreathingConfig[] = [
     exhale: 7,
     holdOut: 0,
     duration: 3,
+    cycles: 13,
     label: "Ujjayi",
     description:
       "Conosciuto anche come “respiro vittorioso”, Ujjayi crea un suono interno simile a onde marine. Favorisce calore, concentrazione e calma interiore. Ottimo durante pratiche yoga, meditazione o nei momenti in cui desideri stabilità mentale."

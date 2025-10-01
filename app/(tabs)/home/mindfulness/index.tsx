@@ -1,6 +1,6 @@
 import AppText from "@/components/ui/AppText";
 import Card from "@/components/ui/Card";
-import { breathingPresets, buildConfigFromCustom } from "@/utils/breathingUtils";
+import { BreathingConfig, breathingPresets, buildConfigFromCustom } from "@/utils/breathingUtils";
 import { router } from "expo-router";
 import { ChevronDown, ChevronUp, Info } from "lucide-react-native";
 import React, { useState } from "react";
@@ -12,14 +12,39 @@ export default function MindfulnessHomeScreen() {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const [selectedPattern, setSelectedPattern] = useState<number | null>(null);
 
-  // pattern duration string + flag per rilevare modifica utente
-  const [patternDuration, setPatternDuration] = useState<string>("1"); // minuti interi
+  // patternCycles: numero di cicli scelto per il preset (stringa per l'input)
+  const [patternCycles, setPatternCycles] = useState<string>("1");
+
+  // helper: compute estimated duration (returns minutes + seconds)
+  const computeEstimatedDuration = (cfg: BreathingConfig | undefined, cyclesInput?: number) => {
+    if (!cfg) return { minutes: undefined as number | undefined, seconds: undefined as number | undefined };
+    const cycleSeconds = (cfg.inhale || 0) + (cfg.holdIn || 0) + (cfg.exhale || 0) + (cfg.holdOut || 0);
+    // fallback to shown duration if cycle definition is missing
+    if (!cycleSeconds) {
+      const fallbackSec = cfg.duration ? Math.round(cfg.duration * 60) : undefined;
+      return {
+        minutes: fallbackSec !== undefined ? Math.floor(fallbackSec / 60) : undefined,
+        seconds: fallbackSec !== undefined ? fallbackSec % 60 : undefined
+      };
+    }
+    const cyclesToUse = cyclesInput ?? cfg.cycles;
+    if (!cyclesToUse) {
+      const fallbackSec = cfg.duration ? Math.round(cfg.duration * 60) : undefined;
+      return {
+        minutes: fallbackSec !== undefined ? Math.floor(fallbackSec / 60) : undefined,
+        seconds: fallbackSec !== undefined ? fallbackSec % 60 : undefined
+      };
+    }
+    const totalSec = cyclesToUse * cycleSeconds;
+    return { minutes: Math.floor(totalSec / 60), seconds: totalSec % 60 };
+  };
 
   const [customInspire, setCustomInspire] = useState<string>("4");
   const [customHold1, setCustomHold1] = useState<string>("4");
   const [customExpire, setCustomExpire] = useState<string>("4");
   const [customHold2, setCustomHold2] = useState<string>("4");
-  const [customDuration, setCustomDuration] = useState<string>("2"); // minuti interi
+  // customCycles is number of cycles for custom pattern
+  const [customCycles, setCustomCycles] = useState<string>("2"); // numero cicli
 
   const patterns = breathingPresets;
 
@@ -46,32 +71,18 @@ export default function MindfulnessHomeScreen() {
     });
   };
 
-  // new helpers: increment / decrement minutes (min 1)
-  const incrementPatternDuration = () => {
-    setPatternDuration((prev) => {
-      const n = Number(prev) || 0;
-      const next = String(Math.max(1, Math.round(n + 1)));
+  // increment / decrement cycles (min 1)
+  const incrementPatternCycles = () => setPatternCycles((prev) => String(Math.max(1, (Number(prev) || 0) + 1)));
+  const decrementPatternCycles = () => setPatternCycles((prev) => String(Math.max(1, (Number(prev) || 0) - 1)));
 
-      return next;
-    });
-  };
-  const decrementPatternDuration = () => {
-    setPatternDuration((prev) => {
-      const n = Number(prev) || 0;
-      const next = String(Math.max(1, Math.round(n - 1)));
-
-      return next;
-    });
-  };
-
-  const incrementCustomDuration = () => {
-    setCustomDuration((prev) => {
+  const incrementCustomCycles = () => {
+    setCustomCycles((prev) => {
       const n = Number(prev) || 0;
       return String(Math.max(1, Math.round(n + 1)));
     });
   };
-  const decrementCustomDuration = () => {
-    setCustomDuration((prev) => {
+  const decrementCustomCycles = () => {
+    setCustomCycles((prev) => {
       const n = Number(prev) || 0;
       return String(Math.max(1, Math.round(n - 1)));
     });
@@ -118,7 +129,8 @@ export default function MindfulnessHomeScreen() {
                           const preset = patterns[idx];
                           if (idx !== selectedPattern) {
                             setSelectedPattern(idx);
-                            setPatternDuration(String(preset.duration ?? 1));
+                            // set the input to the preset's number of cycles (fallback to duration if cycles missing)
+                            setPatternCycles(String(preset.cycles ?? preset.duration ?? 1));
                           } else {
                             setSelectedPattern(idx);
                           }
@@ -139,7 +151,7 @@ export default function MindfulnessHomeScreen() {
                               </AppText>
                               <AppText w="semi" className="text-lg text-primary">{`${p.inhale} - ${p.holdIn} - ${p.exhale} - ${p.holdOut}`}</AppText>
                             </View>
-                            <AppText className="text-md">Durata: {p.duration} min</AppText>
+                            <AppText className="text-md">{`Circa: ${p.duration} min  •  Cicli: ${p.cycles ?? "-"}`}</AppText>
                           </View>
 
                           <View className="flex-row items-center">
@@ -158,38 +170,50 @@ export default function MindfulnessHomeScreen() {
 
                         {selectedPattern === idx && (
                           <View className="mt-3 gap-3 border-t border-primary pt-5">
-                            <View className="flex-row items-center mb-3">
-                              <AppText className="text-md mr-3">Durata custom (min)</AppText>
+                            <View className="flex-row items-center mb-1 gap-2">
+                              <AppText className="text-md mr-3">Numero cicli</AppText>
                               <View className="flex-row items-center shadow-sm flex-1 mr-3">
-                                <TouchableOpacity onPress={decrementPatternDuration} className="px-6 py-1 bg-gray-200 dark:bg-muted-foreground rounded-l-md">
+                                <TouchableOpacity onPress={decrementPatternCycles} className="px-6 py-1 bg-gray-200 dark:bg-muted-foreground rounded-l-md">
                                   <AppText className="text-3xl mt-1">-</AppText>
                                 </TouchableOpacity>
 
                                 <TextInput
-                                  value={patternDuration}
-                                  onChangeText={(t) => setPatternDuration(t.replace(/[^0-9]/g, ""))}
-                                  placeholder="es. 1"
+                                  value={patternCycles}
+                                  onChangeText={(t) => setPatternCycles(t.replace(/[^0-9]/g, ""))}
                                   keyboardType="numeric"
+                                  placeholder="es. 1"
                                   className="flex-1 px-2 text-center bg-white"
                                   style={{ height: 42 }}
                                 />
 
-                                <TouchableOpacity onPress={incrementPatternDuration} className="px-6 py-1 bg-gray-200  dark:bg-muted-foreground rounded-r-md">
+                                <TouchableOpacity onPress={incrementPatternCycles} className="px-6 py-1 bg-gray-200  dark:bg-muted-foreground rounded-r-md">
                                   <AppText className="text-3xl mt-1">+</AppText>
                                 </TouchableOpacity>
                               </View>
                             </View>
 
+                            {/* preview stima per preset selezionato */}
+                            {selectedPattern !== null &&
+                              (() => {
+                                const d = computeEstimatedDuration(patterns[selectedPattern], Number(patternCycles) || undefined);
+                                const display = d.minutes !== undefined ? `${d.minutes} min${d.seconds ? ` ${d.seconds} sec` : ""}` : "--";
+                                return <AppText className="text-md text-center">{`Durata effettiva: ${display}`}</AppText>;
+                              })()}
+
                             <View className="flex-row justify-center flex-1">
                               <TouchableOpacity
                                 className="bg-primary px-4 py-3 rounded-md w-full items-center"
                                 onPress={() => {
-                                  // preset è già un BreathingConfig; sovrascrivo solo duration se l'utente l'ha inserita
+                                  // preset è già un BreathingConfig; sovrascrivo solo cycles se l'utente l'ha inserita
                                   const preset = patterns[selectedPattern];
-                                  const parsedMinutes = Number(patternDuration);
+                                  const parsedCycles = Number(patternCycles);
+                                  const cycles = Number.isFinite(parsedCycles) && parsedCycles > 0 ? Math.round(parsedCycles) : undefined;
+                                  const cycleSeconds = preset.inhale + preset.holdIn + preset.exhale + preset.holdOut;
+                                  const estimatedMinutes = cycles ? Math.round((cycles * cycleSeconds) / 60) : preset.duration;
                                   const config = {
                                     ...preset,
-                                    duration: Number.isFinite(parsedMinutes) && parsedMinutes > 0 ? Math.round(parsedMinutes) : preset.duration
+                                    cycles,
+                                    duration: estimatedMinutes
                                   };
                                   console.log("Breathing config (preset):", config);
                                   // invia config alla pagina di animazione (serializzato)
@@ -207,8 +231,6 @@ export default function MindfulnessHomeScreen() {
                           </View>
                         )}
                       </TouchableOpacity>
-
-                      {/* Expanded controls: mostrati solo per il pattern selezionato */}
                     </View>
                   ))}
                 </View>
@@ -285,24 +307,24 @@ export default function MindfulnessHomeScreen() {
                   </View>
                 </View>
 
-                <View className="flex-row items-center my-2">
-                  <AppText className="text-sm mr-2">Durata (min)</AppText>
+                <View className="flex-row items-center my-2 gap-2">
+                  <AppText className="text-md mr-2">Numero cicli</AppText>
 
                   <View className="flex-row items-center shadow-sm flex-1 mr-3">
-                    <TouchableOpacity onPress={decrementCustomDuration} className="px-6 py-1 bg-gray-200 dark:bg-muted-foreground rounded-l-md">
+                    <TouchableOpacity onPress={decrementCustomCycles} className="px-6 py-1 bg-gray-200 dark:bg-muted-foreground rounded-l-md">
                       <AppText className="text-3xl mt-1">-</AppText>
                     </TouchableOpacity>
 
                     <TextInput
-                      value={customDuration}
-                      onChangeText={(t) => setCustomDuration(t.replace(/[^0-9]/g, ""))}
-                      placeholder="Minuti (es. 2)"
+                      value={customCycles}
+                      onChangeText={(t) => setCustomCycles(t.replace(/[^0-9]/g, ""))}
+                      placeholder="es. 2"
                       keyboardType="numeric"
                       className="flex-1 px-2 text-center bg-white"
                       style={{ height: 42 }}
                     />
 
-                    <TouchableOpacity onPress={incrementCustomDuration} className="px-6 py-1 bg-gray-200 dark:bg-muted-foreground rounded-r-md">
+                    <TouchableOpacity onPress={incrementCustomCycles} className="px-6 py-1 bg-gray-200 dark:bg-muted-foreground rounded-r-md">
                       <AppText className="text-3xl mt-1">+</AppText>
                     </TouchableOpacity>
                   </View>
@@ -310,7 +332,12 @@ export default function MindfulnessHomeScreen() {
                   <TouchableOpacity
                     className="bg-primary px-4 py-3 rounded-md"
                     onPress={() => {
-                      const config = buildConfigFromCustom(customInspire, customHold1, customExpire, customHold2, customDuration, "Custom");
+                      const parsedCycles = Number(customCycles);
+                      const cycles = Number.isFinite(parsedCycles) && parsedCycles > 0 ? Math.round(parsedCycles) : undefined;
+                      const baseCfg = buildConfigFromCustom(customInspire, customHold1, customExpire, customHold2, undefined, "Custom");
+                      const cycleSeconds = (Number(customInspire) || 0) + (Number(customHold1) || 0) + (Number(customExpire) || 0) + (Number(customHold2) || 0);
+                      const estimatedMinutes = cycles ? Math.round((cycles * cycleSeconds) / 60) : baseCfg.duration;
+                      const config = { ...baseCfg, cycles, duration: estimatedMinutes };
                       console.log("Breathing config (custom):", config);
                       // invia config alla pagina di animazione (serializzato)
                       router.push({
@@ -324,6 +351,23 @@ export default function MindfulnessHomeScreen() {
                     </AppText>
                   </TouchableOpacity>
                 </View>
+
+                {/* mostra stima aggiornata */}
+                {(() => {
+                  const d = computeEstimatedDuration(
+                    {
+                      inhale: Number(customInspire) || 0,
+                      holdIn: Number(customHold1) || 0,
+                      exhale: Number(customExpire) || 0,
+                      holdOut: Number(customHold2) || 0,
+                      duration: undefined,
+                      cycles: undefined
+                    },
+                    Number(customCycles) || undefined
+                  );
+                  const display = d.minutes !== undefined ? `${d.minutes} min${d.seconds ? ` ${d.seconds} sec` : ""}` : "--";
+                  return <AppText className="text-md text-center ">{`Durata: ${display}`}</AppText>;
+                })()}
               </View>
             )}
           </View>
@@ -348,14 +392,6 @@ export default function MindfulnessHomeScreen() {
           </Pressable>
         </Pressable>
       </Modal>
-
-      {/* <TouchableOpacity
-        onPress={() => {
-          router.push("/(tabs)/home/mindfulness/breathing/breathingAnimation");
-        }}
-      >
-        <AppText>Vai alla respirazione</AppText>
-      </TouchableOpacity> */}
     </ScrollView>
   );
 }
