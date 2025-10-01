@@ -1,4 +1,5 @@
 import AppText from "@/components/ui/AppText";
+import { BreathingConfig } from "@/utils/breathingUtils";
 import * as Haptics from "expo-haptics";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Pause, Play, Square } from "lucide-react-native";
@@ -6,16 +7,6 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Platform, SafeAreaView, ScrollView, TouchableOpacity, useWindowDimensions, Vibration, View } from "react-native";
 import Animated, { Easing, runOnJS, useAnimatedProps, useDerivedValue, useSharedValue, withTiming } from "react-native-reanimated";
 import { Circle, Svg } from "react-native-svg";
-
-type BreathingConfig = {
-  inhale: number;
-  holdIn: number;
-  exhale: number;
-  holdOut: number;
-  duration?: number; // minutes
-  label?: string;
-  description?: string;
-};
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -327,7 +318,7 @@ export default function BreathingAnimationScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background">
       <ScrollView
-        className="flex-1 px-4 py-6 bg-background "
+        className="flex-grow-1 px-4 py-6 bg-background "
         contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
         showsVerticalScrollIndicator={false}
       >
