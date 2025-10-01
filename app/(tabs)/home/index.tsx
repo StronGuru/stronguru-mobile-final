@@ -28,7 +28,7 @@ const Index = () => {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       {/* Header Name, Profile, Settings - sticky top */}
-      <View className="px-4 pb-1 mb-2 mt-3">
+      <View className="px-4 pb-1 mb-2 mt-2">
         <View className="flex-row items-center justify-between mt-2 gap-6">
           <TouchableOpacity onPress={() => router.push("/home/profile-page")}>
             <CircleUser size={32} color={colorScheme === "dark" ? "white" : "black"} />
