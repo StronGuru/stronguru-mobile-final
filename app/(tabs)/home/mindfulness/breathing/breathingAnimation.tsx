@@ -2,9 +2,9 @@ import AppText from "@/components/ui/AppText";
 import { BreathingConfig } from "@/utils/breathingUtils";
 import * as Haptics from "expo-haptics";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Pause, Play, Square } from "lucide-react-native";
+import { Info, Pause, Play, Square } from "lucide-react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Platform, SafeAreaView, ScrollView, TouchableOpacity, useWindowDimensions, Vibration, View } from "react-native";
+import { Modal, Platform, Pressable, SafeAreaView, ScrollView, TouchableOpacity, useWindowDimensions, Vibration, View } from "react-native";
 import Animated, { Easing, runOnJS, useAnimatedProps, useDerivedValue, useSharedValue, withTiming } from "react-native-reanimated";
 import { Circle, Svg } from "react-native-svg";
 
@@ -14,6 +14,8 @@ export default function BreathingAnimationScreen() {
   const params = useLocalSearchParams();
   const router = useRouter();
   const configJson = params.config as string | undefined;
+  const [infoModalVisible, setInfoModalVisible] = useState<boolean>(false);
+  const [infoText, setInfoText] = useState<string | null>(null);
 
   const config: BreathingConfig | null = useMemo(() => {
     if (!configJson) return null;
@@ -329,13 +331,18 @@ export default function BreathingAnimationScreen() {
         contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
         showsVerticalScrollIndicator={false}
       >
-        <View style={{ width: "100%", maxWidth: 720 }} className="mb-4">
-          {config.label !== "Custom" && (
-            <AppText w="semi" className="text-lg">
-              {config.label ?? "Esercizio di respirazione"}
-            </AppText>
-          )}
-          <AppText className="text-md text-muted-foreground">{config.description}</AppText>
+        <View className=" flex-row gap-3 items-center mb-5">
+          <AppText className="text-2xl text-center">{config.label !== "Custom" ? config.label : "Esercizio Custom"}</AppText>
+          <TouchableOpacity
+            onPress={() => {
+              setInfoText(config.description ?? "Nessuna descrizione disponibile");
+              setInfoModalVisible(true);
+            }}
+            className="mr-3"
+            accessibilityLabel={`Più info su ${config.label}`}
+          >
+            <Info size={22} color="#6b7280" />
+          </TouchableOpacity>
         </View>
 
         <View className="mb-4 items-center">
@@ -396,6 +403,25 @@ export default function BreathingAnimationScreen() {
             <AppText className="text-3xl text-black ">Fine</AppText>
           </TouchableOpacity>
         </View>
+
+        {/* Info modal */}
+        <Modal visible={infoModalVisible} transparent animationType="fade" onRequestClose={() => setInfoModalVisible(false)}>
+          <Pressable className="flex-1 justify-center items-center bg-black/40" onPress={() => setInfoModalVisible(false)}>
+            <Pressable className="w-[90%] bg-white dark:bg-muted p-4 rounded-lg" onPress={(e) => e.stopPropagation()}>
+              <AppText w="semi" className="text-lg mb-2">
+                Descrizione
+              </AppText>
+              <AppText className="text-md mb-4">{infoText}</AppText>
+              <View className="flex-row justify-end">
+                <TouchableOpacity onPress={() => setInfoModalVisible(false)} className="px-4 py-2 bg-primary rounded-md">
+                  <AppText w="semi" className="text-white text-lg">
+                    Chiudi
+                  </AppText>
+                </TouchableOpacity>
+              </View>
+            </Pressable>
+          </Pressable>
+        </Modal>
 
         {/* debug: show parsed config */}
         {/*  <View className="mt-6 p-4 bg-card rounded-lg w-full">
