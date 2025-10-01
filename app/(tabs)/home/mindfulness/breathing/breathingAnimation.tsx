@@ -3,7 +3,7 @@ import * as Haptics from "expo-haptics";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Pause, Play, Square } from "lucide-react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { ScrollView, TouchableOpacity, View, useWindowDimensions } from "react-native";
+import { Platform, SafeAreaView, ScrollView, TouchableOpacity, useWindowDimensions, Vibration, View } from "react-native";
 import Animated, { Easing, runOnJS, useAnimatedProps, useDerivedValue, useSharedValue, withTiming } from "react-native-reanimated";
 import { Circle, Svg } from "react-native-svg";
 
@@ -50,6 +50,8 @@ export default function BreathingAnimationScreen() {
   const [phaseIndex, setPhaseIndex] = useState<number>(0);
   const tickRef = useRef<number | null>(null);
   const lastTickRef = useRef<number | null>(null);
+  const hapticIntervalRef = useRef<number | null>(null);
+  const hapticTimeoutRef = useRef<number | null>(null);
 
   // shared progress (0..1) for the current phase
   const phaseProgress = useSharedValue(0);
@@ -70,17 +72,59 @@ export default function BreathingAnimationScreen() {
   };
 
   // trigger haptics on phase change (run on JS)
-  const triggerHaptic = async (phaseKey: string) => {
+  // phaseLengthSec used to vibrate for the whole inhale/exhale duration
+  const triggerHaptic = async (phaseKey: string, phaseLengthSec?: number) => {
     try {
-      // choose slightly different feedback for inhale/exhale
-      if (phaseKey === "inhale" || phaseKey === "exhale") {
-        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      // clear any previous simulated haptic loop
+      if (hapticIntervalRef.current) {
+        clearInterval(hapticIntervalRef.current);
+        hapticIntervalRef.current = null;
+      }
+      if (hapticTimeoutRef.current) {
+        clearTimeout(hapticTimeoutRef.current);
+        hapticTimeoutRef.current = null;
+      }
+
+      // sustained cue for inhale/exhale
+      if ((phaseKey === "inhale" || phaseKey === "exhale") && phaseLengthSec && phaseLengthSec > 0) {
+        // small initial cue
+        await Haptics.selectionAsync();
+
+        if (Platform.OS === "android") {
+          // Android supports long vibration
+          Vibration.vibrate(Math.round(phaseLengthSec * 1000));
+        } else {
+          // iOS: simulate sustained vibration with repeated impactAsync calls
+          const intervalMs = 300; // adjust (250-400ms) to taste
+          // start repeated impacts
+          hapticIntervalRef.current = setInterval(() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+          }, intervalMs) as unknown as number;
+
+          // stop the repeated calls after phaseLengthSec
+          hapticTimeoutRef.current = setTimeout(
+            () => {
+              if (hapticIntervalRef.current) {
+                clearInterval(hapticIntervalRef.current);
+                hapticIntervalRef.current = null;
+              }
+              hapticTimeoutRef.current = null;
+            },
+            Math.round(phaseLengthSec * 1000)
+          ) as unknown as number;
+        }
       } else {
+        // short feedback for holds or other transitions
         await Haptics.selectionAsync();
       }
     } catch (e) {
+      // fallback
       console.log("Haptics error:", e);
-      // ignore haptics errors
+      try {
+        Vibration.vibrate(200);
+      } catch {
+        // ignore
+      }
     }
   };
 
@@ -91,7 +135,7 @@ export default function BreathingAnimationScreen() {
     // when phaseIndex changes AND we're playing, start animation for that phase and trigger haptics
     if (!isPlaying) return;
     const current = phases[phaseIndex % phases.length];
-    runOnJS(triggerHaptic)(current.key);
+    runOnJS(triggerHaptic)(current.key, current.length);
     startPhaseAnimation(current.length);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phaseIndex, phases, isPlaying]);
@@ -106,6 +150,8 @@ export default function BreathingAnimationScreen() {
         tickRef.current = null;
         lastTickRef.current = null;
       }
+      // ensure vibration stops when pausing
+      Vibration.cancel();
       return;
     }
 
@@ -162,6 +208,21 @@ export default function BreathingAnimationScreen() {
       }
     };
   }, [isPlaying, phases, totalSeconds]);
+
+  // ensure vibration/haptic loops are cancelled on pause/stop/unmount
+  useEffect(() => {
+    if (!isPlaying) {
+      Vibration.cancel();
+      if (hapticIntervalRef.current) {
+        clearInterval(hapticIntervalRef.current);
+        hapticIntervalRef.current = null;
+      }
+      if (hapticTimeoutRef.current) {
+        clearTimeout(hapticTimeoutRef.current);
+        hapticTimeoutRef.current = null;
+      }
+    }
+  }, [isPlaying]);
 
   // percent progress for progress bar
   const percent = totalSeconds ? Math.min(1, elapsed / totalSeconds) : 0;
@@ -241,7 +302,10 @@ export default function BreathingAnimationScreen() {
   // cleanup on unmount
   useEffect(() => {
     return () => {
-      if (tickRef.current) clearInterval(tickRef.current);
+      // cleanup on unmount
+      Vibration.cancel();
+      if (hapticIntervalRef.current) clearInterval(hapticIntervalRef.current);
+      if (hapticTimeoutRef.current) clearTimeout(hapticTimeoutRef.current);
     };
   }, []);
 
@@ -261,82 +325,88 @@ export default function BreathingAnimationScreen() {
   const currentPhaseLabel = phases[phaseIndex % Math.max(1, phases.length)]?.label ?? "";
 
   return (
-    <ScrollView className="flex-1 px-4 py-6 bg-background " contentContainerStyle={{ alignItems: "center" }} showsVerticalScrollIndicator={false}>
-      <View style={{ width: "100%", maxWidth: 720 }} className="mb-4">
-        {config.label !== "Custom" && (
-          <AppText w="semi" className="text-lg">
-            {config.label ?? "Esercizio di respirazione"}
-          </AppText>
-        )}
-        <AppText className="text-md text-muted-foreground">{config.description}</AppText>
-      </View>
-
-      <View className="mb-4 items-center">
-        <View style={{ width: size, height: size }}>
-          <Svg width={size} height={size}>
-            <AnimatedCircle cx={center} cy={center} fill="#6ee7b7" opacity={0.18} animatedProps={animatedProps0} />
-            <AnimatedCircle cx={center} cy={center} fill="#34d399" opacity={0.16} animatedProps={animatedProps1} />
-            <AnimatedCircle cx={center} cy={center} fill="#10b981" opacity={0.14} animatedProps={animatedProps2} />
-            <AnimatedCircle cx={center} cy={center} fill="#059669" opacity={0.12} animatedProps={animatedProps3} />
-            <AnimatedCircle cx={center} cy={center} fill="#047857" opacity={0.1} animatedProps={animatedProps4} />
-          </Svg>
-          {/* center label */}
-          <View style={{ position: "absolute", left: 0, right: 0, top: size / 2 - 10, alignItems: "center" }}>
-            <AppText w="bold" className="text-3xl text-white">
-              {isPlaying ? `${currentPhaseLabel}` : "Avvia"}
+    <SafeAreaView className="flex-1 bg-background">
+      <ScrollView
+        className="flex-1 px-4 py-6 bg-background "
+        contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={{ width: "100%", maxWidth: 720 }} className="mb-4">
+          {config.label !== "Custom" && (
+            <AppText w="semi" className="text-lg">
+              {config.label ?? "Esercizio di respirazione"}
             </AppText>
+          )}
+          <AppText className="text-md text-muted-foreground">{config.description}</AppText>
+        </View>
+
+        <View className="mb-4 items-center">
+          <View style={{ width: size, height: size }}>
+            <Svg width={size} height={size}>
+              <AnimatedCircle cx={center} cy={center} fill="#6ee7b7" opacity={0.18} animatedProps={animatedProps0} />
+              <AnimatedCircle cx={center} cy={center} fill="#34d399" opacity={0.16} animatedProps={animatedProps1} />
+              <AnimatedCircle cx={center} cy={center} fill="#10b981" opacity={0.14} animatedProps={animatedProps2} />
+              <AnimatedCircle cx={center} cy={center} fill="#059669" opacity={0.12} animatedProps={animatedProps3} />
+              <AnimatedCircle cx={center} cy={center} fill="#047857" opacity={0.1} animatedProps={animatedProps4} />
+            </Svg>
+            {/* center label */}
+            <View style={{ position: "absolute", left: 0, right: 0, top: size / 2 - 16, alignItems: "center" }}>
+              <AppText w="bold" className="text-3xl text-white">
+                {isPlaying ? `${currentPhaseLabel}` : "Avvia"}
+              </AppText>
+            </View>
           </View>
         </View>
-      </View>
 
-      {/* progress bar */}
-      <View style={{ width: "80%", maxWidth: 720 }} className="mb-2">
-        <View className="h-3 bg-muted rounded-full overflow-hidden" style={{ width: "100%" }}>
-          <Animated.View style={{ width: `${Math.round(percent * 100)}%`, height: "100%", backgroundColor: "#34d399" }} />
+        {/* progress bar */}
+        <View style={{ width: "80%", maxWidth: 720 }} className="mb-2">
+          <View className="h-3 bg-border rounded-full overflow-hidden" style={{ width: "100%", height: 5 }}>
+            <Animated.View style={{ width: `${Math.round(percent * 100)}%`, height: "100%", backgroundColor: "#34d399" }} />
+          </View>
+          <View className="flex-row justify-between mt-2">
+            <AppText className="text-sm">{new Date(elapsed * 1000).toISOString().substr(14, 5)}</AppText>
+            <AppText className="text-sm">{totalSeconds ? new Date(totalSeconds * 1000).toISOString().substr(14, 5) : "--:--"}</AppText>
+          </View>
         </View>
-        <View className="flex-row justify-between mt-2">
-          <AppText className="text-sm">{new Date(elapsed * 1000).toISOString().substr(14, 5)}</AppText>
-          <AppText className="text-sm">{totalSeconds ? new Date(totalSeconds * 1000).toISOString().substr(14, 5) : "--:--"}</AppText>
-        </View>
-      </View>
 
-      {/*  <View>
+        {/*  <View>
         <AppText className="text-sm text-muted-foreground mb-4">
           {totalSeconds ? `Tempo totale: ${Math.floor(totalSeconds / 60)} min` : "Loop infinito"}
         </AppText>
       </View> */}
-      {/* controls */}
-      <View className="flex-row items-center justify-center gap-4">
-        <TouchableOpacity
-          onPress={() => {
-            setElapsed(0);
-            setPhaseIndex(0);
-            phaseProgress.value = 0;
-            setIsPlaying(false);
-          }}
-          className="px-4 py-3 bg-destructive border border-border rounded-md"
-        >
-          <Square color="#FFFFFF" />
-        </TouchableOpacity>
+        {/* controls */}
+        <View className="flex-row items-center justify-center gap-6 shadow-sm ">
+          <TouchableOpacity
+            onPress={() => {
+              setElapsed(0);
+              setPhaseIndex(0);
+              phaseProgress.value = 0;
+              setIsPlaying(false);
+            }}
+            className="py-4 px-7 bg-destructive rounded-2xl"
+          >
+            <Square color="#FFFFFF" />
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={togglePlay} className="px-6 py-3 bg-primary rounded-full">
-          <AppText w="semi" className="text-white text-lg">
-            {isPlaying ? <Pause color="#FFFFFF" /> : <Play color="#FFFFFF" />}
-          </AppText>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={togglePlay} className="p-9 bg-[#34d399] rounded-full">
+            <AppText w="semi" className="text-white text-lg">
+              {isPlaying ? <Pause color="#FFFFFF" /> : <Play color="#FFFFFF" />}
+            </AppText>
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => router.back()} className="px-4 py-3 bg-card border border-border rounded-md">
-          <AppText>Fine</AppText>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity onPress={() => router.back()} className="px-4 py-3 bg-card rounded-2xl">
+            <AppText className="text-3xl text-black ">Fine</AppText>
+          </TouchableOpacity>
+        </View>
 
-      {/* debug: show parsed config */}
-      {/*  <View className="mt-6 p-4 bg-card rounded-lg w-full">
+        {/* debug: show parsed config */}
+        {/*  <View className="mt-6 p-4 bg-card rounded-lg w-full">
         <AppText w="semi" className="mb-2">
           Debug config
         </AppText>
         <AppText style={{ fontFamily: "monospace" }}>{JSON.stringify(config, null, 2)}</AppText>
       </View> */}
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
