@@ -57,8 +57,8 @@ export default function HomeLayout() {
       <Stack.Screen
         name="mindfulness/breathing/breathingAnimation"
         options={{
-          headerShown: false,
-          title: "Esercizio di Respirazione",
+          headerShown: true,
+          title: "",
           headerBackTitle: "Indietro"
         }}
       />

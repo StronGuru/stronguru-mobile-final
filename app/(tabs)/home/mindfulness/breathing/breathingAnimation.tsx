@@ -249,9 +249,9 @@ export default function BreathingAnimationScreen() {
   const { width: windowWidth } = useWindowDimensions();
   const horizontalPadding = 20 * 2; // adjust if your screen padding differs
   const maxAllowed = Math.min(windowWidth - horizontalPadding, 900); // cap maximum
-  const size = Math.max(390, maxAllowed); // minimum 280, otherwise fit available space
+  const size = Math.max(380, maxAllowed); // minimum 280, otherwise fit available space
   const center = size / 2;
-  const baseRadius = Math.round(size * 0.34); // scale radius with size (24% of size)
+  const baseRadius = Math.round(size * 0.38); // scale radius with size (24% of size)
 
   // create animated props per layer (call hooks at top-level, not inside map)
 
@@ -318,7 +318,7 @@ export default function BreathingAnimationScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background">
       <ScrollView
-        className="flex-grow-1 px-4 py-6 bg-background "
+        className="flex-1 px-4 py-6 bg-background "
         contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
         showsVerticalScrollIndicator={false}
       >
