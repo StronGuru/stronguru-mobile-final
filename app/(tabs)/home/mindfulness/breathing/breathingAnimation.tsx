@@ -58,7 +58,7 @@ export default function BreathingAnimationScreen() {
     // animate from 0 to 1 in phaseLengthSec * 1000
     phaseProgress.value = withTiming(1, {
       duration: phaseLengthSec * 1000,
-      easing: Easing.inOut(Easing.quad)
+      easing: Easing.inOut(Easing.sin)
     });
   };
 
