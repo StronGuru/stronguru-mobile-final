@@ -90,10 +90,10 @@ export default function MindfulnessHomeScreen() {
 
   return (
     <ScrollView className="flex-1 px-4 py-6 bg-background" showsVerticalScrollIndicator={false}>
-      <Card className="mb-5 p-0 ">
+      <Card className="mb-5 gap-5">
         <ImageBackground
           source={require("../../../../assets/images/mindfulness/breathingCard.jpeg")}
-          className="h-60 justify-center items-center p-5"
+          className="h-60 justify-center items-center p-5 shadow-sm"
           resizeMode="cover"
           imageStyle={{ borderRadius: 10 }}
         >
@@ -106,7 +106,7 @@ export default function MindfulnessHomeScreen() {
         </ImageBackground>
 
         {/* Expandable Sections */}
-        <View className=" py-4">
+        <View className="gap-2 ">
           {/* Patterns Section */}
           <View className="mb-3">
             <TouchableOpacity
